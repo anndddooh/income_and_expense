@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
+    <title>Income and Expense</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body>
+    <h1>Income and Expense</h1>
+    <ul>
+        <li><a href="{% url 'income_and_expense:table' last_year last_mon %}">前月</a></li>
+        <li>{{ first_date|date:"m月d日" }}〜{{ last_date|date:"m月d日" }}</li>
+        <li><a href="{% url 'income_and_expense:table' next_year next_mon %}">来月</a></li>
+    </ul>
+    <div>
+        <h3>LastMonth</h3>
+    </div>
+    <table>
+        <tbody>
+            <tr>
+                <td>残高</td>
+                <td>{{ last_mon_balance }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+        <h3>Income</h3>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>✔️</th>
+                <th>名前</th>
+                <th>支払日</th>
+                <th>方法</th>
+                <th>口座</th>
+                <th>金額</th>
+                <th>？</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inc in incs %}
+            <tr>
+                <td>{{ inc.done|yesno:'✔️,' }}</td>
+                <td>{{ inc.name }}</td>
+                <td>{{ inc.pay_date|date:"Y年m月d日(D)" }}</td>
+                <td>{{ inc.method }}</td>
+                <td>{{ inc.method.account }}</td>
+                <td>{{ inc.formed_amount }}</td>
+                <td>{{ inc.undecided|yesno:'？,' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <table>
+        <tbody>
+            <tr>
+                <td>合計</td>
+                <td>{{ inc_sum }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+        <h3>Expense</h3>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>✔️</th>
+                <th>名前</th>
+                <th>支払日</th>
+                <th>準備日</th>
+                <th>方法</th>
+                <th>口座</th>
+                <th>金額</th>
+                <th>？</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for exp in exps %}
+            <tr>
+                <td>{{ exp.done|yesno:'✔️,' }}</td>
+                <td>{{ exp.name }}</td>
+                <td>{{ exp.pay_date|date:"Y年m月d日(D)" }}</td>
+                <td>{{ exp.period_date|date:"Y年m月d日(D)" }}</td>
+                <td>{{ exp.method }}</td>
+                <td>{{ exp.method.account }}</td>
+                <td>{{ exp.formed_amount }}</td>
+                <td>{{ exp.undecided|yesno:'？,' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <table>
+        <tbody>
+            <tr>
+                <td>合計</td>
+                <td>{{ exp_sum }}</td>
+            </tr>
+            <tr>
+                <td>残高</td>
+                <td>{{ balance }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+        <h3>Account require</h3>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>名前</th>
+                <th>金額</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for account_require in account_requires %}
+            <tr>
+                <td>{{ account_require.account }}</td>
+                <td>{{ account_require.require }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div>
+        <h3>Account balance</h3>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>名前</th>
+                <th>金額</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for account_balance in account_balances %}
+            <tr>
+                <td>{{ account_balance.account }}</td>
+                <td>{{ account_balance.balance }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td>実残高</td>
+                <td>{{ account_balance_sum }}</td>
+            </tr>
+            <tr>
+                <td>DB上残高</td>
+                <td>{{ balance_on_db }}</td>
+            </tr>
+            <tr>
+                <td>残高誤差</td>
+                <td>{{ balance_diff }}</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
