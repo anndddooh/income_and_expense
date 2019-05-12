@@ -1,4 +1,20 @@
-from django.forms import modelformset_factory
-from .models import Income
+from django import forms
+from .models import Income, Expense, Account
 
-IncomeFormSet = modelformset_factory(Income, fields=("name", "amount"))
+
+class AccountBalanceForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ('balance',)
+
+IncomeFormSet = forms.modelformset_factory(
+    Income, fields='__all__', can_delete=True, extra=1
+)
+
+ExpenseFormSet = forms.modelformset_factory(
+    Expense, fields='__all__', can_delete=True, extra=1
+)
+
+AccountBalanceFormSet = forms.modelformset_factory(
+    Account, form=AccountBalanceForm, extra=0
+)
