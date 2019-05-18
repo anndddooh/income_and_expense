@@ -1,11 +1,11 @@
-{% load static %}
 <!DOCTYPE html>
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
     <title>Income and Expense</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 </head>
 <body>
     <h1>Income and Expense</h1>
@@ -44,6 +44,7 @@
             </thead>
             <tbody>
                 {% for inc_form in inc_forms %}
+                    {{ inc_form.media }}
                 <tr>
                     <td>{{ inc_form.done }}</td>
                     <td>{{ inc_form.name }}</td>
@@ -98,6 +99,7 @@
             </thead>
             <tbody>
                 {% for exp_form in exp_forms %}
+                    {{ exp_form.media }}
                 <tr>
                     <td>{{ exp_form.done }}</td>
                     <td>{{ exp_form.name }}</td>
