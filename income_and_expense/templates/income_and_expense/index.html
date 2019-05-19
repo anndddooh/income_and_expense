@@ -2,209 +2,238 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
+    {% load static %}
+    {% load widget_tweaks %}
     {% load bootstrap4 %}
     {% bootstrap_css %}
     {% bootstrap_javascript jquery='full' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'income_and_expense/style.css' %}">
     <title>Income and Expense</title>
 </head>
 <body>
-    <h1>Income and Expense</h1>
-    <ul>
-        <li><a href="{% url 'income_and_expense:table' last_year last_mon %}">前月</a></li>
-        <li>{{ first_date|date:"m月d日" }}〜{{ last_date|date:"m月d日" }}</li>
-        <li><a href="{% url 'income_and_expense:table' next_year next_mon %}">来月</a></li>
-    </ul>
-    <div>
-        <h3>LastMonth</h3>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Income and Expense</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                    <a class="arrow" href="{% url 'income_and_expense:table' last_year last_mon %}">
+                        <img src="{% static 'income_and_expense/images/previous.png' %}" alt="先月" width="30" height="30">
+                    </a>
+                    <span>
+                        {{ first_date|date:"m月d日" }}〜{{ last_date|date:"m月d日" }}
+                    </span>
+                    <a class="arrow" href="{% url 'income_and_expense:table' next_year next_mon %}">
+                        <img src="{% static 'income_and_expense/images/next.png' %}" alt="来月" width="30" height="30">                
+                    </a>
+                    <span>
+                        先月の残高 {{ last_mon_balance }}
+                    </span>
+            </div>
+        </div>
+        <form action="{% url 'income_and_expense:modify_inc' this_year this_mon %}" method="post">
+            <div class="row">
+                <div class="col-12">
+                    <h3 class="d-inline-block">Income</h3>        
+                    <input type="submit" class="btn btn-primary btn-sm" value="更新">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive my-table">
+                        <table class="table table-borderless table-hover table-sm">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="table_check">Fin</th>
+                                    <th class="table_name">Name</th>
+                                    <th class="table_date_income">Pay Date</th>
+                                    <th class="table_method_income">Method</th>
+                                    <th class="table_account">Account</th>
+                                    <th class="table_amount">Amount</th>
+                                    <th class="table_check">？</th>
+                                    <th class="table_check">Del</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for inc_form in inc_forms %}
+                                    {{ inc_form.media }}
+                                <tr>
+                                    <td class="align-middle">{{ inc_form.done }}</td>
+                                    <td class="align-middle">{{ inc_form.name|add_class:"w-100" }}</td>
+                                    <td class="align-middle">{{ inc_form.pay_date }}</td>
+                                    <td class="align-middle">{{ inc_form.method|add_class:"w-100" }}</td>
+                                    <td class="align-middle">
+                                        {% for inc in incs %}
+                                            {% ifequal inc.id inc_form.id.value %}
+                                                {{ inc.method.account }}
+                                            {% endifequal %}
+                                        {% endfor %}
+                                    </td>
+                                    <td class="align-middle">{{ inc_form.amount|add_class:"w-100" }}</td>
+                                    <td class="align-middle">{{ inc_form.undecided }}</td>
+                                    <td class="align-middle">{{ inc_form.DELETE }}</td>
+                                </tr>
+                                    {% for hidden_field in inc_form.hidden_fields %}
+                                        {{ hidden_field }}
+                                    {% endfor %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>合計</td>
+                                <td>{{ inc_sum }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {{ inc_forms.management_form }}
+                    {% csrf_token %}
+                </div>
+            </div>
+        </form>
+        <form action="{% url 'income_and_expense:modify_exp' this_year this_mon %}" method="post">
+            <div class="row">
+                <div class="col-12">
+                    <h3 class="d-inline-block">Expense</h3>
+                    <input type="submit" class="btn btn-primary btn-sm" value="更新">
+                </div>            
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive my-table">
+                        <table class="table table-borderless table-hover table-sm">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="table_check">Fin</th>
+                                    <th class="table_name">Name</th>
+                                    <th class="table_date_expense">Pay Date</th>
+                                    <th class="table_date_expense">Period Date</th>
+                                    <th class="table_method_expense">Method</th>
+                                    <th class="table_account">Account</th>
+                                    <th class="table_amount">Amount</th>
+                                    <th class="table_check">？</th>
+                                    <th class="table_check">Del</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for exp_form in exp_forms %}
+                                    {{ exp_form.media }}
+                                <tr>
+                                    <td class="align-middle">{{ exp_form.done }}</td>
+                                    <td class="align-middle">{{ exp_form.name|add_class:"w-100" }}</td>
+                                    <td class="align-middle">{{ exp_form.pay_date }}</td>
+                                    <td class="align-middle">{{ exp_form.period_date }}</td>
+                                    <td class="align-middle">{{ exp_form.method|add_class:"w-100" }}</td>
+                                    <td class="align-middle">
+                                        {% for exp in exps %}
+                                            {% ifequal exp.id exp_form.id.value %}
+                                                {{ exp.method.account }}
+                                            {% endifequal %}
+                                        {% endfor %}
+                                    </td>
+                                    <td class="align-middle">{{ exp_form.amount|add_class:"w-100" }}</td>
+                                    <td class="align-middle">{{ exp_form.undecided }}</td>
+                                    <td class="align-middle">{{ exp_form.DELETE }}</td>
+                                </tr>
+                                    {% for hidden_field in exp_form.hidden_fields %}
+                                        {{ hidden_field }}
+                                    {% endfor %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>合計</td>
+                                <td>{{ exp_sum }}</td>
+                            </tr>
+                            <tr>
+                                <td>残高</td>
+                                <td>{{ balance }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {{ exp_forms.management_form }}
+                    {% csrf_token %}
+                </div>        
+            </div>
+        </form>
+        <form action="{% url 'income_and_expense:modify_balance' this_year this_mon %}" method="post">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Account require</h3>
+                </div> 
+                <div class="col-6">
+                    <h3 class="d-inline-block">Account balance</h3>
+                    <input type="submit" class="btn btn-primary btn-sm" value="更新">
+                </div>               
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <table class="table table-borderless table-hover table-sm">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Name</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for account_require in account_requires %}
+                            <tr>
+                                <td>{{ account_require.account }}</td>
+                                <td>{{ account_require.require }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-6">
+                    <table class="table table-borderless table-hover table-sm">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Name</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for account_balance_form in account_balance_forms %}
+                            <tr>
+                                <td>
+                                    {% for account_balance in account_balances %}
+                                        {% ifequal account_balance.account.id account_balance_form.id.value %}
+                                            {{ account_balance.account }}
+                                        {% endifequal %}
+                                    {% endfor %}
+                                </td>
+                                <td>{{ account_balance_form.balance }}</td>
+                            </tr>
+                                {% for hidden_field in account_balance_form.hidden_fields %}
+                                    {{ hidden_field }}
+                                {% endfor %}
+                            {% endfor %}
+                            <tr>
+                                <td>実残高</td>
+                                <td>{{ account_balance_sum }}</td>
+                            </tr>
+                            <tr>
+                                <td>DB上残高</td>
+                                <td>{{ balance_on_db }}</td>
+                            </tr>
+                            <tr>
+                                <td>残高誤差</td>
+                                <td>{{ balance_diff }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {{ account_balance_forms.management_form }}
+                    {% csrf_token %}
+                </div>
+            </div>
+        </form>
     </div>
-    <table>
-        <tbody>
-            <tr>
-                <td>残高</td>
-                <td>{{ last_mon_balance }}</td>
-            </tr>
-        </tbody>
-    </table>
-    <div>
-        <h3>Income</h3>
-    </div>
-    <form action="{% url 'income_and_expense:modify_inc' this_year this_mon %}" method="post">
-        <table>
-            <thead>
-                <tr>
-                    <th>支払済</th>
-                    <th>名前</th>
-                    <th>支払日</th>
-                    <th>方法</th>
-                    <th>口座</th>
-                    <th>金額</th>
-                    <th>未決定</th>
-                    <th>削除</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for inc_form in inc_forms %}
-                    {{ inc_form.media }}
-                <tr>
-                    <td>{{ inc_form.done }}</td>
-                    <td>{{ inc_form.name }}</td>
-                    <td>{{ inc_form.pay_date }}</td>
-                    <td>{{ inc_form.method }}</td>
-                    <td>
-                        {% for inc in incs %}
-                            {% ifequal inc.id inc_form.id.value %}
-                                {{ inc.method.account }}
-                            {% endifequal %}
-                        {% endfor %}
-                    </td>
-                    <td>{{ inc_form.amount }}</td>
-                    <td>{{ inc_form.undecided }}</td>
-                    <td>{{ inc_form.DELETE }}</td>
-                </tr>
-                    {% for hidden_field in inc_form.hidden_fields %}
-                        {{ hidden_field }}
-                    {% endfor %}
-                {% endfor %}
-            </tbody>
-        </table>
-        {{ inc_forms.management_form }}
-        {% csrf_token %}
-        <input type="submit" value="更新">
-    </form>
-    <table>
-        <tbody>
-            <tr>
-                <td>合計</td>
-                <td>{{ inc_sum }}</td>
-            </tr>
-        </tbody>
-    </table>
-    <div>
-        <h3>Expense</h3>
-    </div>
-    <form action="{% url 'income_and_expense:modify_exp' this_year this_mon %}" method="post">
-        <table>
-            <thead>
-                <tr>
-                    <th>支払済</th>
-                    <th>名前</th>
-                    <th>支払日</th>
-                    <th>準備日</th>
-                    <th>方法</th>
-                    <th>口座</th>
-                    <th>金額</th>
-                    <th>未決定</th>
-                    <th>削除</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for exp_form in exp_forms %}
-                    {{ exp_form.media }}
-                <tr>
-                    <td>{{ exp_form.done }}</td>
-                    <td>{{ exp_form.name }}</td>
-                    <td>{{ exp_form.pay_date }}</td>
-                    <td>{{ exp_form.period_date }}</td>
-                    <td>{{ exp_form.method }}</td>
-                    <td>
-                        {% for exp in exps %}
-                            {% ifequal exp.id exp_form.id.value %}
-                                {{ exp.method.account }}
-                            {% endifequal %}
-                        {% endfor %}
-                    </td>
-                    <td>{{ exp_form.amount }}</td>
-                    <td>{{ exp_form.undecided }}</td>
-                    <td>{{ exp_form.DELETE }}</td>
-                </tr>
-                    {% for hidden_field in exp_form.hidden_fields %}
-                        {{ hidden_field }}
-                    {% endfor %}
-                {% endfor %}
-            </tbody>
-        </table>
-        {{ exp_forms.management_form }}
-        {% csrf_token %}
-        <input type="submit" value="更新">
-    </form>
-    <table>
-        <tbody>
-            <tr>
-                <td>合計</td>
-                <td>{{ exp_sum }}</td>
-            </tr>
-            <tr>
-                <td>残高</td>
-                <td>{{ balance }}</td>
-            </tr>
-        </tbody>
-    </table>
-    <div>
-        <h3>Account require</h3>
-    </div>
-    <table>
-        <thead>
-            <tr>
-                <th>名前</th>
-                <th>金額</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for account_require in account_requires %}
-            <tr>
-                <td>{{ account_require.account }}</td>
-                <td>{{ account_require.require }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div>
-        <h3>Account balance</h3>
-    </div>
-    <form action="{% url 'income_and_expense:modify_balance' this_year this_mon %}" method="post">
-        <table>
-            <thead>
-                <tr>
-                    <th>名前</th>
-                    <th>金額</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for account_balance_form in account_balance_forms %}
-                <tr>
-                    <td>
-                        {% for account_balance in account_balances %}
-                            {% ifequal account_balance.account.id account_balance_form.id.value %}
-                                {{ account_balance.account }}
-                            {% endifequal %}
-                        {% endfor %}
-                    </td>
-                    <td>{{ account_balance_form.balance }}</td>
-                </tr>
-                    {% for hidden_field in account_balance_form.hidden_fields %}
-                        {{ hidden_field }}
-                    {% endfor %}
-                {% endfor %}
-            </tbody>
-        </table>
-        {{ account_balance_forms.management_form }}
-        {% csrf_token %}
-        <input type="submit" value="更新">
-    </form>
-    <table>
-        <tbody>
-            <tr>
-                <td>実残高</td>
-                <td>{{ account_balance_sum }}</td>
-            </tr>
-            <tr>
-                <td>DB上残高</td>
-                <td>{{ balance_on_db }}</td>
-            </tr>
-            <tr>
-                <td>残高誤差</td>
-                <td>{{ balance_diff }}</td>
-            </tr>
-        </tbody>
-    </table>
 </body>
