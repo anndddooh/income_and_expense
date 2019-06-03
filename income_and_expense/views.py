@@ -340,6 +340,15 @@ def table(request, year, month):
     exp_sum = this_month_exps.aggregate(Sum('amount'))['amount__sum']
     balance = inc_sum - exp_sum
 
+    # 今月の残高を更新
+    this_mon_settlement = None
+    if Settlement.objects.filter(year=year, month=month).exists():
+        this_mon_settlement = Settlement.objects.get(year=year, month=month)
+    else:
+        this_mon_settlement = Settlement(year=year, month=month, balance=0)
+    this_mon_settlement.balance = balance
+    this_mon_settlement.save()
+
     # 各口座の必要金額、実残高を取得
     accounts = Account.objects.all() # 全口座
     account_requires = [] # 各口座の必要金額
