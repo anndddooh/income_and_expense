@@ -402,15 +402,15 @@ def table(request, year, month):
         'exps': this_month_exps,
         'inc_forms': this_month_inc_forms,
         'exp_forms': this_month_exp_forms,
-        'inc_sum': "¥{:,}".format(inc_sum),
-        'exp_sum': "¥{:,}".format(exp_sum),  
-        'balance': "¥{:,}".format(balance),
+        'inc_sum': inc_sum,
+        'exp_sum': exp_sum,  
+        'balance': balance,
         'account_requires': account_requires,
         'account_balances': account_balances,
         'account_balance_forms': account_balance_forms,
-        'account_balance_sum': "¥{:,}".format(account_balance_sum),
-        'balance_on_db': "¥{:,}".format(balance_on_db),
-        'balance_diff': "¥{:,}".format(balance_diff),
+        'account_balance_sum': account_balance_sum,
+        'balance_on_db': balance_on_db,
+        'balance_diff': balance_diff,
     })
 
 def modify_income(request, year, month):

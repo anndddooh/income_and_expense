@@ -15,12 +15,12 @@
 </head>
 <body>
     <div class="container">
-        <div class="row">
+        <div class="row pt-4 pb-4">
             <div class="col-12">
                 <h1>Income and Expense</h1>
             </div>
         </div>
-        <div class="row pt-2 pb-2">
+        <div class="row pb-4">
             <div class="col-12">
                     <a class="arrow" href="{% url 'income_and_expense:table' last_year last_mon %}">
                         <img src="{% static 'income_and_expense/images/previous.png' %}" alt="先月" width="30" height="30">
@@ -37,25 +37,25 @@
             </div>
         </div>
         <form action="{% url 'income_and_expense:modify_inc' this_year this_mon %}" method="post">
-            <div class="row align-items-center mt-1 mb-1">
+            <div class="row align-items-center pb-2">
                 <div class="col-12">
                     <h3 class="d-inline-block align-middle m-auto">Income</h3>        
                     <input type="submit" class="btn btn-light btn-sm" value="Update">
                 </div>
             </div>
-            <div class="row">
+            <div class="row pb-4">
                 <div class="col-12 table-responsive">
                     <div class="table-responsive my-table">
                         <table class="table table-sm">
                             <thead>
                                 <tr>
                                     <th class="table_check">Fin</th>
+                                    <th class="table_check">？</th>
                                     <th class="table_name">Name</th>
                                     <th class="table_date_income">Pay Date</th>
                                     <th class="table_method_income">Method</th>
                                     <th class="table_account">Account</th>
                                     <th class="table_amount">Amount</th>
-                                    <th class="table_check">？</th>
                                     <th class="table_check">Del</th>
                                 </tr>
                             </thead>
@@ -64,6 +64,7 @@
                                     {{ inc_form.media }}
                                 <tr>
                                     <td class="align-middle">{{ inc_form.done }}</td>
+                                    <td class="align-middle">{{ inc_form.undecided }}</td>
                                     <td class="align-middle">
                                         {{ inc_form.name|add_class:"form-control" }}
                                     </td>
@@ -77,57 +78,65 @@
                                         {% endfor %}
                                     </td>
                                     <td class="align-middle">
-                                        <div class="input-group mb-2 mr-sm-2">
+                                        <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text">¥</div>
                                             </div>
                                             {{ inc_form.amount|add_class:"form-control" }}
                                         </div>
                                     </td>
-                                    <td class="align-middle">{{ inc_form.undecided }}</td>
                                     <td class="align-middle">{{ inc_form.DELETE }}</td>
                                 </tr>
                                     {% for hidden_field in inc_form.hidden_fields %}
                                         {{ hidden_field }}
                                     {% endfor %}
                                 {% endfor %}
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="align-middle">Sum</td>
+                                    <td class="align-middle">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">¥</div>
+                                            </div>
+                                            <input class="form-control" type="text" placeholder="{{ inc_sum }}" readonly>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>Sum</td>
-                                <td>{{ inc_sum }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
                     {{ inc_forms.management_form }}
                     {% csrf_token %}
                 </div>
             </div>
         </form>
         <form action="{% url 'income_and_expense:modify_exp' this_year this_mon %}" method="post">
-            <div class="row mt-1 mb-1">
+            <div class="row pb-2">
                 <div class="col-12">
                     <h3 class="d-inline-block align-middle m-auto">Expense</h3>
                     <input type="submit" class="btn btn-light btn-sm" value="Update">
                 </div>            
             </div>
-            <div class="row">
+            <div class="row pb-4">
                 <div class="col-12 table-responsive">
                     <div class="table-responsive my-table">
                         <table class="table table-sm">
                             <thead>
                                 <tr>
                                     <th class="table_check">Fin</th>
+                                    <th class="table_check">？</th>
                                     <th class="table_name">Name</th>
                                     <th class="table_date_expense">Pay Date</th>
                                     <th class="table_date_expense">Period Date</th>
                                     <th class="table_method_expense">Method</th>
                                     <th class="table_account">Account</th>
                                     <th class="table_amount">Amount</th>
-                                    <th class="table_check">？</th>
                                     <th class="table_check">Del</th>
                                 </tr>
                             </thead>
@@ -136,6 +145,7 @@
                                     {{ exp_form.media }}
                                 <tr>
                                     <td class="align-middle">{{ exp_form.done }}</td>
+                                    <td class="align-middle">{{ exp_form.undecided }}</td>
                                     <td class="align-middle">{{ exp_form.name|add_class:"form-control" }}</td>
                                     <td class="align-middle">{{ exp_form.pay_date }}</td>
                                     <td class="align-middle">{{ exp_form.period_date }}</td>
@@ -148,42 +158,65 @@
                                         {% endfor %}
                                     </td>
                                     <td class="align-middle">
-                                        <div class="input-group mb-2 mr-sm-2">
+                                        <div class="input-group mr-sm-2">
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text">¥</div>
                                             </div>
                                             {{ exp_form.amount|add_class:"form-control" }}
                                         </div>
                                     </td>
-                                    <td class="align-middle">{{ exp_form.undecided }}</td>
                                     <td class="align-middle">{{ exp_form.DELETE }}</td>
                                 </tr>
                                     {% for hidden_field in exp_form.hidden_fields %}
                                         {{ hidden_field }}
                                     {% endfor %}
                                 {% endfor %}
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="align-middle">Sum</td>
+                                    <td class="align-middle">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">¥</div>
+                                            </div>
+                                            <input class="form-control" type="text" placeholder="{{ exp_sum }}" readonly>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="align-middle">Balance</td>
+                                    <td class="align-middle">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">¥</div>
+                                            </div>
+                                            <input class="form-control" type="text" placeholder="{{ balance }}" readonly>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>Sum</td>
-                                <td>{{ exp_sum }}</td>
-                            </tr>
-                            <tr>
-                                <td>Balance</td>
-                                <td>{{ balance }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
                     {{ exp_forms.management_form }}
                     {% csrf_token %}
                 </div>        
             </div>
         </form>
         <form action="{% url 'income_and_expense:modify_balance' this_year this_mon %}" method="post">
-            <div class="row">
+            <div class="row pb-2">
                 <div class="col-6">
                     <h3 class="d-inline-block align-middle m-auto">Account require</h3>
                 </div> 
@@ -192,7 +225,7 @@
                     <input type="submit" class="btn btn-light btn-sm" value="Update">
                 </div>               
             </div>
-            <div class="row mt-1 mb-1">
+            <div class="row pb-4">
                 <div class="col-6 table-responsive">
                     <table class="table table-sm">
                         <thead>
@@ -204,8 +237,8 @@
                         <tbody>
                             {% for account_require in account_requires %}
                             <tr>
-                                <td>{{ account_require.account }}</td>
-                                <td>{{ account_require.require }}</td>
+                                <td class="align-middle">{{ account_require.account }}</td>
+                                <td class="align-middle">{{ account_require.require }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -222,15 +255,15 @@
                         <tbody>
                             {% for account_balance_form in account_balance_forms %}
                             <tr>
-                                <td>
+                                <td class="align-middle">
                                     {% for account_balance in account_balances %}
                                         {% ifequal account_balance.account.id account_balance_form.id.value %}
                                             {{ account_balance.account }}
                                         {% endifequal %}
                                     {% endfor %}
                                 </td>
-                                <td>
-                                    <div class="input-group mb-2 mr-sm-2">
+                                <td class="align-middle">
+                                    <div class="input-group mr-sm-2">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">¥</div>
                                         </div>
@@ -243,16 +276,37 @@
                                 {% endfor %}
                             {% endfor %}
                             <tr>
-                                <td>Balance(real)</td>
-                                <td>{{ account_balance_sum }}</td>
+                                <td class="align-middle">Balance(real)</td>
+                                <td class="align-middle">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">¥</div>
+                                        </div>
+                                        <input class="form-control" type="text" placeholder="{{ account_balance_sum }}" readonly>
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
-                                <td>Balance(db)</td>
-                                <td>{{ balance_on_db }}</td>
+                                <td class="align-middle">Balance(db)</td>
+                                <td class="align-middle">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">¥</div>
+                                        </div>
+                                        <input class="form-control" type="text" placeholder="{{ balance_on_db }}" readonly>
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
-                                <td>Difference</td>
-                                <td>{{ balance_diff }}</td>
+                                <td class="align-middle">Difference</td>
+                                <td class="align-middle">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">¥</div>
+                                        </div>
+                                        <input class="form-control" type="text" placeholder="{{ balance_diff }}" readonly>
+                                    </div>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
