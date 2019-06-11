@@ -397,7 +397,7 @@ def table(request, year, month):
         'last_mon': last_mon,
         'next_year': next_year,
         'next_mon': next_mon,
-        'last_mon_balance': "¥{:,}".format(last_mon_balance),
+        'last_mon_balance': last_mon_balance,
         'incs': this_month_incs,
         'exps': this_month_exps,
         'inc_forms': this_month_inc_forms,
