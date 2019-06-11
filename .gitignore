@@ -3,3 +3,4 @@ __pycache__/
 db.sqlite3
 polls/
 django_env/
+local_settings.py
