@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
+ 
+	{% load widget_tweaks %}
+
+	{% load bootstrap4 %}
+	{% bootstrap_css %}
+	{% bootstrap_javascript jquery='full' %}
+
+	{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'accounts/style.css' %}">
+        
+    <title>Login</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <form action="" method="POST">
+            <div class="col-lg-4 offset-lg-4 col-8 offset-2">
+                <div class="card">
+                    <div class="card-body">
+                        {{ form.non_field_errors }}
+                        {% for field in form %}
+                            {{ field }}
+                            {{ field.errors }}
+                            <hr>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-light btn-block" >ログイン</button>
+                        {% for hidden_field in form.hidden_fields %}
+                            {{ hidden_field }}
+                        {% endfor %}
+                        {% csrf_token %}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

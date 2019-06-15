@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Sum
+from django.contrib.auth.decorators import login_required
 from cerberus import Validator
 from dateutil.relativedelta import relativedelta
 
@@ -230,6 +231,7 @@ def validate_url_in_table_page(year, month):
 
 # Create your views here.
 
+@login_required
 def index(request):
     """トップページ用のビュー関数。
     
@@ -263,6 +265,7 @@ def index(request):
         )
     )
 
+@login_required
 def table(request, year, month):
     """テーブルページ用のビュー関数。
     
@@ -413,6 +416,7 @@ def table(request, year, month):
         'balance_diff': balance_diff,
     })
 
+@login_required
 def modify_income(request, year, month):
     """modify_incページ用のビュー関数。
     
@@ -441,6 +445,7 @@ def modify_income(request, year, month):
         reverse('income_and_expense:table', args=(year, month))
     )
 
+@login_required
 def modify_expense(request, year, month):
     """modify_expページ用のビュー関数。
     
@@ -469,6 +474,7 @@ def modify_expense(request, year, month):
         reverse('income_and_expense:table', args=(year, month))
     )
 
+@login_required
 def modify_account_balance(request, year, month):
     """modify_balanceページ用のビュー関数。
     

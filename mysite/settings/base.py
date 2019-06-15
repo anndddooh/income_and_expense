@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'bootstrap_datepicker_plus',
     'income_and_expense.apps.IncomeAndExpenseConfig',
+    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
@@ -113,3 +114,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
+
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'income_and_expense/index'
