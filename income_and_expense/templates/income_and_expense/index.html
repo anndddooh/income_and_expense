@@ -3,14 +3,14 @@
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
 	
-{% load static %}
-	<link rel="stylesheet" type="text/css" href="{% static 'income_and_expense/style.css' %}">
-
 	{% load widget_tweaks %}
 
 	{% load bootstrap4 %}
 	{% bootstrap_css %}
 	{% bootstrap_javascript jquery='full' %}
+
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'income_and_expense/style.css' %}">
 
 	<title>Income and Expense</title>
 </head>
@@ -44,17 +44,17 @@
 			<div class="row pb-4">
 				<div class="col-12">
 					<div class="table-responsive">
-						<table class="table table-sm">
+						<table class="table table-sm my-table">
 							<thead>
 								<tr>
-									<th>Fin</th>
-									<th class="d-none d-sm-table-cell">？</th>
-									<th>Name</th>
-									<th class="d-none d-sm-table-cell">Pay Date</th>
-									<th class="d-none d-sm-table-cell">Method</th>
-									<th class="d-none d-sm-table-cell">Account</th>
-									<th>Amount</th>
-									<th class="d-none d-sm-table-cell">Del</th>
+									<th class="check">Fin</th>
+									<th class="d-none d-sm-table-cell check">？</th>
+									<th class="name">Name</th>
+									<th class="d-none d-sm-table-cell date">Pay Date</th>
+									<th class="d-none d-sm-table-cell method">Method</th>
+									<th class="d-none d-sm-table-cell account">Account</th>
+									<th class="amount">Amount</th>
+									<th class="d-none d-sm-table-cell check">Del</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -83,7 +83,7 @@
 											{{ inc_form.amount|add_class:"form-control" }}
 										</div>
 									</td>
-									<td class="align-middle d-none d-sm-table-cell"><p class="">{{ inc_form.DELETE }}</p></td>
+									<td class="align-middle d-none d-sm-table-cell">{{ inc_form.DELETE }}</td>
 								</tr>
 									{% for hidden_field in inc_form.hidden_fields %}
 										{{ hidden_field }}
@@ -141,18 +141,18 @@
 			<div class="row pb-4">
 				<div class="col-12">
 					<div class="table-responsive">
-						<table class="table table-sm">
+						<table class="table table-sm my-table">
 							<thead>
 								<tr>
-									<th>Fin</th>
-									<th class="d-none d-sm-table-cell">？</th>
-									<th>Name</th>
-									<th class="d-none d-sm-table-cell">Pay Date</th>
-									<th class="d-none d-sm-table-cell">Period Date</th>
-									<th class="d-none d-sm-table-cell">Method</th>
-									<th class="d-none d-sm-table-cell">Account</th>
-									<th>Amount</th>
-									<th class="d-none d-sm-table-cell">Del</th>
+									<th class="check">Fin</th>
+									<th class="d-none d-sm-table-cell check">？</th>
+									<th class="name">Name</th>
+									<th class="d-none d-sm-table-cell date">Pay Date</th>
+									<th class="d-none d-sm-table-cell date">Period Date</th>
+									<th class="d-none d-sm-table-cell method">Method</th>
+									<th class="d-none d-sm-table-cell account">Account</th>
+									<th class="amount">Amount</th>
+									<th class="d-none d-sm-table-cell check">Del</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -240,11 +240,11 @@
 			<div class="row">
 				<div class="col-12">
 					<div class="table-responsive">
-						<table class="table table-sm">
+						<table class="table table-sm my-table">
 							<thead>
 								<tr>
-									<th>Name</th>
-									<th>Amount</th>
+									<th class="account">Name</th>
+									<th class="amount">Amount</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -271,11 +271,11 @@
 				<div class="row">
 					<div class="col-12">
 						<div class="table-responsive">
-							<table class="table table-sm">
+							<table class="table table-sm my-table">
 								<thead>
 									<tr>
-										<th>Name</th>
-										<th>Amount</th>
+										<th class="name">Name</th>
+										<th class="amount">Amount</th>
 									</tr>
 								</thead>
 								<tbody>
