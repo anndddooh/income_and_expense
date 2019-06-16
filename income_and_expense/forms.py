@@ -49,7 +49,7 @@ IncomeFormSet = forms.modelformset_factory(
 )
 
 ExpenseFormSet = forms.modelformset_factory(
-    Expense, form=ExpenseForm, can_delete=True, extra=1
+    Expense, form=ExpenseForm, can_delete=True, extra=3
 )
 
 AccountBalanceFormSet = forms.modelformset_factory(
