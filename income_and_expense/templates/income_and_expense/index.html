@@ -229,43 +229,12 @@
 					{% csrf_token %}
 				</div>      
 			</div>
-	</form>
-	<div class="row pb-4">
-		<div class="col-md-6 col-12">
-			<div class="row pb-2">
-				<div class="col-12">
-					<h3 class="d-inline-block align-middle m-auto">Account require</h3>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-12">
-					<div class="table-responsive">
-						<table class="table table-sm my-table">
-							<thead>
-								<tr>
-									<th class="account">Name</th>
-									<th class="amount">Amount</th>
-								</tr>
-							</thead>
-							<tbody>
-								{% for account_require in account_requires %}
-								<tr>
-									<td class="align-middle">{{ account_require.account }}</td>
-									<td class="align-middle">{{ account_require.require }}</td>
-								</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-6 col-12">
-			<form action="{% url 'income_and_expense:modify_balance' this_year this_mon %}" method="post">		
+		</form>
+		<div class="row pb-4">
+			<div class="col-md-6 col-12">
 				<div class="row pb-2">
 					<div class="col-12">
-						<h3 class="d-inline-block align-middle m-auto">Account balance</h3>
-						<input type="submit" class="btn btn-light btn-sm" value="Update">
+						<h3 class="d-inline-block align-middle m-auto">Account require</h3>
 					</div>
 				</div>
 				<div class="row">
@@ -274,74 +243,111 @@
 							<table class="table table-sm my-table">
 								<thead>
 									<tr>
-										<th class="name">Name</th>
+										<th class="account">Name</th>
 										<th class="amount">Amount</th>
 									</tr>
 								</thead>
 								<tbody>
-									{% for account_balance_form in account_balance_forms %}
+									{% for account_require in account_requires %}
 									<tr>
-										<td class="align-middle">
-											{% for account_balance in account_balances %}
-												{% ifequal account_balance.account.id account_balance_form.id.value %}
-													{{ account_balance.account }}
-												{% endifequal %}
-											{% endfor %}
-										</td>
-										<td class="align-middle">
-											<div class="input-group mr-sm-2">
-												<div class="input-group-prepend">
-													<div class="input-group-text">¥</div>
-												</div>
-												{{ account_balance_form.balance|add_class:"form-control" }}
-											</div>
-										</td>
+										<td class="align-middle">{{ account_require.account }}</td>
+										<td class="align-middle">{{ account_require.require }}</td>
 									</tr>
-										{% for hidden_field in account_balance_form.hidden_fields %}
-											{{ hidden_field }}
-										{% endfor %}
 									{% endfor %}
-									<tr>
-										<td class="align-middle">Balance(real)</td>
-										<td class="align-middle">
-											<div class="input-group">
-												<div class="input-group-prepend">
-													<div class="input-group-text">¥</div>
-												</div>
-												<input class="form-control" type="text" placeholder="{{ account_balance_sum }}" readonly>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="align-middle">Balance(db)</td>
-										<td class="align-middle">
-											<div class="input-group">
-												<div class="input-group-prepend">
-													<div class="input-group-text">¥</div>
-												</div>
-												<input class="form-control" type="text" placeholder="{{ balance_on_db }}" readonly>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="align-middle">Difference</td>
-										<td class="align-middle">
-											<div class="input-group">
-												<div class="input-group-prepend">
-													<div class="input-group-text">¥</div>
-												</div>
-												<input class="form-control" type="text" placeholder="{{ balance_diff }}" readonly>
-											</div>
-										</td>
-									</tr>
 								</tbody>
 							</table>
-							{{ account_balance_forms.management_form }}
-							{% csrf_token %}
 						</div>
 					</div>
 				</div>
-			</form>
+			</div>
+			<div class="col-md-6 col-12">
+				<form action="{% url 'income_and_expense:modify_balance' this_year this_mon %}" method="post">		
+					<div class="row pb-2">
+						<div class="col-12">
+							<h3 class="d-inline-block align-middle m-auto">Account balance</h3>
+							<input type="submit" class="btn btn-light btn-sm" value="Update">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12">
+							<div class="table-responsive">
+								<table class="table table-sm my-table">
+									<thead>
+										<tr>
+											<th class="name">Name</th>
+											<th class="amount">Amount</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for account_balance_form in account_balance_forms %}
+										<tr>
+											<td class="align-middle">
+												{% for account_balance in account_balances %}
+													{% ifequal account_balance.account.id account_balance_form.id.value %}
+														{{ account_balance.account }}
+													{% endifequal %}
+												{% endfor %}
+											</td>
+											<td class="align-middle">
+												<div class="input-group mr-sm-2">
+													<div class="input-group-prepend">
+														<div class="input-group-text">¥</div>
+													</div>
+													{{ account_balance_form.balance|add_class:"form-control" }}
+												</div>
+											</td>
+										</tr>
+											{% for hidden_field in account_balance_form.hidden_fields %}
+												{{ hidden_field }}
+											{% endfor %}
+										{% endfor %}
+										<tr>
+											<td class="align-middle">Balance(real)</td>
+											<td class="align-middle">
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<div class="input-group-text">¥</div>
+													</div>
+													<input class="form-control" type="text" placeholder="{{ account_balance_sum }}" readonly>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="align-middle">Balance(db)</td>
+											<td class="align-middle">
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<div class="input-group-text">¥</div>
+													</div>
+													<input class="form-control" type="text" placeholder="{{ balance_on_db }}" readonly>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="align-middle">Difference</td>
+											<td class="align-middle">
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<div class="input-group-text">¥</div>
+													</div>
+													<input class="form-control" type="text" placeholder="{{ balance_diff }}" readonly>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								{{ account_balance_forms.management_form }}
+								{% csrf_token %}
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="row pb-4">
+			<div class="col-4 offset-4 d-inline-block text-center">
+				<input type="button" onclick="location.href='{% url 'accounts:logout' %}'" value="Logout" class="btn btn-light btn-block">
+			</div>
 		</div>
 	</div>
 </body>

@@ -116,5 +116,7 @@ STATICFILES_DIRS = (
 )
 
 
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'income_and_expense/index'
+LOGIN_URL = '/accounts/login'
+LOGIN_REDIRECT_URL = '/income_and_expense'
+
+LOGOUT_REDIRECT_URL = '/income_and_expense'
