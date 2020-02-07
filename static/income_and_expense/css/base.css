@@ -1,0 +1,28 @@
+nav {
+  background-color: #26A69A; }
+
+thead {
+  background-color: #26A69A;
+  color: white; }
+
+th {
+  font-weight: normal; }
+
+.add_button {
+  background-color: #FFCC80;
+  color: white;
+  border: none; }
+
+.modal-footer .close_button {
+  background-color: #9575CD;
+  color: white;
+  border: none; }
+.modal-footer .update_button {
+  background-color: #FFCC80;
+  color: white;
+  border: none; }
+
+input:read-only {
+  background-color: white; }
+
+/*# sourceMappingURL=base.css.map */

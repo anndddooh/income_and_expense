@@ -1,0 +1,40 @@
+{% load bootstrap4 %}
+{% load static %}
+{% load widget_tweaks %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'income_and_expense/css/modal-form.css' %}">
+<script src="{% static 'income_and_expense/js/modal-form.js' %}"></script>
+
+<form method="post" action="">
+    {% csrf_token %}
+
+    <div class="modal-header">
+        <h5 class="modal-title">収入追加</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% if field.errors %}
+                    {% render_field field class="form-control is-invalid" placeholder=field.label %}
+                {% else %}
+                    {% render_field field class="form-control is-valid" placeholder=field.label %}
+                {% endif %}
+                <div class="{% if field.errors %} invalid invalid-feedback{% endif %}">
+                    {% for error in field.errors %}
+                    <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn close_button" data-dismiss="modal">閉じる</button>
+        <button type="button" class="submit-btn btn update_button">追加</button>
+    </div>
+</form>

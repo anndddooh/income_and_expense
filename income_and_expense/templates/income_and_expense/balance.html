@@ -1,0 +1,48 @@
+{% extends 'income_and_expense/base.html' %}
+
+{% load static %}
+
+{% block main %}
+	<div class="row pt-4 pb-4 justify-content-center">
+		<div class="col-md-6">
+			<div class="table-responsive">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th class="text-nowrap">口座名</th>
+							<th class="text-nowrap">残高</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for account in accounts %}
+							<tr class="update-balance" data-url="{% url 'income_and_expense:update_balance' this_year this_mon account.pk %}">
+								<td class="align-middle">{{ account }}</td>
+								<td class="align-middle">¥ {{ account.balance }}</td>
+							</tr>
+						{% endfor %}
+						<tr>
+							<td class="align-middle text-nowrap">残高（現実）</td>
+							<td class="align-middle text-nowrap">¥ {{ balance_sum }}</td>
+						</tr>
+						<tr>
+							<td class="align-middle text-nowrap">残高（DB上）</td>
+							<td class="align-middle text-nowrap">¥ {{ balance_on_db }}</td>
+						</tr>
+						<tr>
+							<td class="align-middle text-nowrap">差分</td>
+							<td class="align-middle text-nowrap">¥ {{ balance_diff }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+			</div>
+		</div>
+	</div>
+
+	<script src="{% static 'income_and_expense/js/balance.js' %}"></script>
+{% endblock %}
