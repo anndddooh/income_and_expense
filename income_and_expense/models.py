@@ -47,17 +47,13 @@ class Method(models.Model):
 class Expense(models.Model):
     name = models.CharField(max_length=50)
     pay_date = models.DateField('payment date')
-    period_date = models.DateField('period date', null=True)
     method = models.ForeignKey(Method, on_delete=models.PROTECT)
     amount = models.PositiveIntegerField()
     undecided = models.BooleanField()
     done = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = (
-            ('name', 'pay_date'),
-            ('name', 'period_date')
-        )
+        unique_together = ('name', 'pay_date')
 
     def __str__(self):
         return self.name
@@ -177,22 +173,3 @@ class DefaultIncomeMonth(models.Model):
 
     def def_inc_name(self):
         return self.def_inc
-
-
-class Settlement(models.Model):
-    year = models.PositiveIntegerField()
-    month = models.PositiveIntegerField(validators=[
-        validators.MinValueValidator(1),
-        validators.MaxValueValidator(12)
-    ])
-    balance = models.IntegerField()
-
-    class Meta:
-        unique_together = ('year', 'month')
-
-    def __str__(self):
-        return "{0}({1}/{2})".format(self.balance, self.year, self.month)
-
-    def formed_balance(self):
-        return "¥{:,}".format(self.balance)
-    formed_balance.short_description = 'balance'

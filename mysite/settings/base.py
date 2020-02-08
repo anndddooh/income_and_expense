@@ -32,9 +32,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'widget_tweaks',
+    'widget_tweaks', # テンプレートのadd_class等を行うために必要
     'bootstrap4',
-    'bootstrap_datepicker_plus',
+    'bootstrap_modal_forms',
     'income_and_expense.apps.IncomeAndExpenseConfig',
     'accounts.apps.AccountsConfig',
 ]

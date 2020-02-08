@@ -1,0 +1,96 @@
+{% extends 'income_and_expense/base.html' %}
+
+{% load static %}
+
+{% block main %}
+	<div class="row pt-4 justify-content-center">
+		<div class="col text-center">
+			<button class="btn add_button" id="create-inc" type="button" name="button">
+				<span><i class="fas fa-plus	mr-2"></i>収入追加</span>
+			</button>
+		</div>
+	</div>
+	<div class="row pt-4 pb-4 justify-content-center">
+		<div class="col-lg-10">
+			<div class="table-responsive">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th class="text-nowrap">収入名</th>
+							<th class="text-nowrap">完了</th>
+							<th class="text-nowrap">未確定</th>
+							<th class="text-nowrap">支払日</th>
+							<th class="text-nowrap">支払方法</th>
+							<th class="text-nowrap">口座名</th>
+							<th class="text-nowrap">金額</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for inc in incs %}
+							<tr>
+								<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.name }}</td>
+								<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.done }}</td>
+								<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.undecided }}</td>
+								<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.pay_date }}</td>
+								<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.method }}</td>
+								<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.method.account }}</td>
+								<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">¥ {{ inc.amount }}</td>
+								<td class="align-middle text-nowrap">
+									<button type="button" class="delete-inc btn btn-sm btn-danger" data-url="{% url 'income_and_expense:delete_inc' this_year this_mon inc.pk %}">
+										<span><i class="fas fa-trash"></i></span>
+									</button>
+								</td>
+							</tr>
+						{% endfor %}
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td class="align-middle text-nowrap">先月の残高</td>
+							<td class="align-middle text-nowrap">¥ {{ last_mon_balance }}</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td class="align-middle text-nowrap">合計</td>
+							<td class="align-middle text-nowrap">¥ {{ inc_sum }}</td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$("#nav-item-income").addClass("active");
+
+			$("#create-inc").modalForm({
+				formURL: "{% url 'income_and_expense:create_inc' this_year this_mon %}"
+			});
+
+			$(".delete-inc").each(function () {
+				$(this).modalForm({
+					formURL: $(this).data('url')
+				});
+			})
+
+			$(".update-inc").on('click', function () {
+				$(this).modalForm({ formURL: $(this).data('url') });
+			});
+		});
+	</script>
+{% endblock %}

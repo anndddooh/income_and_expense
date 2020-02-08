@@ -46,7 +46,7 @@ class MethodAdmin(admin.ModelAdmin):
 class ExpenseAdmin(admin.ModelAdmin):
     list_display = (
         'name', 'done', 'undecided', 'formed_amount',
-        'method', 'account_info', 'pay_date', 'period_date'
+        'method', 'account_info', 'pay_date'
     )
     list_filter = ('done', 'method', 'undecided')
     actions = [unmark_undecided, mark_undecided, mark_done, unmark_done]
@@ -64,7 +64,7 @@ class IncomeAdmin(admin.ModelAdmin):
 class DefaultExpenseAdmin(admin.ModelAdmin):
     list_display = (
         'name', 'undecided', 'formed_amount',
-        'method', 'account_info', 'pay_day', 'period_day'
+        'method', 'account_info', 'pay_day'
     )
     list_filter = ('method', 'undecided')
     inlines = [DefaultExpenseMonthInline]
@@ -89,11 +89,6 @@ class DefaultIncomeMonthAdmin(admin.ModelAdmin):
     list_filter = ('def_inc', 'month')
 
 
-class SettlementAdmin(admin.ModelAdmin):
-    list_display = ('year', 'month', 'formed_balance')
-    list_filter = ('year', 'month')
-
-
 admin.site.register(Bank)
 admin.site.register(User)
 admin.site.register(Account, AccountAdmin)
@@ -104,4 +99,3 @@ admin.site.register(DefaultExpense, DefaultExpenseAdmin)
 admin.site.register(DefaultIncome, DefaultIncomeAdmin)
 admin.site.register(DefaultExpenseMonth, DefaultExpenseMonthAdmin)
 admin.site.register(DefaultIncomeMonth, DefaultIncomeMonthAdmin)
-admin.site.register(Settlement, SettlementAdmin)

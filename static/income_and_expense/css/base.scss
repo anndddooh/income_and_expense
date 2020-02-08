@@ -1,0 +1,39 @@
+$color_primary_1: #9575CD;
+$color_primary_2: #FFCC80;
+$color_secondary: #26A69A;
+
+nav {
+    background-color: $color_secondary;
+}
+
+thead {
+    background-color: $color_secondary;
+    color: white;
+}
+
+th {
+    font-weight: normal;
+}
+
+.add_button {
+    background-color: $color_primary_2;
+    color: white;
+    border: none;
+}
+
+.modal-footer {
+    .close_button {
+        background-color: $color_primary_1;
+        color: white;
+        border: none;
+    }
+    .update_button {
+        background-color: $color_primary_2;
+        color: white;
+        border: none;
+    }
+}
+
+input:read-only {
+    background-color: white;
+}

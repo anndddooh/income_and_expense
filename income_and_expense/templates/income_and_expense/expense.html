@@ -1,0 +1,87 @@
+{% extends 'income_and_expense/base.html' %}
+
+{% load static %}
+
+{% block main %}
+	<div class="row pt-4 justify-content-center">
+		<div class="col text-center">
+			<button class="btn add_button" id="create-exp" type="button" name="button">
+				<span><i class="fas fa-plus	mr-2"></i>支出追加</span>
+			</button>
+		</div>
+	</div>
+	<div class="row pt-4 pb-4 justify-content-center">
+		<div class="col-lg-10">
+			<div class="table-responsive">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th class="text-nowrap">支出名</th>
+							<th class="text-nowrap">完了</th>
+							<th class="text-nowrap">未確定</th>
+							<th class="text-nowrap">支払日</th>
+							<th class="text-nowrap">支払方法</th>
+							<th class="text-nowrap">口座名</th>
+							<th class="text-nowrap">金額</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for exp in exps %}
+							<tr>
+								<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.name }}</td>
+								<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.done }}</td>
+								<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.undecided }}</td>
+								<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.pay_date }}</td>
+								<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.method }}</td>
+								<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.method.account }}</td>
+								<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">¥ {{ exp.amount }}</td>
+								<td class="align-middle text-nowrap">
+									<button type="button" class="delete-exp btn btn-sm btn-danger" data-url="{% url 'income_and_expense:delete_exp' this_year this_mon exp.pk %}">
+										<span><i class="fas fa-trash"></i></span>
+									</button>
+								</td>
+							</tr>
+						{% endfor %}
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td class="align-middle text-nowrap">合計</td>
+							<td class="align-middle text-nowrap">¥ {{ exp_sum }}</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td class="align-middle text-nowrap">残高</td>
+							<td class="align-middle text-nowrap">¥ {{ balance }}</td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+			</div>
+		</div>
+	</div>
+
+	<script src="{% static 'income_and_expense/js/expense.js' %}"></script>
+	
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$("#create-exp").modalForm({
+				formURL: "{% url 'income_and_expense:create_exp' this_year this_mon %}"
+			});
+		});
+	</script>
+{% endblock %}
