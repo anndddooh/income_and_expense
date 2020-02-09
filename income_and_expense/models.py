@@ -122,13 +122,6 @@ class DefaultExpense(models.Model):
         validators.MinValueValidator(1),
         validators.MaxValueValidator(28)
     ])
-    period_day = models.PositiveIntegerField(
-        validators=[
-            validators.MinValueValidator(1),
-            validators.MaxValueValidator(28)
-        ],
-        null=True
-    )
     method = models.ForeignKey(Method, on_delete=models.PROTECT)
     amount = models.PositiveIntegerField()
     undecided = models.BooleanField()
