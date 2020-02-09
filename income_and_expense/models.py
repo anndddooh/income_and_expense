@@ -1,5 +1,6 @@
 from django.db import models
 from django.core import validators
+from income_and_expense.const import const_data
 
 # Create your models here.
 
@@ -7,12 +8,20 @@ from django.core import validators
 class Bank(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
+    class Meta:
+        verbose_name = const_data.const.SHOWN_NAME_BANK
+        verbose_name_plural = const_data.const.SHOWN_NAME_BANK
+
     def __str__(self):
         return self.name
 
 
 class User(models.Model):
     name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        verbose_name = const_data.const.SHOWN_NAME_USER
+        verbose_name_plural = const_data.const.SHOWN_NAME_USER
 
     def __str__(self):
         return self.name
@@ -24,16 +33,27 @@ class Account(models.Model):
     balance = models.PositiveIntegerField()
 
     class Meta:
+        verbose_name = const_data.const.SHOWN_NAME_ACCOUNT
+        verbose_name_plural = const_data.const.SHOWN_NAME_ACCOUNT
+
         # 他レコードで同じ'bank'と'user'の組み合わせを許さない
         unique_together = ('bank', 'user')
 
     def __str__(self):
         return "{0}{1}".format(self.user, self.bank)
-    
+
+    def formed_balance(self):
+        return "¥{:,}".format(self.balance)
+    formed_balance.short_description = const_data.const.SHOWN_NAME_BALANCE
+
 
 class Method(models.Model):
     name = models.CharField(max_length=50)
     account = models.ForeignKey(Account, on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name = const_data.const.SHOWN_NAME_METHOD
+        verbose_name_plural = const_data.const.SHOWN_NAME_METHOD
 
     def __str__(self):
         my_str = self.name
@@ -53,6 +73,9 @@ class Expense(models.Model):
     done = models.BooleanField(default=False)
 
     class Meta:
+        verbose_name = const_data.const.SHOWN_NAME_EXPENSE
+        verbose_name_plural = const_data.const.SHOWN_NAME_EXPENSE
+
         unique_together = ('name', 'pay_date')
 
     def __str__(self):
@@ -60,11 +83,11 @@ class Expense(models.Model):
 
     def account_info(self):
         return self.method.account
-    account_info.short_description = 'account'
+    account_info.short_description = const_data.const.SHOWN_NAME_ACCOUNT
 
     def formed_amount(self):
         return "¥{:,}".format(self.amount)
-    formed_amount.short_description = 'amount'
+    formed_amount.short_description = const_data.const.SHOWN_NAME_AMOUNT
 
 
 class Income(models.Model):
@@ -76,6 +99,9 @@ class Income(models.Model):
     done = models.BooleanField(default=False)
 
     class Meta:
+        verbose_name = const_data.const.SHOWN_NAME_INCOME
+        verbose_name_plural = const_data.const.SHOWN_NAME_INCOME
+ 
         unique_together = ('name', 'pay_date')
 
     def __str__(self):
@@ -83,11 +109,11 @@ class Income(models.Model):
 
     def account_info(self):
         return self.method.account
-    account_info.short_description = 'account'
+    account_info.short_description = const_data.const.SHOWN_NAME_ACCOUNT
 
     def formed_amount(self):
         return "¥{:,}".format(self.amount)
-    formed_amount.short_description = 'amount'
+    formed_amount.short_description = const_data.const.SHOWN_NAME_AMOUNT
 
 
 class DefaultExpense(models.Model):
@@ -107,16 +133,26 @@ class DefaultExpense(models.Model):
     amount = models.PositiveIntegerField()
     undecided = models.BooleanField()
 
+    class Meta:
+        verbose_name = (
+            const_data.const.SHOWN_NAME_EXPENSE +
+            const_data.const.SHOWN_NAME_DEFAULT
+        )
+        verbose_name_plural = (
+            const_data.const.SHOWN_NAME_EXPENSE +
+            const_data.const.SHOWN_NAME_DEFAULT
+        ) 
+
     def __str__(self):
         return self.name
 
     def account_info(self):
         return self.method.account
-    account_info.short_description = 'account'
+    account_info.short_description = const_data.const.SHOWN_NAME_ACCOUNT
 
     def formed_amount(self):
         return "¥{:,}".format(self.amount)
-    formed_amount.short_description = 'amount'
+    formed_amount.short_description = const_data.const.SHOWN_NAME_AMOUNT
 
 
 class DefaultIncome(models.Model):
@@ -129,16 +165,26 @@ class DefaultIncome(models.Model):
     amount = models.PositiveIntegerField()
     undecided = models.BooleanField()
 
+    class Meta:
+        verbose_name = (
+            const_data.const.SHOWN_NAME_INCOME +
+            const_data.const.SHOWN_NAME_DEFAULT
+        )
+        verbose_name_plural = (
+            const_data.const.SHOWN_NAME_INCOME +
+            const_data.const.SHOWN_NAME_DEFAULT
+        )
+
     def __str__(self):
         return self.name
 
     def account_info(self):
         return self.method.account
-    account_info.short_description = 'account'
+    account_info.short_description = const_data.const.SHOWN_NAME_ACCOUNT
 
     def formed_amount(self):
         return "¥{:,}".format(self.amount)
-    formed_amount.short_description = 'amount'
+    formed_amount.short_description = const_data.const.SHOWN_NAME_AMOUNT
 
 
 class DefaultExpenseMonth(models.Model):
@@ -149,6 +195,17 @@ class DefaultExpenseMonth(models.Model):
     def_exp = models.ForeignKey(DefaultExpense, on_delete=models.CASCADE)
 
     class Meta:
+        verbose_name = (
+            const_data.const.SHOWN_NAME_EXPENSE +
+            const_data.const.SHOWN_NAME_DEFAULT +
+            const_data.const.SHOWN_NAME_APPLY_MONTH
+        )
+        verbose_name_plural = (
+            const_data.const.SHOWN_NAME_EXPENSE +
+            const_data.const.SHOWN_NAME_DEFAULT +
+            const_data.const.SHOWN_NAME_APPLY_MONTH
+        )
+
         unique_together = ('month', 'def_exp')
 
     def __str__(self):
@@ -156,6 +213,7 @@ class DefaultExpenseMonth(models.Model):
 
     def def_exp_name(self):
         return self.def_exp
+    def_exp_name.short_description = const_data.const.SHOWN_NAME_EXPENSE
 
 
 class DefaultIncomeMonth(models.Model):
@@ -166,6 +224,17 @@ class DefaultIncomeMonth(models.Model):
     def_inc = models.ForeignKey(DefaultIncome, on_delete=models.CASCADE)
 
     class Meta:
+        verbose_name = (
+            const_data.const.SHOWN_NAME_INCOME +
+            const_data.const.SHOWN_NAME_DEFAULT +
+            const_data.const.SHOWN_NAME_APPLY_MONTH
+        )
+        verbose_name_plural = (
+            const_data.const.SHOWN_NAME_INCOME +
+            const_data.const.SHOWN_NAME_DEFAULT +
+            const_data.const.SHOWN_NAME_APPLY_MONTH
+        )
+
         unique_together = ('month', 'def_inc')
 
     def __str__(self):
@@ -173,3 +242,5 @@ class DefaultIncomeMonth(models.Model):
 
     def def_inc_name(self):
         return self.def_inc
+
+    def_inc_name.short_description = const_data.const.SHOWN_NAME_INCOME
