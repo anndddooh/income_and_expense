@@ -35,8 +35,9 @@ class IncomeForm(BSModalForm):
 class BalanceForm(BSModalForm):
     class Meta:
         model = Account
-        fields = ['bank', 'balance']
+        fields = ['bank', 'user', 'balance']
         labels = {
             'bank': const_data.const.SHOWN_NAME_ACCOUNT,
+            'user': const_data.const.SHOWN_NAME_USER,
             'balance': const_data.const.SHOWN_NAME_BALANCE
         }
