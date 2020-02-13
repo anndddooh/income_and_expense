@@ -8,7 +8,7 @@ thead {
 th {
   font-weight: normal; }
 
-.add_button {
+#create-button {
   background-color: #FFCC80;
   color: white;
   border: none; }

@@ -28,10 +28,14 @@
 							<td class="align-middle text-nowrap">残高（DB上）</td>
 							<td class="align-middle text-nowrap">¥ {{ balance_on_db }}</td>
 						</tr>
-						<tr>
-							<td class="align-middle text-nowrap">差分</td>
-							<td class="align-middle text-nowrap">¥ {{ balance_diff }}</td>
-						</tr>
+						{% if balance_diff != 0 %}
+							<tr class="table-danger">
+						{% else %}
+							<tr>
+						{% endif %}
+								<td class="align-middle text-nowrap">差分</td>
+								<td class="align-middle text-nowrap">¥ {{ balance_diff }}</td>
+							</tr>
 					</tbody>
 				</table>
 			</div>

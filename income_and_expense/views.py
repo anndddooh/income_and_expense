@@ -500,14 +500,32 @@ def account_require(request, year, month):
     # 各口座の必要金額を取得
     accounts = Account.objects.all() # 全口座
     account_requires = [] # 各口座の必要金額
+    require_sum = 0 # 必要金額の合計値
+    insufficient_sum = 0 # 不足額の合計値
+    is_insufficient = False # 口座残高が不足しているかどうか
+    insufficient_amount = 0 # 各口座の不足額
     for account in accounts:
         require = this_month_exps.filter(
             method__account=account, done=False
         ).aggregate(Sum('amount'))['amount__sum']
         if require is None:
             require = 0
+
+        require_sum += require
+
+        if account.balance < require:
+            is_insufficient = True
+            insufficient_amount = require - account.balance
+        else:
+            is_insufficient = False
+            insufficient_amount = 0
+
+        insufficient_sum += insufficient_amount
+
         account_require = {
-            'account': account, 'require': "¥{:,}".format(require)
+            'account': account, 'require': "¥{:,}".format(require),
+            'is_insufficient': is_insufficient,
+            'insufficient_amount': "¥{:,}".format(insufficient_amount)
         }
         account_requires.append(account_require)
 
@@ -515,4 +533,6 @@ def account_require(request, year, month):
         'this_year': year,
         'this_mon': month,
         'account_requires': account_requires,
+        'require_sum': "¥{:,}".format(require_sum),
+        'insufficient_sum': "¥{:,}".format(insufficient_sum),
     })
