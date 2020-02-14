@@ -7,17 +7,29 @@
 				<table class="table table-hover my-table">
 					<thead>
 						<tr>
-							<th class="account">口座名</th>
-							<th class="amount">必要額</th>
+							<th class="text-nowrap">口座名</th>
+							<th class="text-nowrap">必要額</th>
+							<th class="text-nowrap">不足額</th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for account_require in account_requires %}
-						<tr>
-							<td class="align-middle">{{ account_require.account }}</td>
-							<td class="align-middle">{{ account_require.require }}</td>
-						</tr>
+							{% if account_require.is_insufficient == True %}
+								<tr class="table-danger">
+							{% else %}
+								<tr>
+							{% endif %}
+									<td class="align-middle">{{ account_require.account }}</td>
+									<td class="align-middle">{{ account_require.require }}</td>
+									<td class="align-middle">{{ account_require.insufficient_amount }}</td>
+								</tr>
 						{% endfor %}
+						<tr>
+							<td class="align-middle">合計</td>
+							<td class="align-middle">{{ require_sum }}</td>
+							<td class="align-middle">{{ insufficient_sum }}</td>
+							<td></td>
+						</tr>
 					</tbody>
 				</table>
 			</div>
