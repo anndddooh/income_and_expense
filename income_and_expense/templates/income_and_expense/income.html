@@ -82,22 +82,13 @@
 			</div>
 		</div>
 	</div>
+
+	<script src="{% static 'income_and_expense/js/income.js' %}"></script>
+
 	<script type="text/javascript">
 		$(document).ready(function () {
-			$("#nav-item-income").addClass("active");
-
 			$("#create-button").modalForm({
 				formURL: "{% url 'income_and_expense:create_inc' this_year this_mon %}"
-			});
-
-			$(".delete-button").each(function () {
-				$(this).modalForm({
-					formURL: $(this).data('url')
-				});
-			})
-
-			$(".update-inc").on('click', function () {
-				$(this).modalForm({ formURL: $(this).data('url') });
 			});
 		});
 	</script>
