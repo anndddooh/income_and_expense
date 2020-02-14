@@ -6,6 +6,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from cerberus import Validator
 from dateutil.relativedelta import relativedelta
 from bootstrap_modal_forms.generic import (
@@ -202,6 +203,13 @@ class IncomeCreateView(BSModalCreateView):
             args=[self.kwargs['year'], self.kwargs['month']]
         )
 
+    def form_invalid(self, form):
+        messages.error(self.request, "失敗: 収入を追加できませんでした。")
+        return HttpResponseRedirect(reverse(
+            'income_and_expense:income',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        ))
+
 
 class IncomeUpdateView(BSModalUpdateView):
     model = Income
@@ -214,6 +222,13 @@ class IncomeUpdateView(BSModalUpdateView):
             'income_and_expense:income',
             args=[self.kwargs['year'], self.kwargs['month']]
         )
+
+    def form_invalid(self, form):
+        messages.error(self.request, "失敗: 収入を更新できませんでした。")
+        return HttpResponseRedirect(reverse(
+            'income_and_expense:income',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        ))
 
 
 class IncomeDeleteView(BSModalDeleteView):
@@ -240,6 +255,13 @@ class ExpenseCreateView(BSModalCreateView):
             args=[self.kwargs['year'], self.kwargs['month']]
         )
 
+    def form_invalid(self, form):
+        messages.error(self.request, "失敗: 支出を追加できませんでした。")
+        return HttpResponseRedirect(reverse(
+            'income_and_expense:expense',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        ))
+
 
 class ExpenseUpdateView(BSModalUpdateView):
     model = Expense
@@ -252,6 +274,13 @@ class ExpenseUpdateView(BSModalUpdateView):
             'income_and_expense:expense',
             args=[self.kwargs['year'], self.kwargs['month']]
         )
+
+    def form_invalid(self, form):
+        messages.error(self.request, "失敗: 支出を更新できませんでした。")
+        return HttpResponseRedirect(reverse(
+            'income_and_expense:expense',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        ))
 
 
 class ExpenseDeleteView(BSModalDeleteView):
