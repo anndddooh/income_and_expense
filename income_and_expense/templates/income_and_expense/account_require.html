@@ -1,5 +1,7 @@
 {% extends 'income_and_expense/base.html' %}
 
+{% load static %}
+
 {% block main %}
 	<div class="row pt-4">
 		<div class="col text-center">
@@ -45,4 +47,7 @@
 			</div>
 		</div>
 	</div>
+
+	<script src="{% static 'income_and_expense/js/account-require.js' %}"></script>
+
 {% endblock %}
