@@ -3,7 +3,17 @@
 {% load static %}
 
 {% block main %}
-	<div class="row pt-4 justify-content-center">
+	<div class="row pt-4">
+		<div class="col text-center">
+			<h1 class="align-middle d-inline">収入</h1>
+		</div>
+	</div>
+	<div class="row"></div>
+		<div class="col text-center">
+			<span class="align-middle text-muted">{{ this_year }}年{{ this_mon }}月</span>
+		</div>
+	</div>
+	<div class="row pt-2">
 		<div class="col text-center">
 			<button class="btn" id="create-button" type="button" name="button">
 				<span><i class="fas fa-plus	mr-2"></i>収入追加</span>
