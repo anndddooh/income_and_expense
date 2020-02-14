@@ -73,6 +73,16 @@
 			</ul>
 		</div>
 	</nav>
+	{% if messages %}
+		{% for message in messages %}
+			<div class="alert alert-success alert-dismissible fade show" role="alert">
+				{{ message }}
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+		{% endfor %}
+	{% endif %}
 	<div class="container-fluid">
 		{% block main %}
 		{% endblock %}
@@ -81,4 +91,9 @@
 
 <script type="text/javascript">
 	flatpickr.localize(flatpickr.l10ns.ja);
+
+	// メッセージを隠す
+	$(".alert").fadeTo(2000, 500).slideUp(500, function () {
+		$(".alert").slideUp(500);
+	});
 </script>
