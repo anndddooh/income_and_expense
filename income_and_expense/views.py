@@ -13,7 +13,7 @@ from bootstrap_modal_forms.generic import (
     BSModalCreateView, BSModalUpdateView, BSModalDeleteView
 )
 from .models import (
-    Expense, Income, DefaultExpenseMonth, DefaultIncomeMonth, Account
+    Expense, Income, DefaultExpenseMonth, DefaultIncomeMonth, Account, Method
 )
 from .forms import IncomeForm, ExpenseForm, BalanceForm
 
@@ -564,4 +564,59 @@ def account_require(request, year, month):
         'account_requires': account_requires,
         'require_sum': "¥{:,}".format(require_sum),
         'insufficient_sum': "¥{:,}".format(insufficient_sum),
+    })
+
+@login_required
+def method_require(request, year, month):
+    """method_requireページ用のビュー関数。
+    
+    Parameters
+    ----------
+    request : HttpRequest
+        HttpRequestオブジェクト
+    year : int
+        会計年
+    month : int
+        会計月
+    
+    Returns
+    -------
+    HttpResponse
+        HttpResponseオブジェクト
+    """
+
+    # 会計開始日と終了日を取得
+    first_date = datetime.date(year, month, 1)
+    last_date = (
+        first_date + relativedelta(months=1) - datetime.timedelta(days=1)
+    )
+
+    # 今月の支出リストを取得
+    this_month_exps = Expense.objects.filter(
+        pay_date__gte=first_date, pay_date__lte=last_date
+    )
+
+    # 支払方法別の必要金額を取得
+    methods = Method.objects.all() # 全支払方法
+    method_requires = [] # 支払方法別の必要金額
+    require_sum = 0 # 必要金額の合計値
+    for method in methods:
+        require = this_month_exps.filter(
+            method=method, done=False
+        ).aggregate(Sum('amount'))['amount__sum']
+        if require is None:
+            require = 0
+
+        require_sum += require
+
+        method_require = {
+            'method': method, 'require': "¥{:,}".format(require),
+        }
+        method_requires.append(method_require)
+
+    return render(request, 'income_and_expense/method_require.html', {
+        'this_year': year,
+        'this_mon': month,
+        'method_requires': method_requires,
+        'require_sum': "¥{:,}".format(require_sum),
     })
