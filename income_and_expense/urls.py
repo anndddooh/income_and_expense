@@ -76,5 +76,11 @@ urlpatterns = [
         '<int:year>/<int:month>/account_require',
         views.account_require,
         name='account_require'
+    ),
+    # ex: /income_and_expense/2019/3/method_require/
+    path(
+        '<int:year>/<int:month>/method_require',
+        views.method_require,
+        name='method_require'
     )
 ]
