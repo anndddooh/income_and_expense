@@ -2,16 +2,16 @@
 <head>
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width">
-	
+
 	{% load bootstrap4 %}
 	{% bootstrap_css %}
 	{% bootstrap_javascript jquery='full' %}
 	{% load static %}
 
 	<link rel="stylesheet" type="text/css" href="{% static 'income_and_expense/css/base.css' %}">
-	
+
 	<script src="https://kit.fontawesome.com/36a5fc2f82.js" crossorigin="anonymous"></script>
-	
+
 	<script src="{% static 'income_and_expense/js/jquery.selection.js' %}"></script>
 
 	<link rel="stylesheet" href="https://npmcdn.com/flatpickr/dist/flatpickr.min.css">
@@ -22,6 +22,11 @@
 	<script src="{% static 'income_and_expense/js/base.js' %}"></script>
 
 	<script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
+	<script type="text/javascript">
+		var this_year = {{ this_year }};
+		var this_mon = {{ this_mon }};
+	</script>
 
 	<title>INEX</title>
 </head>
@@ -45,7 +50,7 @@
 							<a class="dropdown-item" href="{% url 'income_and_expense:index' %}" id="nav-item-date-{{ forloop.counter }}"></a>
 						{% endfor %}
 					</div>
-				</li>		
+				</li>
 				<li class="nav-item" id="nav-item-income">
 					<a class="nav-link" href="{% url 'income_and_expense:income' this_year this_mon %}">収入</a>
 				</li>
@@ -59,10 +64,7 @@
 					<a class="nav-link" href="{% url 'income_and_expense:account_require' this_year this_mon %}">口座必要額</a>
 				</li>
 				<li class="nav-item" id="nav-item-method-require">
-					<a class="nav-link" href="#">支払別必要額</a>
-				</li>
-				<li class="nav-item" id="nav-item-done-regist">
-					<a class="nav-link" href="#">支払済一括登録</a>
+					<a class="nav-link" href="{% url 'income_and_expense:method_require' this_year this_mon %}">支払別必要額</a>
 				</li>
 				<li class="nav-item" id="nav-item-loan">
 					<a class="nav-link" href="#">ローン支払登録</a>
@@ -73,6 +75,20 @@
 			</ul>
 		</div>
 	</nav>
+	{% if messages %}
+		{% for message in messages %}
+			{% if message.tags == 'error' %}
+				<div class="alert alert-danger alert-dismissible" role="alert">
+			{% else %}
+				<div class="alert alert-{{ message.tags }} alert-dismissible fade show alert-fade" role="alert">
+			{% endif %}
+					{{ message }}
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+		{% endfor %}
+	{% endif %}
 	<div class="container-fluid">
 		{% block main %}
 		{% endblock %}
@@ -81,4 +97,9 @@
 
 <script type="text/javascript">
 	flatpickr.localize(flatpickr.l10ns.ja);
+
+	// メッセージを隠す
+	$(".alert-fade").fadeTo(2000, 500).slideUp(500, function () {
+		$(".alert-fade").slideUp(500);
+	});
 </script>

@@ -29,7 +29,7 @@ urlpatterns = [
         views.IncomeUpdateView.as_view(),
         name='update_inc'
     ),
-     # ex: /income_and_expense/2019/3/567/delete_inc/
+    # ex: /income_and_expense/2019/3/567/delete_inc/
     path(
         '<int:year>/<int:month>/<int:pk>/delete_inc',
         views.IncomeDeleteView.as_view(),
@@ -53,7 +53,7 @@ urlpatterns = [
         views.ExpenseUpdateView.as_view(),
         name='update_exp'
     ),
-     # ex: /income_and_expense/2019/3/567/delete_exp/
+    # ex: /income_and_expense/2019/3/567/delete_exp/
     path(
         '<int:year>/<int:month>/<int:pk>/delete_exp',
         views.ExpenseDeleteView.as_view(),
@@ -65,9 +65,9 @@ urlpatterns = [
         views.balance,
         name='balance'
     ),
-    # ex: /income_and_expense/2019/3/5/update_blance/
+    # ex: /income_and_expense/2019/3/5/update_balance/
     path(
-        '<int:year>/<int:month>/<int:pk>/update_blance',
+        '<int:year>/<int:month>/<int:pk>/update_balance',
         views.BalanceUpdateView.as_view(),
         name='update_balance'
     ),
@@ -76,5 +76,17 @@ urlpatterns = [
         '<int:year>/<int:month>/account_require',
         views.account_require,
         name='account_require'
+    ),
+    # ex: /income_and_expense/2019/3/method_require/
+    path(
+        '<int:year>/<int:month>/method_require',
+        views.method_require,
+        name='method_require'
+    ),
+    # ex: /income_and_expense/2019/3/2/method_done/
+    path(
+        '<int:year>/<int:month>/<int:pk>/method_done',
+        views.method_done,
+        name='method_done'
     )
 ]

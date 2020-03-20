@@ -1,26 +1,52 @@
 {% extends 'income_and_expense/base.html' %}
 
+{% load static %}
+
 {% block main %}
+	<div class="row pt-4">
+		<div class="col text-center">
+			<h1 class="align-middle d-inline">口座必要額</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col text-center">
+			<span class="align-middle text-muted">{{ this_year }}年{{ this_mon }}月</span>
+		</div>
+	</div>
 	<div class="row pt-4 pb-4 justify-content-center">
 		<div class="col-md-6">
 			<div class="table-responsive">
 				<table class="table table-hover my-table">
 					<thead>
 						<tr>
-							<th class="account">口座名</th>
-							<th class="amount">必要額</th>
+							<th class="text-nowrap">口座名</th>
+							<th class="text-nowrap">必要額</th>
+							<th class="text-nowrap">不足額</th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for account_require in account_requires %}
-						<tr>
-							<td class="align-middle">{{ account_require.account }}</td>
-							<td class="align-middle">{{ account_require.require }}</td>
-						</tr>
+							{% if account_require.is_insufficient == True %}
+								<tr class="table-danger">
+							{% else %}
+								<tr>
+							{% endif %}
+									<td class="align-middle">{{ account_require.account }}</td>
+									<td class="align-middle">{{ account_require.require }}</td>
+									<td class="align-middle">{{ account_require.insufficient_amount }}</td>
+								</tr>
 						{% endfor %}
+						<tr>
+							<td class="align-middle">合計</td>
+							<td class="align-middle">{{ require_sum }}</td>
+							<td class="align-middle">{{ insufficient_sum }}</td>
+						</tr>
 					</tbody>
 				</table>
 			</div>
 		</div>
 	</div>
+
+	<script src="{% static 'income_and_expense/js/account-require.js' %}"></script>
+
 {% endblock %}

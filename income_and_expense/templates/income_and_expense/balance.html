@@ -3,6 +3,16 @@
 {% load static %}
 
 {% block main %}
+	<div class="row pt-4">
+		<div class="col text-center">
+			<h1 class="align-middle d-inline">口座残高</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col text-center">
+			<span class="align-middle text-muted">{{ this_year }}年{{ this_mon }}月</span>
+		</div>
+	</div>
 	<div class="row pt-4 pb-4 justify-content-center">
 		<div class="col-md-6">
 			<div class="table-responsive">
@@ -28,10 +38,14 @@
 							<td class="align-middle text-nowrap">残高（DB上）</td>
 							<td class="align-middle text-nowrap">¥ {{ balance_on_db }}</td>
 						</tr>
-						<tr>
-							<td class="align-middle text-nowrap">差分</td>
-							<td class="align-middle text-nowrap">¥ {{ balance_diff }}</td>
-						</tr>
+						{% if balance_diff != 0 %}
+							<tr class="table-danger">
+						{% else %}
+							<tr>
+						{% endif %}
+								<td class="align-middle text-nowrap">差分</td>
+								<td class="align-middle text-nowrap">¥ {{ balance_diff }}</td>
+							</tr>
 					</tbody>
 				</table>
 			</div>

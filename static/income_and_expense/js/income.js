@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $("#nav-item-expense").addClass("active");
+	$("#nav-item-income").addClass("active");
 
     $(".delete-button").each(function () {
         $(this).modalForm({
@@ -7,7 +7,7 @@ $(document).ready(function () {
         });
     })
 
-    $(".update-exp").on('click', function () {
+    $(".update-inc").on('click', function () {
         $(this).modalForm({
             formURL: $(this).data('url')
         });

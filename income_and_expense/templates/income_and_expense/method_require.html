@@ -1,0 +1,79 @@
+{% extends 'income_and_expense/base.html' %}
+
+{% load static %}
+
+{% block main %}
+	<div class="row pt-4">
+		<div class="col text-center">
+			<h1 class="align-middle d-inline">支払別必要額</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col text-center">
+			<span class="align-middle text-muted">{{ this_year }}年{{ this_mon }}月</span>
+		</div>
+	</div>
+	<div class="row pt-4 pb-4 justify-content-center">
+		<div class="col-md-6">
+			<div class="table-responsive">
+				<table class="table table-hover my-table">
+					<thead>
+						<tr>
+							<th class="text-nowrap">支払方法</th>
+							<th class="text-nowrap">必要額</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for method_require in method_requires %}
+							{% if method_require.is_insufficient == True %}
+								<tr class="table-danger">
+							{% else %}
+								<tr>
+							{% endif %}
+									<td class="align-middle">{{ method_require.method }}</td>
+									<td class="align-middle">{{ method_require.require }}</td>
+									<td class="align-middle text-nowrap">
+										<button type="button" class="done-button btn btn-sm" data-toggle="modal" data-target="#done-modal"
+										  data-url="{% url 'income_and_expense:method_done' this_year this_mon method_require.method.pk %}"
+										  data-name="{{ method_require.method.name }}">
+											<span><i class="fas fa-check-square"></i></span>
+										</button>
+									</td>
+								</tr>
+						{% endfor %}
+						<tr>
+							<td class="align-middle">合計</td>
+							<td class="align-middle">{{ require_sum }}</td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="done-modal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<form method="post" action="">
+					{% csrf_token %}
+					<div class="modal-header">
+						<h3 class="modal-title">支払済一括登録</h3>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p><strong>#</strong>を支払済一括登録してもよろしいですか？</p>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="submit-btn btn confirm_button">登録</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script src="{% static 'income_and_expense/js/method-require.js' %}"></script>
+
+{% endblock %}

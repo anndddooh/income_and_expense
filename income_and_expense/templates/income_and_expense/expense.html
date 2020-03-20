@@ -3,9 +3,19 @@
 {% load static %}
 
 {% block main %}
-	<div class="row pt-4 justify-content-center">
+	<div class="row pt-4">
 		<div class="col text-center">
-			<button class="btn add_button" id="create-exp" type="button" name="button">
+			<h1 class="align-middle d-inline">支出</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col text-center">
+			<span class="align-middle text-muted">{{ this_year }}年{{ this_mon }}月</span>
+		</div>
+	</div>
+	<div class="row pt-2">
+		<div class="col text-center">
+			<button class="btn" id="create-button" type="button" name="button">
 				<span><i class="fas fa-plus	mr-2"></i>支出追加</span>
 			</button>
 		</div>
@@ -16,9 +26,7 @@
 				<table class="table table-hover">
 					<thead>
 						<tr>
-							<th class="text-nowrap">支出名</th>
-							<th class="text-nowrap">完了</th>
-							<th class="text-nowrap">未確定</th>
+							<th class="text-nowrap">名前</th>
 							<th class="text-nowrap">支払日</th>
 							<th class="text-nowrap">支払方法</th>
 							<th class="text-nowrap">口座名</th>
@@ -28,24 +36,26 @@
 					</thead>
 					<tbody>
 						{% for exp in exps %}
-							<tr>
-								<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.name }}</td>
-								<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.done }}</td>
-								<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.undecided }}</td>
-								<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.pay_date }}</td>
-								<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.method }}</td>
-								<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.method.account }}</td>
-								<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">¥ {{ exp.amount }}</td>
-								<td class="align-middle text-nowrap">
-									<button type="button" class="delete-exp btn btn-sm btn-danger" data-url="{% url 'income_and_expense:delete_exp' this_year this_mon exp.pk %}">
-										<span><i class="fas fa-trash"></i></span>
-									</button>
-								</td>
-							</tr>
+							{% if exp.undecided == True %}
+								<tr class="table-danger">
+							{% elif exp.done == False %}
+								<tr class="table-warning">
+							{% else %}
+								<tr>
+							{% endif %}
+									<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.name }}</td>
+									<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.pay_date }}</td>
+									<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.method }}</td>
+									<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">{{ exp.method.account }}</td>
+									<td class="align-middle text-nowrap update-exp" data-url="{% url 'income_and_expense:update_exp' this_year this_mon exp.pk %}">¥ {{ exp.amount }}</td>
+									<td class="align-middle text-nowrap">
+										<button type="button" class="delete-button btn btn-sm btn-danger" data-url="{% url 'income_and_expense:delete_exp' this_year this_mon exp.pk %}">
+											<span><i class="fas fa-trash"></i></span>
+										</button>
+									</td>
+								</tr>
 						{% endfor %}
 						<tr>
-							<td></td>
-							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -56,9 +66,7 @@
 						<tr>
 							<td></td>
 							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
+								<td></td>
 							<td class="align-middle text-nowrap">残高</td>
 							<td class="align-middle text-nowrap">¥ {{ balance }}</td>
 							<td></td>
@@ -76,10 +84,10 @@
 	</div>
 
 	<script src="{% static 'income_and_expense/js/expense.js' %}"></script>
-	
+
 	<script type="text/javascript">
 		$(document).ready(function () {
-			$("#create-exp").modalForm({
+			$("#create-button").modalForm({
 				formURL: "{% url 'income_and_expense:create_exp' this_year this_mon %}"
 			});
 		});

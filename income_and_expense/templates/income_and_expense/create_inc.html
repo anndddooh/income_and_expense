@@ -3,13 +3,13 @@
 {% load widget_tweaks %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'income_and_expense/css/modal-form.css' %}">
-<script src="{% static 'income_and_expense/js/modal-form.js' %}"></script>
+<script src="{% static 'income_and_expense/js/create-modal-form.js' %}"></script>
 
 <form method="post" action="">
     {% csrf_token %}
 
     <div class="modal-header">
-        <h5 class="modal-title">収入追加</h5>
+        <h3 class="modal-title">収入追加</h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -35,6 +35,6 @@
 
     <div class="modal-footer">
         <button type="button" class="btn close_button" data-dismiss="modal">閉じる</button>
-        <button type="button" class="submit-btn btn update_button">追加</button>
+        <button type="button" class="submit-btn btn confirm_button">追加</button>
     </div>
 </form>

@@ -6,19 +6,20 @@ from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from cerberus import Validator
 from dateutil.relativedelta import relativedelta
 from bootstrap_modal_forms.generic import (
     BSModalCreateView, BSModalUpdateView, BSModalDeleteView
 )
 from .models import (
-    Expense, Income, DefaultExpenseMonth, DefaultIncomeMonth, Account
+    Expense, Income, DefaultExpenseMonth, DefaultIncomeMonth, Account, Method
 )
 from .forms import IncomeForm, ExpenseForm, BalanceForm
 
 def add_incs_from_default(year, month):
     """デフォルトの収支から収入を追加する。
-    
+
     Parameters
     ----------
     year : int
@@ -33,7 +34,7 @@ def add_incs_from_default(year, month):
         first_date + relativedelta(months=1) - datetime.timedelta(days=1)
     )
 
-    # デフォルトの収入から収入を追加    
+    # デフォルトの収入から収入を追加
     def_inc_months = DefaultIncomeMonth.objects.filter(month=month)
     this_month_incs = Income.objects.filter(
         pay_date__gte=first_date, pay_date__lte=last_date
@@ -59,7 +60,7 @@ def add_incs_from_default(year, month):
 
 def add_exps_from_default(year, month):
     """デフォルトの支出から支出を追加する。
-    
+
     Parameters
     ----------
     year : int
@@ -74,7 +75,7 @@ def add_exps_from_default(year, month):
         first_date + relativedelta(months=1) - datetime.timedelta(days=1)
     )
 
-    # デフォルトの支出から支出を追加    
+    # デフォルトの支出から支出を追加
     def_exp_months = DefaultExpenseMonth.objects.filter(month=month)
     this_month_exps = Expense.objects.filter(
         pay_date__gte=first_date, pay_date__lte=last_date
@@ -100,7 +101,7 @@ def add_exps_from_default(year, month):
 
 def get_balance_done(year, month):
     """該当月までの残高（完了分）を取得
-    
+
     Parameters
     ----------
     year : int
@@ -112,7 +113,7 @@ def get_balance_done(year, month):
     -------
     int
         該当月までの残高（完了分）
-    """ 
+    """
 
     # 会計開始日と終了日を取得
     first_date = datetime.date(year, month, 1)
@@ -128,7 +129,7 @@ def get_balance_done(year, month):
         pay_date__lte=last_date
     )
 
-    # 残高を計算    
+    # 残高を計算
     # 今月までの収入（完了分）の合計
     done_incs = incs_to_this_month.filter(done=True)
     done_inc_sums = done_incs.aggregate(Sum('amount'))
@@ -146,19 +147,19 @@ def get_balance_done(year, month):
 
 def get_balance(year, month):
     """該当月までの残高を取得
-    
+
     Parameters
     ----------
     year : int
         会計年
     month : int
         会計月
- 
+
     Returns
     -------
     int
         該当月までの残高
-    """ 
+    """
 
     # 会計開始日と終了日を取得
     first_date = datetime.date(year, month, 1)
@@ -174,7 +175,7 @@ def get_balance(year, month):
         pay_date__lte=last_date
     )
 
-    # 残高を計算    
+    # 残高を計算
     # 今月までの収入（完了分）の合計
     inc_sums = incs_to_this_month.aggregate(Sum('amount'))
     inc_sum = inc_sums['amount__sum']
@@ -202,18 +203,32 @@ class IncomeCreateView(BSModalCreateView):
             args=[self.kwargs['year'], self.kwargs['month']]
         )
 
+    def form_invalid(self, form):
+        messages.error(self.request, "失敗: 収入を追加できませんでした。")
+        return HttpResponseRedirect(reverse(
+            'income_and_expense:income',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        ))
+
 
 class IncomeUpdateView(BSModalUpdateView):
     model = Income
     template_name = 'income_and_expense/update_inc.html'
     form_class = IncomeForm
     success_message = '成功: 収入が更新されました。'
-    
+
     def get_success_url(self):
         return reverse_lazy(
             'income_and_expense:income',
             args=[self.kwargs['year'], self.kwargs['month']]
         )
+
+    def form_invalid(self, form):
+        messages.error(self.request, "失敗: 収入を更新できませんでした。")
+        return HttpResponseRedirect(reverse(
+            'income_and_expense:income',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        ))
 
 
 class IncomeDeleteView(BSModalDeleteView):
@@ -240,18 +255,32 @@ class ExpenseCreateView(BSModalCreateView):
             args=[self.kwargs['year'], self.kwargs['month']]
         )
 
+    def form_invalid(self, form):
+        messages.error(self.request, "失敗: 支出を追加できませんでした。")
+        return HttpResponseRedirect(reverse(
+            'income_and_expense:expense',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        ))
+
 
 class ExpenseUpdateView(BSModalUpdateView):
     model = Expense
     template_name = 'income_and_expense/update_exp.html'
     form_class = ExpenseForm
     success_message = '成功: 支出が更新されました。'
-    
+
     def get_success_url(self):
         return reverse_lazy(
             'income_and_expense:expense',
             args=[self.kwargs['year'], self.kwargs['month']]
         )
+
+    def form_invalid(self, form):
+        messages.error(self.request, "失敗: 支出を更新できませんでした。")
+        return HttpResponseRedirect(reverse(
+            'income_and_expense:expense',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        ))
 
 
 class ExpenseDeleteView(BSModalDeleteView):
@@ -272,7 +301,7 @@ class BalanceUpdateView(BSModalUpdateView):
     template_name = 'income_and_expense/update_balance.html'
     form_class = BalanceForm
     success_message = '成功: 口座残高が更新されました。'
-    
+
     def get_success_url(self):
         return reverse_lazy(
             'income_and_expense:balance',
@@ -283,12 +312,12 @@ class BalanceUpdateView(BSModalUpdateView):
 @login_required
 def index(request):
     """トップページ用のビュー関数。
-    
+
     Parameters
     ----------
     request : HttpRequest
         HttpRequestオブジェクト
-    
+
     Returns
     -------
     HttpResponseRedirect
@@ -308,7 +337,7 @@ def index(request):
 @login_required
 def income(request, year, month):
     """income用のビュー関数。
-    
+
     Parameters
     ----------
     request : HttpRequest
@@ -317,7 +346,7 @@ def income(request, year, month):
         会計年
     month : int
         会計月
-    
+
     Returns
     -------
     HttpResponse
@@ -340,7 +369,7 @@ def income(request, year, month):
 
     # 先月の代表日
     last_month_date = first_date - relativedelta(months=1)
-    
+
     # 先月までの口座残高を取得
     last_mon_balance = get_balance(
         last_month_date.year, last_month_date.month
@@ -366,7 +395,7 @@ def income(request, year, month):
 @login_required
 def expense(request, year, month):
     """expense用のビュー関数。
-    
+
     Parameters
     ----------
     request : HttpRequest
@@ -375,7 +404,7 @@ def expense(request, year, month):
         会計年
     month : int
         会計月
-    
+
     Returns
     -------
     HttpResponse
@@ -387,7 +416,7 @@ def expense(request, year, month):
     last_date = (
         first_date + relativedelta(months=1) - datetime.timedelta(days=1)
     )
-    
+
     # デフォルトの支出から支出を追加
     this_month_exp_cnt = Expense.objects.filter(
         pay_date__gte=first_date, pay_date__lte=last_date
@@ -398,7 +427,7 @@ def expense(request, year, month):
 
     # 先月の代表日
     last_month_date = first_date - relativedelta(months=1)
-    
+
     # 先月の口座残高を取得
     last_mon_balance = get_balance(
         last_month_date.year, last_month_date.month
@@ -408,7 +437,7 @@ def expense(request, year, month):
     this_month_exps = Expense.objects.filter(
         pay_date__gte=first_date, pay_date__lte=last_date
     )
-    
+
     # 今月の支出の合計を取得
     exp_sum = this_month_exps.aggregate(Sum('amount'))['amount__sum']
 
@@ -419,14 +448,14 @@ def expense(request, year, month):
         'this_year': year,
         'this_mon': month,
         'exps': this_month_exps,
-        'exp_sum': exp_sum, 
+        'exp_sum': exp_sum,
         'balance': balance,
     })
 
 @login_required
 def balance(request, year, month):
     """balanceページ用のビュー関数。
-    
+
     Parameters
     ----------
     request : HttpRequest
@@ -435,13 +464,13 @@ def balance(request, year, month):
         会計年
     month : int
         会計月
-    
+
     Returns
     -------
     HttpResponse
         HttpResponseオブジェクト
     """
-    
+
     # 各口座の実残高を取得
     accounts = Account.objects.all() # 全口座
     balances = [] # 各口座の実残高
@@ -470,7 +499,7 @@ def balance(request, year, month):
 @login_required
 def account_require(request, year, month):
     """account_requireページ用のビュー関数。
-    
+
     Parameters
     ----------
     request : HttpRequest
@@ -479,7 +508,7 @@ def account_require(request, year, month):
         会計年
     month : int
         会計月
-    
+
     Returns
     -------
     HttpResponse
@@ -500,14 +529,32 @@ def account_require(request, year, month):
     # 各口座の必要金額を取得
     accounts = Account.objects.all() # 全口座
     account_requires = [] # 各口座の必要金額
+    require_sum = 0 # 必要金額の合計値
+    insufficient_sum = 0 # 不足額の合計値
+    is_insufficient = False # 口座残高が不足しているかどうか
+    insufficient_amount = 0 # 各口座の不足額
     for account in accounts:
         require = this_month_exps.filter(
             method__account=account, done=False
         ).aggregate(Sum('amount'))['amount__sum']
         if require is None:
             require = 0
+
+        require_sum += require
+
+        if account.balance < require:
+            is_insufficient = True
+            insufficient_amount = require - account.balance
+        else:
+            is_insufficient = False
+            insufficient_amount = 0
+
+        insufficient_sum += insufficient_amount
+
         account_require = {
-            'account': account, 'require': "¥{:,}".format(require)
+            'account': account, 'require': "¥{:,}".format(require),
+            'is_insufficient': is_insufficient,
+            'insufficient_amount': "¥{:,}".format(insufficient_amount)
         }
         account_requires.append(account_require)
 
@@ -515,4 +562,108 @@ def account_require(request, year, month):
         'this_year': year,
         'this_mon': month,
         'account_requires': account_requires,
+        'require_sum': "¥{:,}".format(require_sum),
+        'insufficient_sum': "¥{:,}".format(insufficient_sum),
     })
+
+@login_required
+def method_require(request, year, month):
+    """method_requireページ用のビュー関数。
+
+    Parameters
+    ----------
+    request : HttpRequest
+        HttpRequestオブジェクト
+    year : int
+        会計年
+    month : int
+        会計月
+
+    Returns
+    -------
+    HttpResponse
+        HttpResponseオブジェクト
+    """
+
+    # 会計開始日と終了日を取得
+    first_date = datetime.date(year, month, 1)
+    last_date = (
+        first_date + relativedelta(months=1) - datetime.timedelta(days=1)
+    )
+
+    # 今月の支出リストを取得
+    this_month_exps = Expense.objects.filter(
+        pay_date__gte=first_date, pay_date__lte=last_date
+    )
+
+    # 支払方法別の必要金額を取得
+    methods = Method.objects.all() # 全支払方法
+    method_requires = [] # 支払方法別の必要金額
+    require_sum = 0 # 必要金額の合計値
+    for method in methods:
+        require = this_month_exps.filter(
+            method=method, done=False
+        ).aggregate(Sum('amount'))['amount__sum']
+        if require is None:
+            require = 0
+
+        require_sum += require
+
+        method_require = {
+            'method': method, 'require': "¥{:,}".format(require),
+        }
+        method_requires.append(method_require)
+
+    return render(request, 'income_and_expense/method_require.html', {
+        'this_year': year,
+        'this_mon': month,
+        'method_requires': method_requires,
+        'require_sum': "¥{:,}".format(require_sum),
+    })
+
+
+@login_required
+def method_done(request, year, month, pk):
+    """method_doneページ用のビュー関数。
+
+    Parameters
+    ----------
+    request : HttpRequest
+        HttpRequestオブジェクト
+    year : int
+        会計年
+    month : int
+        会計月
+    pk : int
+        支払方法のpk
+
+    Returns
+    -------
+    HttpResponse
+        HttpResponseオブジェクト
+    """
+
+    # 会計開始日と終了日を取得
+    first_date = datetime.date(year, month, 1)
+    last_date = (
+            first_date + relativedelta(months=1) - datetime.timedelta(days=1)
+    )
+
+    # 該当の支払方法の支出をすべて支払済に変更
+    target_exps = Expense.objects.filter(method__pk=pk,
+        pay_date__gte=first_date, pay_date__lte=last_date
+    )
+    for target_exp in target_exps:
+        target_exp.done = True
+        target_exp.undecided = False
+        target_exp.save()
+
+    messages.success(request, "成功: 支払済一括登録されました。")
+
+    # method_requireビューへリダイレクト
+    return HttpResponseRedirect(
+        reverse(
+            'income_and_expense:method_require',
+            args=(year, month)
+        )
+    )

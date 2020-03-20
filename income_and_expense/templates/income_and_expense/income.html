@@ -3,9 +3,19 @@
 {% load static %}
 
 {% block main %}
-	<div class="row pt-4 justify-content-center">
+	<div class="row pt-4">
 		<div class="col text-center">
-			<button class="btn add_button" id="create-inc" type="button" name="button">
+			<h1 class="align-middle d-inline">収入</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col text-center">
+			<span class="align-middle text-muted">{{ this_year }}年{{ this_mon }}月</span>
+		</div>
+	</div>
+	<div class="row pt-2">
+		<div class="col text-center">
+			<button class="btn" id="create-button" type="button" name="button">
 				<span><i class="fas fa-plus	mr-2"></i>収入追加</span>
 			</button>
 		</div>
@@ -16,9 +26,7 @@
 				<table class="table table-hover">
 					<thead>
 						<tr>
-							<th class="text-nowrap">収入名</th>
-							<th class="text-nowrap">完了</th>
-							<th class="text-nowrap">未確定</th>
+							<th class="text-nowrap">名前</th>
 							<th class="text-nowrap">支払日</th>
 							<th class="text-nowrap">支払方法</th>
 							<th class="text-nowrap">口座名</th>
@@ -28,24 +36,26 @@
 					</thead>
 					<tbody>
 						{% for inc in incs %}
-							<tr>
-								<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.name }}</td>
-								<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.done }}</td>
-								<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.undecided }}</td>
-								<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.pay_date }}</td>
-								<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.method }}</td>
-								<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.method.account }}</td>
-								<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">¥ {{ inc.amount }}</td>
-								<td class="align-middle text-nowrap">
-									<button type="button" class="delete-inc btn btn-sm btn-danger" data-url="{% url 'income_and_expense:delete_inc' this_year this_mon inc.pk %}">
-										<span><i class="fas fa-trash"></i></span>
-									</button>
-								</td>
-							</tr>
+							{% if inc.undecided == True %}
+								<tr class="table-danger">
+							{% elif inc.done == False %}
+								<tr class="table-warning">
+							{% else %}
+								<tr>
+							{% endif %}
+									<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.name }}</td>
+									<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.pay_date }}</td>
+									<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.method }}</td>
+									<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">{{ inc.method.account }}</td>
+									<td class="align-middle text-nowrap update-inc" data-url="{% url 'income_and_expense:update_inc' this_year this_mon inc.pk %}">¥ {{ inc.amount }}</td>
+									<td class="align-middle text-nowrap">
+										<button type="button" class="delete-button btn btn-sm btn-danger" data-url="{% url 'income_and_expense:delete_inc' this_year this_mon inc.pk %}">
+											<span><i class="fas fa-trash"></i></span>
+										</button>
+									</td>
+								</tr>
 						{% endfor %}
 						<tr>
-							<td></td>
-							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -54,8 +64,6 @@
 							<td></td>
 						</tr>
 						<tr>
-							<td></td>
-							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -74,22 +82,13 @@
 			</div>
 		</div>
 	</div>
+
+	<script src="{% static 'income_and_expense/js/income.js' %}"></script>
+
 	<script type="text/javascript">
 		$(document).ready(function () {
-			$("#nav-item-income").addClass("active");
-
-			$("#create-inc").modalForm({
+			$("#create-button").modalForm({
 				formURL: "{% url 'income_and_expense:create_inc' this_year this_mon %}"
-			});
-
-			$(".delete-inc").each(function () {
-				$(this).modalForm({
-					formURL: $(this).data('url')
-				});
-			})
-
-			$(".update-inc").on('click', function () {
-				$(this).modalForm({ formURL: $(this).data('url') });
 			});
 		});
 	</script>
