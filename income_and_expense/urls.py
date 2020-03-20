@@ -65,9 +65,9 @@ urlpatterns = [
         views.balance,
         name='balance'
     ),
-    # ex: /income_and_expense/2019/3/5/update_blance/
+    # ex: /income_and_expense/2019/3/5/update_balance/
     path(
-        '<int:year>/<int:month>/<int:pk>/update_blance',
+        '<int:year>/<int:month>/<int:pk>/update_balance',
         views.BalanceUpdateView.as_view(),
         name='update_balance'
     ),
