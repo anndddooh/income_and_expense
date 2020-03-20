@@ -25,13 +25,19 @@ th {
     border: none;
 }
 
+.done-button {
+    background-color: $color_primary_2;
+    color: white;
+    border: none;
+}
+
 .modal-footer {
     .close_button {
         background-color: $color_primary_1;
         color: white;
         border: none;
     }
-    .update_button {
+    .confirm_button {
         background-color: $color_primary_2;
         color: white;
         border: none;

@@ -16,11 +16,16 @@ th {
   color: white;
   border: none; }
 
+.done-button {
+  background-color: #FFCC80;
+  color: white;
+  border: none; }
+
 .modal-footer .close_button {
   background-color: #9575CD;
   color: white;
   border: none; }
-.modal-footer .update_button {
+.modal-footer .confirm_button {
   background-color: #FFCC80;
   color: white;
   border: none; }

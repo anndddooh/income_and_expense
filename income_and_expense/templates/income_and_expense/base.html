@@ -2,16 +2,16 @@
 <head>
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width">
-	
+
 	{% load bootstrap4 %}
 	{% bootstrap_css %}
 	{% bootstrap_javascript jquery='full' %}
 	{% load static %}
 
 	<link rel="stylesheet" type="text/css" href="{% static 'income_and_expense/css/base.css' %}">
-	
+
 	<script src="https://kit.fontawesome.com/36a5fc2f82.js" crossorigin="anonymous"></script>
-	
+
 	<script src="{% static 'income_and_expense/js/jquery.selection.js' %}"></script>
 
 	<link rel="stylesheet" href="https://npmcdn.com/flatpickr/dist/flatpickr.min.css">
@@ -50,7 +50,7 @@
 							<a class="dropdown-item" href="{% url 'income_and_expense:index' %}" id="nav-item-date-{{ forloop.counter }}"></a>
 						{% endfor %}
 					</div>
-				</li>		
+				</li>
 				<li class="nav-item" id="nav-item-income">
 					<a class="nav-link" href="{% url 'income_and_expense:income' this_year this_mon %}">収入</a>
 				</li>
@@ -65,9 +65,6 @@
 				</li>
 				<li class="nav-item" id="nav-item-method-require">
 					<a class="nav-link" href="{% url 'income_and_expense:method_require' this_year this_mon %}">支払別必要額</a>
-				</li>
-				<li class="nav-item" id="nav-item-done-regist">
-					<a class="nav-link" href="#">支払済一括登録</a>
 				</li>
 				<li class="nav-item" id="nav-item-loan">
 					<a class="nav-link" href="#">ローン支払登録</a>
