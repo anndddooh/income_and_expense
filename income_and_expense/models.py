@@ -101,7 +101,7 @@ class Income(models.Model):
     class Meta:
         verbose_name = const_data.const.SHOWN_NAME_INCOME
         verbose_name_plural = const_data.const.SHOWN_NAME_INCOME
- 
+
         unique_together = ('name', 'pay_date')
 
     def __str__(self):
@@ -134,7 +134,7 @@ class DefaultExpense(models.Model):
         verbose_name_plural = (
             const_data.const.SHOWN_NAME_EXPENSE +
             const_data.const.SHOWN_NAME_DEFAULT
-        ) 
+        )
 
     def __str__(self):
         return self.name
