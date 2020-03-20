@@ -620,3 +620,50 @@ def method_require(request, year, month):
         'method_requires': method_requires,
         'require_sum': "¥{:,}".format(require_sum),
     })
+
+
+@login_required
+def method_done(request, year, month, pk):
+    """method_doneページ用のビュー関数。
+
+    Parameters
+    ----------
+    request : HttpRequest
+        HttpRequestオブジェクト
+    year : int
+        会計年
+    month : int
+        会計月
+    pk : int
+        支払方法のpk
+
+    Returns
+    -------
+    HttpResponse
+        HttpResponseオブジェクト
+    """
+
+    # 会計開始日と終了日を取得
+    first_date = datetime.date(year, month, 1)
+    last_date = (
+            first_date + relativedelta(months=1) - datetime.timedelta(days=1)
+    )
+
+    # 該当の支払方法の支出をすべて支払済に変更
+    target_exps = Expense.objects.filter(method__pk=pk,
+        pay_date__gte=first_date, pay_date__lte=last_date
+    )
+    for target_exp in target_exps:
+        target_exp.done = True
+        target_exp.undecided = False
+        target_exp.save()
+
+    messages.success(request, "成功: 支払済一括登録されました。")
+
+    # method_requireビューへリダイレクト
+    return HttpResponseRedirect(
+        reverse(
+            'income_and_expense:method_require',
+            args=(year, month)
+        )
+    )
