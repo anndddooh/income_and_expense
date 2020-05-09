@@ -195,7 +195,7 @@ def get_balance(year, month):
 class IncomeCreateView(BSModalCreateView):
     template_name = 'income_and_expense/create_inc.html'
     form_class = IncomeForm
-    success_message = '成功: 収入が追加されました。'
+    success_message = '成功: %(name)sが追加されました。'
 
     def get_success_url(self):
         return reverse_lazy(
@@ -204,7 +204,9 @@ class IncomeCreateView(BSModalCreateView):
         )
 
     def form_invalid(self, form):
-        messages.error(self.request, "失敗: 収入を追加できませんでした。")
+        messages.error(
+            self.request, "失敗: %sを追加できませんでした。" % self.request.POST['name']
+        )
         return HttpResponseRedirect(reverse(
             'income_and_expense:income',
             args=[self.kwargs['year'], self.kwargs['month']]
@@ -215,7 +217,7 @@ class IncomeUpdateView(BSModalUpdateView):
     model = Income
     template_name = 'income_and_expense/update_inc.html'
     form_class = IncomeForm
-    success_message = '成功: 収入が更新されました。'
+    success_message = '成功: %(name)sが更新されました。'
 
     def get_success_url(self):
         return reverse_lazy(
@@ -224,7 +226,9 @@ class IncomeUpdateView(BSModalUpdateView):
         )
 
     def form_invalid(self, form):
-        messages.error(self.request, "失敗: 収入を更新できませんでした。")
+        messages.error(
+            self.request, "失敗: %sを更新できませんでした。" % self.request.POST['name']
+        )
         return HttpResponseRedirect(reverse(
             'income_and_expense:income',
             args=[self.kwargs['year'], self.kwargs['month']]
@@ -235,7 +239,13 @@ class IncomeDeleteView(BSModalDeleteView):
     model = Income
     template_name = 'income_and_expense/delete_inc.html'
     form_class = IncomeForm
-    success_message = '成功: 収入が削除されました。'
+
+    def post(self, request, *args, **kwargs):
+        messages.success(
+            self.request,
+            "成功: %sが削除されました。" % Income.objects.get(id=kwargs['pk']).name
+        )
+        return super().delete(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy(
@@ -247,7 +257,7 @@ class IncomeDeleteView(BSModalDeleteView):
 class ExpenseCreateView(BSModalCreateView):
     template_name = 'income_and_expense/create_exp.html'
     form_class = ExpenseForm
-    success_message = '成功: 支出が追加されました。'
+    success_message = '成功: %(name)sが追加されました。'
 
     def get_success_url(self):
         return reverse_lazy(
@@ -256,7 +266,10 @@ class ExpenseCreateView(BSModalCreateView):
         )
 
     def form_invalid(self, form):
-        messages.error(self.request, "失敗: 支出を追加できませんでした。")
+        messages.error(
+            self.request,
+            "失敗: %sを追加できませんでした。" % self.request.POST['name']
+        )
         return HttpResponseRedirect(reverse(
             'income_and_expense:expense',
             args=[self.kwargs['year'], self.kwargs['month']]
@@ -267,7 +280,7 @@ class ExpenseUpdateView(BSModalUpdateView):
     model = Expense
     template_name = 'income_and_expense/update_exp.html'
     form_class = ExpenseForm
-    success_message = '成功: 支出が更新されました。'
+    success_message = '成功: %(name)sが更新されました。'
 
     def get_success_url(self):
         return reverse_lazy(
@@ -276,7 +289,10 @@ class ExpenseUpdateView(BSModalUpdateView):
         )
 
     def form_invalid(self, form):
-        messages.error(self.request, "失敗: 支出を更新できませんでした。")
+        messages.error(
+            self.request,
+            "失敗: %sを更新できませんでした。" % self.request.POST['name']
+        )
         return HttpResponseRedirect(reverse(
             'income_and_expense:expense',
             args=[self.kwargs['year'], self.kwargs['month']]
@@ -287,7 +303,13 @@ class ExpenseDeleteView(BSModalDeleteView):
     model = Expense
     template_name = 'income_and_expense/delete_exp.html'
     form_class = ExpenseForm
-    success_message = '成功: 支出が削除されました。'
+
+    def post(self, request, *args, **kwargs):
+        messages.success(
+            self.request,
+            "成功: %sが削除されました。" % Expense.objects.get(id=kwargs['pk']).name
+        )
+        return super().delete(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy(
@@ -300,7 +322,7 @@ class BalanceUpdateView(BSModalUpdateView):
     model = Account
     template_name = 'income_and_expense/update_balance.html'
     form_class = BalanceForm
-    success_message = '成功: 口座残高が更新されました。'
+    success_message = '成功: %(user)s%(bank)sが更新されました。'
 
     def get_success_url(self):
         return reverse_lazy(
