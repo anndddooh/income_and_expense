@@ -381,14 +381,6 @@ def income(request, year, month):
         first_date + relativedelta(months=1) - datetime.timedelta(days=1)
     )
 
-    # デフォルトの収入から収入を追加
-    this_month_inc_cnt = Income.objects.filter(
-        pay_date__gte=first_date, pay_date__lte=last_date
-    ).count()
-    if this_month_inc_cnt == 0:
-        # 収入が一件も登録されていない場合
-        add_incs_from_default(year, month)
-
     # 先月の代表日
     last_month_date = first_date - relativedelta(months=1)
 
@@ -404,7 +396,7 @@ def income(request, year, month):
 
     # 今月の収入の合計を取得
     inc_sum = (last_mon_balance
-                + this_month_incs.aggregate(Sum('amount'))['amount__sum'])
+               + (this_month_incs.aggregate(Sum('amount'))['amount__sum'] or 0))
 
     return render(request, 'income_and_expense/income.html', {
         'this_year': year,
@@ -413,6 +405,37 @@ def income(request, year, month):
         'last_mon_balance': last_mon_balance,
         'inc_sum': inc_sum,
     })
+
+@login_required
+def add_default_incs(request, year, month):
+    """add_default_incs用のビュー関数。
+
+    Parameters
+    ----------
+    request : HttpRequest
+        HttpRequestオブジェクト
+    year : int
+        会計年
+    month : int
+        会計月
+
+    Returns
+    -------
+    HttpResponseRedirect
+        HttpResponseRedirectオブジェクト
+    """
+    # デフォルトの収入から収入を追加
+    add_incs_from_default(year, month)
+
+    messages.success(request, "成功: デフォルト収入が追加されました。")
+
+    # incomeビューへリダイレクト
+    return HttpResponseRedirect(
+        reverse(
+            'income_and_expense:income',
+            args=(year, month)
+        )
+    )
 
 @login_required
 def expense(request, year, month):

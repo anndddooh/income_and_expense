@@ -35,6 +35,12 @@ urlpatterns = [
         views.IncomeDeleteView.as_view(),
         name='delete_inc'
     ),
+    # ex: /income_and_expense/2019/3/add_default_incs/
+    path(
+        '<int:year>/<int:month>/add_default_incs',
+        views.add_default_incs,
+        name='add_default_incs'
+    ),
     # ex: /income_and_expense/2019/3/expense
     path(
         '<int:year>/<int:month>/expense',
