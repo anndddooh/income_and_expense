@@ -65,6 +65,12 @@ urlpatterns = [
         views.ExpenseDeleteView.as_view(),
         name='delete_exp'
     ),
+    # ex: /income_and_expense/2019/3/add_default_exps/
+    path(
+        '<int:year>/<int:month>/add_default_exps',
+        views.add_default_exps,
+        name='add_default_exps'
+    ),
     # ex: /income_and_expense/2019/3/balance/
     path(
         '<int:year>/<int:month>/balance',

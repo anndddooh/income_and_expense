@@ -462,14 +462,6 @@ def expense(request, year, month):
         first_date + relativedelta(months=1) - datetime.timedelta(days=1)
     )
 
-    # デフォルトの支出から支出を追加
-    this_month_exp_cnt = Expense.objects.filter(
-        pay_date__gte=first_date, pay_date__lte=last_date
-    ).count()
-    if this_month_exp_cnt == 0:
-        # 支出が一件も登録されていない場合
-        add_exps_from_default(year, month)
-
     # 先月の代表日
     last_month_date = first_date - relativedelta(months=1)
 
@@ -484,7 +476,7 @@ def expense(request, year, month):
     )
 
     # 今月の支出の合計を取得
-    exp_sum = this_month_exps.aggregate(Sum('amount'))['amount__sum']
+    exp_sum = this_month_exps.aggregate(Sum('amount'))['amount__sum'] or 0
 
     # 今月の残高を取得
     balance = get_balance(year, month)
@@ -496,6 +488,37 @@ def expense(request, year, month):
         'exp_sum': exp_sum,
         'balance': balance,
     })
+
+@login_required
+def add_default_exps(request, year, month):
+    """add_default_exps用のビュー関数。
+
+    Parameters
+    ----------
+    request : HttpRequest
+        HttpRequestオブジェクト
+    year : int
+        会計年
+    month : int
+        会計月
+
+    Returns
+    -------
+    HttpResponseRedirect
+        HttpResponseRedirectオブジェクト
+    """
+    # デフォルトの支出から支出を追加
+    add_exps_from_default(year, month)
+
+    messages.success(request, "成功: デフォルト支出が追加されました。")
+
+    # expsenseビューへリダイレクト
+    return HttpResponseRedirect(
+        reverse(
+            'income_and_expense:expense',
+            args=(year, month)
+        )
+    )
 
 @login_required
 def balance(request, year, month):
