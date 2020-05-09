@@ -26,6 +26,11 @@ def add_incs_from_default(year, month):
         会計年
     month : int
         会計月
+
+    Returns
+    -------
+    int
+        追加した収入の数
     """
 
     # 会計開始日と終了日を取得
@@ -33,6 +38,8 @@ def add_incs_from_default(year, month):
     last_date = (
         first_date + relativedelta(months=1) - datetime.timedelta(days=1)
     )
+
+    add_num = 0
 
     # デフォルトの収入から収入を追加
     def_inc_months = DefaultIncomeMonth.objects.filter(month=month)
@@ -57,6 +64,9 @@ def add_incs_from_default(year, month):
                 method=def_inc.method, amount=def_inc.amount,
                 undecided=def_inc.undecided,
             ).save()
+            add_num += 1
+
+    return add_num
 
 def add_exps_from_default(year, month):
     """デフォルトの支出から支出を追加する。
@@ -67,6 +77,11 @@ def add_exps_from_default(year, month):
         会計年
     month : int
         会計月
+
+    Returns
+    -------
+    int
+        追加した支出の数
     """
 
     # 会計開始日と終了日を取得
@@ -74,6 +89,8 @@ def add_exps_from_default(year, month):
     last_date = (
         first_date + relativedelta(months=1) - datetime.timedelta(days=1)
     )
+
+    add_num = 0
 
     # デフォルトの支出から支出を追加
     def_exp_months = DefaultExpenseMonth.objects.filter(month=month)
@@ -98,6 +115,9 @@ def add_exps_from_default(year, month):
                 method=def_exp.method,
                 amount=def_exp.amount, undecided=def_exp.undecided,
             ).save()
+            add_num += 1
+
+    return add_num
 
 def get_balance_done(year, month):
     """該当月までの残高（完了分）を取得
@@ -425,9 +445,10 @@ def add_default_incs(request, year, month):
         HttpResponseRedirectオブジェクト
     """
     # デフォルトの収入から収入を追加
-    add_incs_from_default(year, month)
-
-    messages.success(request, "成功: デフォルト収入が追加されました。")
+    if add_incs_from_default(year, month) > 0:
+        messages.success(request, "成功: デフォルト収入が追加されました。")
+    else:
+        messages.error(request, "失敗: 追加できるデフォルト収入が存在しませんでした。")
 
     # incomeビューへリダイレクト
     return HttpResponseRedirect(
@@ -508,9 +529,10 @@ def add_default_exps(request, year, month):
         HttpResponseRedirectオブジェクト
     """
     # デフォルトの支出から支出を追加
-    add_exps_from_default(year, month)
-
-    messages.success(request, "成功: デフォルト支出が追加されました。")
+    if add_exps_from_default(year, month) > 0:
+        messages.success(request, "成功: デフォルト支出が追加されました。")
+    else:
+        messages.error(request, "失敗: 追加できるデフォルト支出が存在しませんでした。")
 
     # expsenseビューへリダイレクト
     return HttpResponseRedirect(
