@@ -17,6 +17,34 @@ from .models import (
 )
 from .forms import IncomeForm, ExpenseForm, BalanceForm
 
+def can_add_default_inex(year, month):
+    """デフォルトの収支を追加可能か判定する。
+
+    Parameters
+    ----------
+    year : int
+        会計年
+    month : int
+        会計月
+
+    Returns
+    -------
+    bool
+        デフォルト収支を追加可能かどうか
+    """
+
+    # 今月の初日を取得
+    current_time = timezone.now()
+    current_month_first_date = datetime.date(
+        current_time.year, current_time.month, 1
+    )
+
+    # 過去には追加不可
+    if datetime.date(year, month, 1) < current_month_first_date:
+        return False
+
+    return True
+
 def add_incs_from_default(year, month):
     """デフォルトの収支から収入を追加する。
 
@@ -444,11 +472,15 @@ def add_default_incs(request, year, month):
     HttpResponseRedirect
         HttpResponseRedirectオブジェクト
     """
+
     # デフォルトの収入から収入を追加
-    if add_incs_from_default(year, month) > 0:
-        messages.success(request, "成功: デフォルト収入が追加されました。")
+    if can_add_default_inex(year, month):
+        if add_incs_from_default(year, month) > 0:
+            messages.success(request, "成功: デフォルト収入が追加されました。")
+        else:
+            messages.error(request, "失敗: 追加できるデフォルト収入が存在しませんでした。")
     else:
-        messages.error(request, "失敗: 追加できるデフォルト収入が存在しませんでした。")
+        messages.error(request, "失敗: 過去にはデフォルト収入を追加できません。")
 
     # incomeビューへリダイレクト
     return HttpResponseRedirect(
@@ -528,11 +560,15 @@ def add_default_exps(request, year, month):
     HttpResponseRedirect
         HttpResponseRedirectオブジェクト
     """
+
     # デフォルトの支出から支出を追加
-    if add_exps_from_default(year, month) > 0:
-        messages.success(request, "成功: デフォルト支出が追加されました。")
+    if can_add_default_inex(year, month):
+        if add_exps_from_default(year, month) > 0:
+            messages.success(request, "成功: デフォルト支出が追加されました。")
+        else:
+            messages.error(request, "失敗: 追加できるデフォルト支出が存在しませんでした。")
     else:
-        messages.error(request, "失敗: 追加できるデフォルト支出が存在しませんでした。")
+        messages.error(request, "失敗: 過去にはデフォルト支出を追加できません。")
 
     # expsenseビューへリダイレクト
     return HttpResponseRedirect(
