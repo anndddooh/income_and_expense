@@ -17,6 +17,34 @@ from .models import (
 )
 from .forms import IncomeForm, ExpenseForm, BalanceForm
 
+def can_add_default_inex(year, month):
+    """デフォルトの収支を追加可能か判定する。
+
+    Parameters
+    ----------
+    year : int
+        会計年
+    month : int
+        会計月
+
+    Returns
+    -------
+    bool
+        デフォルト収支を追加可能かどうか
+    """
+
+    # 今月の初日を取得
+    current_time = timezone.now()
+    current_month_first_date = datetime.date(
+        current_time.year, current_time.month, 1
+    )
+
+    # 過去には追加不可
+    if datetime.date(year, month, 1) < current_month_first_date:
+        return False
+
+    return True
+
 def add_incs_from_default(year, month):
     """デフォルトの収支から収入を追加する。
 
@@ -26,6 +54,11 @@ def add_incs_from_default(year, month):
         会計年
     month : int
         会計月
+
+    Returns
+    -------
+    int
+        追加した収入の数
     """
 
     # 会計開始日と終了日を取得
@@ -33,6 +66,8 @@ def add_incs_from_default(year, month):
     last_date = (
         first_date + relativedelta(months=1) - datetime.timedelta(days=1)
     )
+
+    add_num = 0
 
     # デフォルトの収入から収入を追加
     def_inc_months = DefaultIncomeMonth.objects.filter(month=month)
@@ -57,6 +92,9 @@ def add_incs_from_default(year, month):
                 method=def_inc.method, amount=def_inc.amount,
                 undecided=def_inc.undecided,
             ).save()
+            add_num += 1
+
+    return add_num
 
 def add_exps_from_default(year, month):
     """デフォルトの支出から支出を追加する。
@@ -67,6 +105,11 @@ def add_exps_from_default(year, month):
         会計年
     month : int
         会計月
+
+    Returns
+    -------
+    int
+        追加した支出の数
     """
 
     # 会計開始日と終了日を取得
@@ -74,6 +117,8 @@ def add_exps_from_default(year, month):
     last_date = (
         first_date + relativedelta(months=1) - datetime.timedelta(days=1)
     )
+
+    add_num = 0
 
     # デフォルトの支出から支出を追加
     def_exp_months = DefaultExpenseMonth.objects.filter(month=month)
@@ -98,6 +143,9 @@ def add_exps_from_default(year, month):
                 method=def_exp.method,
                 amount=def_exp.amount, undecided=def_exp.undecided,
             ).save()
+            add_num += 1
+
+    return add_num
 
 def get_balance_done(year, month):
     """該当月までの残高（完了分）を取得
@@ -381,14 +429,6 @@ def income(request, year, month):
         first_date + relativedelta(months=1) - datetime.timedelta(days=1)
     )
 
-    # デフォルトの収入から収入を追加
-    this_month_inc_cnt = Income.objects.filter(
-        pay_date__gte=first_date, pay_date__lte=last_date
-    ).count()
-    if this_month_inc_cnt == 0:
-        # 収入が一件も登録されていない場合
-        add_incs_from_default(year, month)
-
     # 先月の代表日
     last_month_date = first_date - relativedelta(months=1)
 
@@ -404,7 +444,7 @@ def income(request, year, month):
 
     # 今月の収入の合計を取得
     inc_sum = (last_mon_balance
-                + this_month_incs.aggregate(Sum('amount'))['amount__sum'])
+               + (this_month_incs.aggregate(Sum('amount'))['amount__sum'] or 0))
 
     return render(request, 'income_and_expense/income.html', {
         'this_year': year,
@@ -413,6 +453,42 @@ def income(request, year, month):
         'last_mon_balance': last_mon_balance,
         'inc_sum': inc_sum,
     })
+
+@login_required
+def add_default_incs(request, year, month):
+    """add_default_incs用のビュー関数。
+
+    Parameters
+    ----------
+    request : HttpRequest
+        HttpRequestオブジェクト
+    year : int
+        会計年
+    month : int
+        会計月
+
+    Returns
+    -------
+    HttpResponseRedirect
+        HttpResponseRedirectオブジェクト
+    """
+
+    # デフォルトの収入から収入を追加
+    if can_add_default_inex(year, month):
+        if add_incs_from_default(year, month) > 0:
+            messages.success(request, "成功: デフォルト収入が追加されました。")
+        else:
+            messages.error(request, "失敗: 追加できるデフォルト収入が存在しませんでした。")
+    else:
+        messages.error(request, "失敗: 過去にはデフォルト収入を追加できません。")
+
+    # incomeビューへリダイレクト
+    return HttpResponseRedirect(
+        reverse(
+            'income_and_expense:income',
+            args=(year, month)
+        )
+    )
 
 @login_required
 def expense(request, year, month):
@@ -439,14 +515,6 @@ def expense(request, year, month):
         first_date + relativedelta(months=1) - datetime.timedelta(days=1)
     )
 
-    # デフォルトの支出から支出を追加
-    this_month_exp_cnt = Expense.objects.filter(
-        pay_date__gte=first_date, pay_date__lte=last_date
-    ).count()
-    if this_month_exp_cnt == 0:
-        # 支出が一件も登録されていない場合
-        add_exps_from_default(year, month)
-
     # 先月の代表日
     last_month_date = first_date - relativedelta(months=1)
 
@@ -461,7 +529,7 @@ def expense(request, year, month):
     )
 
     # 今月の支出の合計を取得
-    exp_sum = this_month_exps.aggregate(Sum('amount'))['amount__sum']
+    exp_sum = this_month_exps.aggregate(Sum('amount'))['amount__sum'] or 0
 
     # 今月の残高を取得
     balance = get_balance(year, month)
@@ -473,6 +541,42 @@ def expense(request, year, month):
         'exp_sum': exp_sum,
         'balance': balance,
     })
+
+@login_required
+def add_default_exps(request, year, month):
+    """add_default_exps用のビュー関数。
+
+    Parameters
+    ----------
+    request : HttpRequest
+        HttpRequestオブジェクト
+    year : int
+        会計年
+    month : int
+        会計月
+
+    Returns
+    -------
+    HttpResponseRedirect
+        HttpResponseRedirectオブジェクト
+    """
+
+    # デフォルトの支出から支出を追加
+    if can_add_default_inex(year, month):
+        if add_exps_from_default(year, month) > 0:
+            messages.success(request, "成功: デフォルト支出が追加されました。")
+        else:
+            messages.error(request, "失敗: 追加できるデフォルト支出が存在しませんでした。")
+    else:
+        messages.error(request, "失敗: 過去にはデフォルト支出を追加できません。")
+
+    # expsenseビューへリダイレクト
+    return HttpResponseRedirect(
+        reverse(
+            'income_and_expense:expense',
+            args=(year, month)
+        )
+    )
 
 @login_required
 def balance(request, year, month):
