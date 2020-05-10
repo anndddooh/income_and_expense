@@ -15,8 +15,11 @@
 	</div>
 	<div class="row pt-2">
 		<div class="col text-center">
+			<button class="btn" id="add-default-button" type="button" data-toggle="modal" data-target="#add-default-modal">
+				<span><i class="fas fa-plus mr-2"></i>デフォルト支出追加</span>
+			</button>
 			<button class="btn" id="create-button" type="button" name="button">
-				<span><i class="fas fa-plus	mr-2"></i>支出追加</span>
+				<span><i class="fas fa-plus mr-2"></i>支出追加</span>
 			</button>
 		</div>
 	</div>
@@ -79,6 +82,25 @@
 	<div class="modal fade" tabindex="-1" role="dialog" id="modal">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" tabindex="-1" role="dialog" id="add-default-modal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title">デフォルト支出追加</h3>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>デフォルトの支出を追加してもよろしいですか？</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn close_button" data-dismiss="modal">閉じる</button>
+					<button type="button" class="btn confirm_button" onclick="location.href='{% url 'income_and_expense:add_default_exps' this_year this_mon %}'">追加</button>
+				</div>
 			</div>
 		</div>
 	</div>
