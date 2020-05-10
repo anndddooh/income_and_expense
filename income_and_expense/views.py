@@ -249,15 +249,6 @@ class IncomeCreateView(BSModalCreateView):
             args=[self.kwargs['year'], self.kwargs['month']]
         )
 
-    def form_invalid(self, form):
-        messages.error(
-            self.request, "失敗: %sを追加できませんでした。" % self.request.POST['name']
-        )
-        return HttpResponseRedirect(reverse(
-            'income_and_expense:income',
-            args=[self.kwargs['year'], self.kwargs['month']]
-        ))
-
 
 class IncomeUpdateView(BSModalUpdateView):
     model = Income
@@ -270,15 +261,6 @@ class IncomeUpdateView(BSModalUpdateView):
             'income_and_expense:income',
             args=[self.kwargs['year'], self.kwargs['month']]
         )
-
-    def form_invalid(self, form):
-        messages.error(
-            self.request, "失敗: %sを更新できませんでした。" % self.request.POST['name']
-        )
-        return HttpResponseRedirect(reverse(
-            'income_and_expense:income',
-            args=[self.kwargs['year'], self.kwargs['month']]
-        ))
 
 
 class IncomeDeleteView(BSModalDeleteView):
@@ -311,16 +293,6 @@ class ExpenseCreateView(BSModalCreateView):
             args=[self.kwargs['year'], self.kwargs['month']]
         )
 
-    def form_invalid(self, form):
-        messages.error(
-            self.request,
-            "失敗: %sを追加できませんでした。" % self.request.POST['name']
-        )
-        return HttpResponseRedirect(reverse(
-            'income_and_expense:expense',
-            args=[self.kwargs['year'], self.kwargs['month']]
-        ))
-
 
 class ExpenseUpdateView(BSModalUpdateView):
     model = Expense
@@ -333,16 +305,6 @@ class ExpenseUpdateView(BSModalUpdateView):
             'income_and_expense:expense',
             args=[self.kwargs['year'], self.kwargs['month']]
         )
-
-    def form_invalid(self, form):
-        messages.error(
-            self.request,
-            "失敗: %sを更新できませんでした。" % self.request.POST['name']
-        )
-        return HttpResponseRedirect(reverse(
-            'income_and_expense:expense',
-            args=[self.kwargs['year'], self.kwargs['month']]
-        ))
 
 
 class ExpenseDeleteView(BSModalDeleteView):
