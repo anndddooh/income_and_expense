@@ -43,6 +43,39 @@ def can_add_default_inex(year, month):
 
     return True
 
+def can_update_or_delete_inex(year, month):
+    """収支を更新・削除可能か判定する。
+
+    Parameters
+    ----------
+    year : int
+        現在の支払年
+    month : int
+        現在の支払月
+
+    Returns
+    -------
+    bool
+        収支を更新・削除可能かどうか
+    """
+
+    # 前月の初日を取得
+    current_time = timezone.now()
+    current_month_first_date = datetime.date(
+        current_time.year, current_time.month, 1
+    )
+    last_month_first_date = (current_month_first_date
+                             - relativedelta(months=1))
+
+    # 現在の支払月の初日を取得
+    old_pay_date = datetime.date(year, month, 1)
+
+    # 現在の支払月が先月より前であった場合、更新を許可しない
+    if old_pay_date < last_month_first_date:
+        return False
+
+    return True
+
 def add_incs_from_default(year, month):
     """デフォルトの収支から収入を追加する。
 
@@ -256,6 +289,22 @@ class IncomeUpdateView(BSModalUpdateView):
     form_class = IncomeForm
     success_message = '成功: %(name)sが更新されました。'
 
+    def post(self, request, *args, **kwargs):
+        if not can_update_or_delete_inex(kwargs['year'], kwargs['month']):
+            messages.error(
+                self.request,
+                "失敗: 古い収入は更新できません。"
+            )
+            # incomeビューへリダイレクト
+            return HttpResponseRedirect(
+                reverse(
+                    'income_and_expense:income',
+                    args=(kwargs['year'], kwargs['month'])
+                )
+            )
+
+        return super().post(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse_lazy(
             'income_and_expense:income',
@@ -269,6 +318,21 @@ class IncomeDeleteView(BSModalDeleteView):
     form_class = IncomeForm
 
     def post(self, request, *args, **kwargs):
+        pay_date = Income.objects.get(pk=kwargs['pk']).pay_date
+
+        if not can_update_or_delete_inex(pay_date.year, pay_date.month):
+            messages.error(
+                self.request,
+                "失敗: 古い収入は削除できません。"
+            )
+            # incomeビューへリダイレクト
+            return HttpResponseRedirect(
+                reverse(
+                    'income_and_expense:income',
+                    args=(kwargs['year'], kwargs['month'])
+                )
+            )
+
         messages.success(
             self.request,
             "成功: %sが削除されました。" % Income.objects.get(id=kwargs['pk']).name
@@ -300,6 +364,22 @@ class ExpenseUpdateView(BSModalUpdateView):
     form_class = ExpenseForm
     success_message = '成功: %(name)sが更新されました。'
 
+    def post(self, request, *args, **kwargs):
+        if not can_update_or_delete_inex(kwargs['year'], kwargs['month']):
+            messages.error(
+                self.request,
+                "失敗: 古い支出は更新できません。"
+            )
+            # incomeビューへリダイレクト
+            return HttpResponseRedirect(
+                reverse(
+                    'income_and_expense:expense',
+                    args=(kwargs['year'], kwargs['month'])
+                )
+            )
+
+        return super().post(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse_lazy(
             'income_and_expense:expense',
@@ -313,6 +393,21 @@ class ExpenseDeleteView(BSModalDeleteView):
     form_class = ExpenseForm
 
     def post(self, request, *args, **kwargs):
+        pay_date = Expense.objects.get(pk=kwargs['pk']).pay_date
+
+        if not can_update_or_delete_inex(pay_date.year, pay_date.month):
+            messages.error(
+                self.request,
+                "失敗: 古い支出は削除できません。"
+            )
+            # expenseビューへリダイレクト
+            return HttpResponseRedirect(
+                reverse(
+                    'income_and_expense:expense',
+                    args=(kwargs['year'], kwargs['month'])
+                )
+            )
+
         messages.success(
             self.request,
             "成功: %sが削除されました。" % Expense.objects.get(id=kwargs['pk']).name
