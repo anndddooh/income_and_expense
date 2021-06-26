@@ -493,9 +493,9 @@ def income(request, year, month):
     )
 
     # 今月の収入リストを取得
-    this_month_incs = Income.objects.filter(
-        pay_date__gte=first_date, pay_date__lte=last_date
-    )
+    this_month_incs = Income.objects.order_by(
+        'method__account__user', 'method'
+    ).filter(pay_date__gte=first_date, pay_date__lte=last_date)
 
     # 今月の収入の合計を取得
     inc_sum = (last_mon_balance
@@ -579,9 +579,9 @@ def expense(request, year, month):
     )
 
     # 今月の支出リストを取得
-    this_month_exps = Expense.objects.filter(
-        pay_date__gte=first_date, pay_date__lte=last_date
-    )
+    this_month_exps = Expense.objects.order_by(
+        'method__account__user', 'method'
+    ).filter(pay_date__gte=first_date, pay_date__lte=last_date)
 
     # 今月の支出の合計を取得
     exp_sum = this_month_exps.aggregate(Sum('amount'))['amount__sum'] or 0
@@ -653,7 +653,7 @@ def balance(request, year, month):
     """
 
     # 各口座の実残高を取得
-    accounts = Account.objects.all() # 全口座
+    accounts = Account.objects.all().order_by('user') # 全口座
     balances = [] # 各口座の実残高
     balance_sum = 0 # 口座の実残高の合計
     for account in accounts:
@@ -708,7 +708,7 @@ def account_require(request, year, month):
     )
 
     # 各口座の必要金額を取得
-    accounts = Account.objects.all() # 全口座
+    accounts = Account.objects.all().order_by('user') # 全口座
     account_requires = [] # 各口座の必要金額
     require_sum = 0 # 必要金額の合計値
     insufficient_sum = 0 # 不足額の合計値
@@ -778,7 +778,10 @@ def method_require(request, year, month):
     )
 
     # 支払方法別の必要金額を取得
-    methods = Method.objects.all() # 全支払方法
+    # 全支払方法
+    methods = Method.objects.all().order_by(
+        'account__user', 'account__bank'
+    )
     method_requires = [] # 支払方法別の必要金額
     require_sum = 0 # 必要金額の合計値
     for method in methods:
