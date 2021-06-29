@@ -216,6 +216,49 @@ class DefaultIncomeMonthAdmin(admin.ModelAdmin):
     month_custom.short_description = const_data.const.SHOWN_NAME_MONTH
 
 
+class TemplateExpenseAdmin(admin.ModelAdmin):
+    list_display = (
+        'name_custom', 'undecided_custom', 'done_custom',
+        'method_custom', 'account_info', 'date_type_custom',
+        'pay_day_custom', 'limit_day_of_this_month_custom'
+    )
+
+    def name_custom(self, obj):
+        return obj.name
+
+    def undecided_custom(self, obj):
+        return obj.undecided
+
+    def done_custom(self, obj):
+        return obj.done
+
+    def method_custom(self, obj):
+        return obj.method
+
+    def date_type_custom(self, obj):
+        return obj.date_type
+
+    def pay_day_custom(self, obj):
+        return obj.pay_day
+
+    def limit_day_of_this_month_custom(self, obj):
+        return obj.limit_day_of_this_month
+
+    name_custom.short_description = const_data.const.SHOWN_NAME_NAME
+    undecided_custom.short_description = (
+        const_data.const.SHOWN_NAME_UNDECIDED
+    )
+    done_custom.short_description = const_data.const.SHOWN_NAME_DONE
+    method_custom.short_description = const_data.const.SHOWN_NAME_METHOD
+    date_type_custom.short_description = (
+        const_data.const.SHOWN_NAME_DATE_TYPE
+    )
+    pay_day_custom.short_description = const_data.const.SHOWN_NAME_PAY_DAY
+    limit_day_of_this_month_custom.short_description = (
+        const_data.const.SHOWN_NAME_LIMIT_DAY_OF_THIS_MONTH
+    )
+
+
 admin.site.register(Bank)
 admin.site.register(User)
 admin.site.register(Account, AccountAdmin)
@@ -226,3 +269,4 @@ admin.site.register(DefaultExpense, DefaultExpenseAdmin)
 admin.site.register(DefaultIncome, DefaultIncomeAdmin)
 admin.site.register(DefaultExpenseMonth, DefaultExpenseMonthAdmin)
 admin.site.register(DefaultIncomeMonth, DefaultIncomeMonthAdmin)
+admin.site.register(TemplateExpense, TemplateExpenseAdmin)

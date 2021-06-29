@@ -11,7 +11,8 @@ from bootstrap_modal_forms.generic import (
     BSModalCreateView, BSModalUpdateView, BSModalDeleteView
 )
 from .models import (
-    Expense, Income, DefaultExpenseMonth, DefaultIncomeMonth, Account, Method
+    Expense, Income, DefaultExpenseMonth, DefaultIncomeMonth, Account,
+    Method, TemplateExpense
 )
 from .forms import IncomeForm, ExpenseForm, BalanceForm
 
@@ -350,6 +351,44 @@ class ExpenseCreateView(BSModalCreateView):
     template_name = 'income_and_expense/create_exp.html'
     form_class = ExpenseForm
     success_message = '成功: %(name)sが追加されました。'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        today = datetime.date.today()
+        template_exps = TemplateExpense.objects.all()
+        context_template_exps = []
+
+        for template_exp in template_exps:
+            context_template_exp = {}
+
+            # 名前
+            context_template_exp["name"] = str(template_exp.name)
+            # 支払方法
+            context_template_exp["method"] = str(template_exp.method)
+            # 未定
+            context_template_exp["undecided"] = str(template_exp.undecided)
+            # 完了
+            context_template_exp["done"] = str(template_exp.done)
+
+            # 支払日
+            if template_exp.date_type == 'today':
+                pay_date = today
+            else:
+                if today.day <= template_exp.limit_day_of_this_month:
+                    pay_date = datetime.date(
+                        today.year, today.month, template_exp.pay_day
+                    )
+                else:
+                    pay_date = datetime.date(
+                        today.year, today.month, template_exp.pay_day
+                    ) + relativedelta(months=1)
+            context_template_exp["pay_date"] = f"{pay_date:%Y-%m-%d}"
+
+            context_template_exps.append(context_template_exp)
+
+        context['template_exps'] = context_template_exps
+        return context
 
     def get_success_url(self):
         return reverse_lazy(
