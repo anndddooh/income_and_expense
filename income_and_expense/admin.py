@@ -218,10 +218,13 @@ class DefaultIncomeMonthAdmin(admin.ModelAdmin):
 
 class TemplateExpenseAdmin(admin.ModelAdmin):
     list_display = (
-        'name_custom', 'undecided_custom', 'done_custom',
-        'method_custom', 'account_info', 'date_type_custom',
+        'template_name_custom', 'name_custom', 'undecided_custom',
+        'done_custom', 'method_custom', 'account_info', 'date_type_custom',
         'pay_day_custom', 'limit_day_of_this_month_custom'
     )
+
+    def template_name_custom(self, obj):
+        return obj.template_name
 
     def name_custom(self, obj):
         return obj.name
@@ -244,6 +247,10 @@ class TemplateExpenseAdmin(admin.ModelAdmin):
     def limit_day_of_this_month_custom(self, obj):
         return obj.limit_day_of_this_month
 
+    template_name_custom.short_description = (
+        const_data.const.SHOWN_NAME_NAME
+        + const_data.const.SHOWN_NAME_TEMPLATE
+    )
     name_custom.short_description = const_data.const.SHOWN_NAME_NAME
     undecided_custom.short_description = (
         const_data.const.SHOWN_NAME_UNDECIDED

@@ -362,6 +362,8 @@ class ExpenseCreateView(BSModalCreateView):
         for template_exp in template_exps:
             context_template_exp = {}
 
+            # 名前（テンプレート）
+            context_template_exp["template_name"] = str(template_exp.template_name)
             # 名前
             context_template_exp["name"] = str(template_exp.name)
             # 支払方法

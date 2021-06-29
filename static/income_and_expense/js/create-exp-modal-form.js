@@ -28,7 +28,6 @@ $(document).ready(function () {
             } else {
                 $('#id_done').prop("checked", false);
             }
-            $('#id_amount').focus();
         }
     });
 });

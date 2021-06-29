@@ -23,7 +23,7 @@
             <select name="expense_type" placeholder="支出種別" class="form-control is-valid" required="" id="expense_type">
                 <option value="0">---------</option>
                 {% for template_exp in template_exps %}
-                    <option value="{{ forloop.counter }}">{{ template_exp.name }}</option>
+                    <option value="{{ forloop.counter }}">{{ template_exp.template_name }}</option>
                 {% endfor %}
             </select>
         </div>

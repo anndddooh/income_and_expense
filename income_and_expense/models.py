@@ -241,7 +241,8 @@ class TemplateExpense(models.Model):
         ('later', "後日")
     )
 
-    name = models.CharField(max_length=50, unique=True)
+    template_name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50, blank=True)
     date_type = models.CharField(max_length=10, choices=DATE_TYPE)
     pay_day = models.PositiveIntegerField(
         validators=[
@@ -272,7 +273,7 @@ class TemplateExpense(models.Model):
         )
 
     def __str__(self):
-        return self.name
+        return self.template_name
 
     def account_info(self):
         return self.method.account
