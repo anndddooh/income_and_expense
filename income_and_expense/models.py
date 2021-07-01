@@ -233,3 +233,48 @@ class DefaultIncomeMonth(models.Model):
         return self.def_inc
 
     def_inc_name.short_description = const_data.const.SHOWN_NAME_INCOME
+
+
+class TemplateExpense(models.Model):
+    DATE_TYPE = (
+        ('today', '即日'),
+        ('later', "後日")
+    )
+
+    template_name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50, blank=True)
+    date_type = models.CharField(max_length=10, choices=DATE_TYPE)
+    pay_day = models.PositiveIntegerField(
+        validators=[
+            validators.MinValueValidator(1),
+            validators.MaxValueValidator(28)
+        ],
+        null=True, blank=True
+    )
+    limit_day_of_this_month =  models.PositiveIntegerField(
+        validators=[
+            validators.MinValueValidator(1),
+            validators.MaxValueValidator(28)
+        ],
+        null=True, blank=True
+    )
+    method = models.ForeignKey(Method, on_delete=models.PROTECT)
+    undecided = models.BooleanField()
+    done = models.BooleanField()
+
+    class Meta:
+        verbose_name = (
+            const_data.const.SHOWN_NAME_EXPENSE +
+            const_data.const.SHOWN_NAME_TEMPLATE
+        )
+        verbose_name_plural = (
+            const_data.const.SHOWN_NAME_EXPENSE +
+            const_data.const.SHOWN_NAME_TEMPLATE
+        )
+
+    def __str__(self):
+        return self.template_name
+
+    def account_info(self):
+        return self.method.account
+    account_info.short_description = const_data.const.SHOWN_NAME_ACCOUNT
