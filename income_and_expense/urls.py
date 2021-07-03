@@ -11,6 +11,18 @@ urlpatterns = [
         views.index,
         name='index'
     ),
+    # ex: /income_and_expense/login
+    path(
+        'login',
+        views.login.as_view(),
+        name='login'
+    ),
+    # ex: /income_and_expense/logout
+    path(
+        'logout',
+        views.logout.as_view(),
+        name='logout'
+    ),
     # ex: /income_and_expense/2019/3/income
     path(
         '<int:year>/<int:month>/income',

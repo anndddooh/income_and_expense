@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'bootstrap4',
     'bootstrap_modal_forms',
     'income_and_expense.apps.IncomeAndExpenseConfig',
-    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
@@ -116,7 +115,7 @@ STATICFILES_DIRS = (
 )
 
 
-LOGIN_URL = '/accounts/login'
+LOGIN_URL = '/income_and_expense/login'
 LOGIN_REDIRECT_URL = '/income_and_expense'
 
 LOGOUT_REDIRECT_URL = '/income_and_expense'
