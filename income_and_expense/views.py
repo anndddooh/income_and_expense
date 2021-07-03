@@ -275,7 +275,7 @@ def get_balance(year, month):
 
 class login(LoginView):
     form_class = LoginForm
-    template_name = "accounts/login.html"
+    template_name = "income_and_expense/login.html"
 
 
 class logout(LogoutView):

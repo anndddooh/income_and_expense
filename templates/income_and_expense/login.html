@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width">
+
+	{% load bootstrap4 %}
+	{% bootstrap_css %}
+	{% bootstrap_javascript jquery='full' %}
+	{% load static %}
+    {% load widget_tweaks %}
+
+	<link rel="stylesheet" type="text/css" href="{% static 'income_and_expense/css/base.css' %}">
+
+	<script src="https://kit.fontawesome.com/36a5fc2f82.js" crossorigin="anonymous"></script>
+
+	<script src="{% static 'income_and_expense/js/jquery.selection.js' %}"></script>
+
+	<link rel="stylesheet" href="https://npmcdn.com/flatpickr/dist/flatpickr.min.css">
+	<link rel="stylesheet" href="https://npmcdn.com/flatpickr/dist/themes/material_green.css">
+	<script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
+	<script src="https://npmcdn.com/flatpickr/dist/l10n/ja.js"></script>
+
+	<script src="{% static 'income_and_expense/js/base.js' %}"></script>
+
+	<script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
+	<title>INEX</title>
+</head>
+<body>
+	<nav class="navbar sticky-top navbar-expand-lg navbar-dark">
+		<a class="navbar-brand" href="{% url 'income_and_expense:index' %}">
+			<img src="{% static 'income_and_expense/images/icon.png' %}" width="100" height="29" class="d-inline-block align-top" alt="">
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		</div>
+	</nav>
+    <div class="container-fluid">
+        <div class="container mt-5">
+            <form action="" method="POST">
+                <div class="col-lg-4 offset-lg-4 col-sm-8 offset-sm-2 col-10 offset-1">
+                    <div class="card">
+                        <div class="card-body">
+                            {{ form.non_field_errors }}
+                            {% for field in form %}
+                                <div class="form-group">
+                                    {% if field.errors %}
+                                        {% render_field field class="form-control is-invalid" placeholder=field.label %}
+                                    {% else %}
+                                        {% render_field field class="form-control is-valid" placeholder=field.label %}
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <button type="submit" class="btn btn-light btn-block" id="login-button">ログイン</button>
+                            {% for hidden_field in form.hidden_fields %}
+                                {{ hidden_field }}
+                            {% endfor %}
+                            {% csrf_token %}
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

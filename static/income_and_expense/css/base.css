@@ -16,6 +16,11 @@ th {
   color: white;
   border: none; }
 
+#login-button {
+  background-color: #FFCC80;
+  color: white;
+  border: none; }
+
 #add-default-button {
   background-color: #9575CD;
   color: white;
