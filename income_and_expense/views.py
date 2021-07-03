@@ -16,6 +16,7 @@ from .models import (
     Method, TemplateExpense
 )
 from .forms import LoginForm, IncomeForm, ExpenseForm, BalanceForm
+from .const import const_data
 
 def can_add_default_inex(year, month):
     """デフォルトの収支を追加可能か判定する。
@@ -511,6 +512,29 @@ def index(request):
     )
 
 @login_required
+def move_another_page(request):
+    """別画面移動用のビュー関数。
+
+    Parameters
+    ----------
+    request : HttpRequest
+        HttpRequestオブジェクト
+
+    Returns
+    -------
+    HttpResponseRedirect
+        HttpResponseRedirectオブジェクト
+    """
+
+    # 適切なビューへリダイレクト
+    return HttpResponseRedirect(
+        reverse(
+            request.GET.get("path_name"),
+            args=(request.GET.get("year"), request.GET.get("month"))
+        )
+    )
+
+@login_required
 def income(request, year, month):
     """income用のビュー関数。
 
@@ -553,6 +577,7 @@ def income(request, year, month):
                + (this_month_incs.aggregate(Sum('amount'))['amount__sum'] or 0))
 
     return render(request, 'income_and_expense/income.html', {
+        'path_name': const_data.const.PATH_NAME_INCOME,
         'this_year': year,
         'this_mon': month,
         'incs': this_month_incs,
@@ -641,6 +666,7 @@ def expense(request, year, month):
     balance = get_balance(year, month)
 
     return render(request, 'income_and_expense/expense.html', {
+        'path_name': const_data.const.PATH_NAME_EXPENSE,
         'this_year': year,
         'this_mon': month,
         'exps': this_month_exps,
@@ -720,6 +746,7 @@ def balance(request, year, month):
     balance_diff = balance_sum - balance_on_db
 
     return render(request, 'income_and_expense/balance.html', {
+        'path_name': const_data.const.PATH_NAME_BALANCE,
         'this_year': year,
         'this_mon': month,
         'accounts': accounts,
@@ -791,6 +818,7 @@ def account_require(request, year, month):
         account_requires.append(account_require)
 
     return render(request, 'income_and_expense/account_require.html', {
+        'path_name': const_data.const.PATH_NAME_ACCOUNT_REQUIRE,
         'this_year': year,
         'this_mon': month,
         'account_requires': account_requires,
@@ -850,6 +878,7 @@ def method_require(request, year, month):
         method_requires.append(method_require)
 
     return render(request, 'income_and_expense/method_require.html', {
+        'path_name': const_data.const.PATH_NAME_METHOD_REQUIRE,
         'this_year': year,
         'this_mon': month,
         'method_requires': method_requires,
