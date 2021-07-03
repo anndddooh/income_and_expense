@@ -1,6 +1,7 @@
 import datetime
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
+from django.contrib.auth import forms as auth_forms
 from django import forms
 from .models import Income, Expense, Account
 from bootstrap_modal_forms.forms import BSModalForm
@@ -33,6 +34,14 @@ def is_valid_pay_date(pay_date):
         return False
 
     return True
+
+
+class LoginForm(auth_forms.AuthenticationForm):
+    def __init__(self, *args, **kw):
+        super().__init__(*args, **kw)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs['placeholder'] = field.label
 
 
 class ExpenseForm(BSModalForm):

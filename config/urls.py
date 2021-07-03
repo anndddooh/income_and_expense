@@ -1,4 +1,4 @@
-"""mysite URL Configuration
+"""config URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
@@ -18,6 +18,5 @@ from django.urls import include, path
 
 urlpatterns = [
     path('income_and_expense/', include('income_and_expense.urls')),
-    path('accounts/', include('accounts.urls')),
     path('admin/', admin.site.urls),
 ]

@@ -11,29 +11,26 @@ thead {
 th {
   font-weight: normal; }
 
-#create-button {
-  background-color: #FFCC80;
+#create-button, #login-button, #add-default-button, .done-button, .modal-footer .close_button, .modal-footer .confirm_button {
   color: white;
   border: none; }
+
+#create-button {
+  background-color: #FFCC80; }
+
+#login-button {
+  background-color: #FFCC80; }
 
 #add-default-button {
-  background-color: #9575CD;
-  color: white;
-  border: none; }
+  background-color: #9575CD; }
 
 .done-button {
-  background-color: #FFCC80;
-  color: white;
-  border: none; }
+  background-color: #FFCC80; }
 
 .modal-footer .close_button {
-  background-color: #9575CD;
-  color: white;
-  border: none; }
+  background-color: #9575CD; }
 .modal-footer .confirm_button {
-  background-color: #FFCC80;
-  color: white;
-  border: none; }
+  background-color: #FFCC80; }
 
 input:read-only {
   background-color: white; }

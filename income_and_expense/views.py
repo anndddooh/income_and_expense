@@ -7,6 +7,7 @@ from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from dateutil.relativedelta import relativedelta
+from django.contrib.auth.views import LoginView, LogoutView
 from bootstrap_modal_forms.generic import (
     BSModalCreateView, BSModalUpdateView, BSModalDeleteView
 )
@@ -14,7 +15,7 @@ from .models import (
     Expense, Income, DefaultExpenseMonth, DefaultIncomeMonth, Account,
     Method, TemplateExpense
 )
-from .forms import IncomeForm, ExpenseForm, BalanceForm
+from .forms import LoginForm, IncomeForm, ExpenseForm, BalanceForm
 
 def can_add_default_inex(year, month):
     """デフォルトの収支を追加可能か判定する。
@@ -271,6 +272,15 @@ def get_balance(year, month):
 
 
 # Create your views here.
+
+class login(LoginView):
+    form_class = LoginForm
+    template_name = "income_and_expense/login.html"
+
+
+class logout(LogoutView):
+    pass
+
 
 class IncomeCreateView(BSModalCreateView):
     template_name = 'income_and_expense/create_inc.html'
