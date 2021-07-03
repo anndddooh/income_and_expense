@@ -19,40 +19,39 @@ th {
     font-weight: normal;
 }
 
-#create-button {
-    background-color: $color_primary_2;
+%button-common {
     color: white;
     border: none;
+}
+
+#create-button {
+    @extend %button-common;
+    background-color: $color_primary_2;
 }
 
 #login-button {
+    @extend %button-common;
     background-color: $color_primary_2;
-    color: white;
-    border: none;
 }
 
 #add-default-button {
+    @extend %button-common;
     background-color: $color_primary_1;
-    color: white;
-    border: none;
 }
 
 .done-button {
+    @extend %button-common;
     background-color: $color_primary_2;
-    color: white;
-    border: none;
 }
 
 .modal-footer {
     .close_button {
+        @extend %button-common;
         background-color: $color_primary_1;
-        color: white;
-        border: none;
     }
     .confirm_button {
+        @extend %button-common;
         background-color: $color_primary_2;
-        color: white;
-        border: none;
     }
 }
 
