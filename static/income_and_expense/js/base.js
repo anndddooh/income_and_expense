@@ -1,11 +1,3 @@
-var to_double_digits = function(num) {
-    num += "";
-    if (num.length === 1) {
-      num = "0" + num;
-    }
-   return num;
-};
-
 $(document).ready(function () {
     var nav_item_date = $('#nav-item-date');
     var this_year = nav_item_date.data('year');
