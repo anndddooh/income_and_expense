@@ -7,13 +7,17 @@ from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from dateutil.relativedelta import relativedelta
+from django.contrib.auth.views import LoginView, LogoutView
+from django.db.models import Q
 from bootstrap_modal_forms.generic import (
     BSModalCreateView, BSModalUpdateView, BSModalDeleteView
 )
 from .models import (
-    Expense, Income, DefaultExpenseMonth, DefaultIncomeMonth, Account, Method
+    Expense, Income, DefaultExpenseMonth, DefaultIncomeMonth, Account,
+    Method, TemplateExpense, Loan
 )
-from .forms import IncomeForm, ExpenseForm, BalanceForm
+from .forms import LoginForm, IncomeForm, ExpenseForm, BalanceForm, LoanForm
+from .const import const_data
 
 def can_add_default_inex(year, month):
     """デフォルトの収支を追加可能か判定する。
@@ -39,6 +43,39 @@ def can_add_default_inex(year, month):
 
     # 過去には追加不可
     if datetime.date(year, month, 1) < current_month_first_date:
+        return False
+
+    return True
+
+def can_update_or_delete_inex(year, month):
+    """収支を更新・削除可能か判定する。
+
+    Parameters
+    ----------
+    year : int
+        現在の支払年
+    month : int
+        現在の支払月
+
+    Returns
+    -------
+    bool
+        収支を更新・削除可能かどうか
+    """
+
+    # 前月の初日を取得
+    current_time = timezone.now()
+    current_month_first_date = datetime.date(
+        current_time.year, current_time.month, 1
+    )
+    last_month_first_date = (current_month_first_date
+                             - relativedelta(months=1))
+
+    # 現在の支払月の初日を取得
+    old_pay_date = datetime.date(year, month, 1)
+
+    # 現在の支払月が先月より前であった場合、更新を許可しない
+    if old_pay_date < last_month_first_date:
         return False
 
     return True
@@ -94,8 +131,8 @@ def add_incs_from_default(year, month):
 
     return add_num
 
-def add_exps_from_default(year, month):
-    """デフォルトの支出から支出を追加する。
+def add_exps_from_default_and_loan(year, month):
+    """デフォルトの支出とローンから支出を追加する。
 
     Parameters
     ----------
@@ -140,6 +177,34 @@ def add_exps_from_default(year, month):
                 pay_date=datetime.date(year, month, def_exp.pay_day),
                 method=def_exp.method,
                 amount=def_exp.amount, undecided=def_exp.undecided,
+            ).save()
+            add_num += 1
+
+    # ローンから支出を追加
+    loans = Loan.objects.filter(
+        (Q(first_year__lt=year) | Q(first_year=year, first_month__lte=month)),
+        (Q(last_year__gt=year) | Q(last_year=year, last_month__gte=month))
+    )
+    for loan in loans:
+        can_add = True
+        # 既に登録されているかのチェック
+        for this_month_exp in this_month_exps:
+            if loan.name == this_month_exp.name:
+                # 既に登録されている場合
+                can_add = False
+                break
+        # 追加
+        if can_add:
+            # まだ登録されていない場合
+            if year == loan.first_year and month == loan.first_month:
+                amount = loan.amount_first
+            else:
+                amount = loan.amount_from_second
+
+            Expense(
+                name=loan.name,
+                pay_date=datetime.date(year, month, loan.pay_day),
+                method=loan.method, amount=amount, undecided=loan.undecided,
             ).save()
             add_num += 1
 
@@ -238,6 +303,15 @@ def get_balance(year, month):
 
 # Create your views here.
 
+class login(LoginView):
+    form_class = LoginForm
+    template_name = "income_and_expense/login.html"
+
+
+class logout(LogoutView):
+    pass
+
+
 class IncomeCreateView(BSModalCreateView):
     template_name = 'income_and_expense/create_inc.html'
     form_class = IncomeForm
@@ -256,6 +330,22 @@ class IncomeUpdateView(BSModalUpdateView):
     form_class = IncomeForm
     success_message = '成功: %(name)sが更新されました。'
 
+    def post(self, request, *args, **kwargs):
+        if not can_update_or_delete_inex(kwargs['year'], kwargs['month']):
+            messages.error(
+                self.request,
+                "失敗: 古い収入は更新できません。"
+            )
+            # incomeビューへリダイレクト
+            return HttpResponseRedirect(
+                reverse(
+                    'income_and_expense:income',
+                    args=(kwargs['year'], kwargs['month'])
+                )
+            )
+
+        return super().post(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse_lazy(
             'income_and_expense:income',
@@ -269,6 +359,21 @@ class IncomeDeleteView(BSModalDeleteView):
     form_class = IncomeForm
 
     def post(self, request, *args, **kwargs):
+        pay_date = Income.objects.get(pk=kwargs['pk']).pay_date
+
+        if not can_update_or_delete_inex(pay_date.year, pay_date.month):
+            messages.error(
+                self.request,
+                "失敗: 古い収入は削除できません。"
+            )
+            # incomeビューへリダイレクト
+            return HttpResponseRedirect(
+                reverse(
+                    'income_and_expense:income',
+                    args=(kwargs['year'], kwargs['month'])
+                )
+            )
+
         messages.success(
             self.request,
             "成功: %sが削除されました。" % Income.objects.get(id=kwargs['pk']).name
@@ -287,6 +392,46 @@ class ExpenseCreateView(BSModalCreateView):
     form_class = ExpenseForm
     success_message = '成功: %(name)sが追加されました。'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        today = datetime.date.today()
+        template_exps = TemplateExpense.objects.all()
+        context_template_exps = []
+
+        for template_exp in template_exps:
+            context_template_exp = {}
+
+            # 名前（テンプレート）
+            context_template_exp["template_name"] = str(template_exp.template_name)
+            # 名前
+            context_template_exp["name"] = str(template_exp.name)
+            # 支払方法
+            context_template_exp["method"] = str(template_exp.method)
+            # 未定
+            context_template_exp["undecided"] = str(template_exp.undecided)
+            # 完了
+            context_template_exp["done"] = str(template_exp.done)
+
+            # 支払日
+            if template_exp.date_type == 'today':
+                pay_date = today
+            else:
+                if today.day <= template_exp.limit_day_of_this_month:
+                    pay_date = datetime.date(
+                        today.year, today.month, template_exp.pay_day
+                    )
+                else:
+                    pay_date = datetime.date(
+                        today.year, today.month, template_exp.pay_day
+                    ) + relativedelta(months=1)
+            context_template_exp["pay_date"] = f"{pay_date:%Y-%m-%d}"
+
+            context_template_exps.append(context_template_exp)
+
+        context['template_exps'] = context_template_exps
+        return context
+
     def get_success_url(self):
         return reverse_lazy(
             'income_and_expense:expense',
@@ -299,6 +444,22 @@ class ExpenseUpdateView(BSModalUpdateView):
     template_name = 'income_and_expense/update_exp.html'
     form_class = ExpenseForm
     success_message = '成功: %(name)sが更新されました。'
+
+    def post(self, request, *args, **kwargs):
+        if not can_update_or_delete_inex(kwargs['year'], kwargs['month']):
+            messages.error(
+                self.request,
+                "失敗: 古い支出は更新できません。"
+            )
+            # incomeビューへリダイレクト
+            return HttpResponseRedirect(
+                reverse(
+                    'income_and_expense:expense',
+                    args=(kwargs['year'], kwargs['month'])
+                )
+            )
+
+        return super().post(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy(
@@ -313,6 +474,21 @@ class ExpenseDeleteView(BSModalDeleteView):
     form_class = ExpenseForm
 
     def post(self, request, *args, **kwargs):
+        pay_date = Expense.objects.get(pk=kwargs['pk']).pay_date
+
+        if not can_update_or_delete_inex(pay_date.year, pay_date.month):
+            messages.error(
+                self.request,
+                "失敗: 古い支出は削除できません。"
+            )
+            # expenseビューへリダイレクト
+            return HttpResponseRedirect(
+                reverse(
+                    'income_and_expense:expense',
+                    args=(kwargs['year'], kwargs['month'])
+                )
+            )
+
         messages.success(
             self.request,
             "成功: %sが削除されました。" % Expense.objects.get(id=kwargs['pk']).name
@@ -339,6 +515,50 @@ class BalanceUpdateView(BSModalUpdateView):
         )
 
 
+class LoanCreateView(BSModalCreateView):
+    template_name = 'income_and_expense/create_loan.html'
+    form_class = LoanForm
+    success_message = '成功: %(name)sが追加されました。'
+
+    def get_success_url(self):
+        return reverse_lazy(
+            'income_and_expense:loan',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        )
+
+
+class LoanUpdateView(BSModalUpdateView):
+    model = Loan
+    template_name = 'income_and_expense/update_loan.html'
+    form_class = LoanForm
+    success_message = '成功: %(name)sが更新されました。'
+
+    def get_success_url(self):
+        return reverse_lazy(
+            'income_and_expense:loan',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        )
+
+
+class LoanDeleteView(BSModalDeleteView):
+    model = Loan
+    template_name = 'income_and_expense/delete_loan.html'
+    form_class = LoanForm
+
+    def post(self, request, *args, **kwargs):
+        messages.success(
+            self.request,
+            "成功: %sが削除されました。" % Loan.objects.get(id=kwargs['pk']).name
+        )
+        return super().delete(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy(
+            'income_and_expense:loan',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        )
+
+
 @login_required
 def index(request):
     """トップページ用のビュー関数。
@@ -361,6 +581,29 @@ def index(request):
         reverse(
             'income_and_expense:income',
             args=(current_time.year, current_time.month)
+        )
+    )
+
+@login_required
+def move_another_page(request):
+    """別画面移動用のビュー関数。
+
+    Parameters
+    ----------
+    request : HttpRequest
+        HttpRequestオブジェクト
+
+    Returns
+    -------
+    HttpResponseRedirect
+        HttpResponseRedirectオブジェクト
+    """
+
+    # 適切なビューへリダイレクト
+    return HttpResponseRedirect(
+        reverse(
+            request.GET.get("path_name"),
+            args=(request.GET.get("year"), request.GET.get("month"))
         )
     )
 
@@ -398,15 +641,16 @@ def income(request, year, month):
     )
 
     # 今月の収入リストを取得
-    this_month_incs = Income.objects.filter(
-        pay_date__gte=first_date, pay_date__lte=last_date
-    )
+    this_month_incs = Income.objects.order_by(
+        'method__account__user', 'method'
+    ).filter(pay_date__gte=first_date, pay_date__lte=last_date)
 
     # 今月の収入の合計を取得
     inc_sum = (last_mon_balance
                + (this_month_incs.aggregate(Sum('amount'))['amount__sum'] or 0))
 
     return render(request, 'income_and_expense/income.html', {
+        'path_name': const_data.const.PATH_NAME_INCOME,
         'this_year': year,
         'this_mon': month,
         'incs': this_month_incs,
@@ -484,9 +728,9 @@ def expense(request, year, month):
     )
 
     # 今月の支出リストを取得
-    this_month_exps = Expense.objects.filter(
-        pay_date__gte=first_date, pay_date__lte=last_date
-    )
+    this_month_exps = Expense.objects.order_by(
+        'method__account__user', 'method'
+    ).filter(pay_date__gte=first_date, pay_date__lte=last_date)
 
     # 今月の支出の合計を取得
     exp_sum = this_month_exps.aggregate(Sum('amount'))['amount__sum'] or 0
@@ -495,6 +739,7 @@ def expense(request, year, month):
     balance = get_balance(year, month)
 
     return render(request, 'income_and_expense/expense.html', {
+        'path_name': const_data.const.PATH_NAME_EXPENSE,
         'this_year': year,
         'this_mon': month,
         'exps': this_month_exps,
@@ -521,9 +766,9 @@ def add_default_exps(request, year, month):
         HttpResponseRedirectオブジェクト
     """
 
-    # デフォルトの支出から支出を追加
+    # デフォルトの支出とローンから支出を追加
     if can_add_default_inex(year, month):
-        if add_exps_from_default(year, month) > 0:
+        if add_exps_from_default_and_loan(year, month) > 0:
             messages.success(request, "成功: デフォルト支出が追加されました。")
         else:
             messages.error(request, "失敗: 追加できるデフォルト支出が存在しませんでした。")
@@ -558,7 +803,7 @@ def balance(request, year, month):
     """
 
     # 各口座の実残高を取得
-    accounts = Account.objects.all() # 全口座
+    accounts = Account.objects.all().order_by('user') # 全口座
     balances = [] # 各口座の実残高
     balance_sum = 0 # 口座の実残高の合計
     for account in accounts:
@@ -574,6 +819,7 @@ def balance(request, year, month):
     balance_diff = balance_sum - balance_on_db
 
     return render(request, 'income_and_expense/balance.html', {
+        'path_name': const_data.const.PATH_NAME_BALANCE,
         'this_year': year,
         'this_mon': month,
         'accounts': accounts,
@@ -613,7 +859,7 @@ def account_require(request, year, month):
     )
 
     # 各口座の必要金額を取得
-    accounts = Account.objects.all() # 全口座
+    accounts = Account.objects.all().order_by('user') # 全口座
     account_requires = [] # 各口座の必要金額
     require_sum = 0 # 必要金額の合計値
     insufficient_sum = 0 # 不足額の合計値
@@ -645,6 +891,7 @@ def account_require(request, year, month):
         account_requires.append(account_require)
 
     return render(request, 'income_and_expense/account_require.html', {
+        'path_name': const_data.const.PATH_NAME_ACCOUNT_REQUIRE,
         'this_year': year,
         'this_mon': month,
         'account_requires': account_requires,
@@ -683,7 +930,10 @@ def method_require(request, year, month):
     )
 
     # 支払方法別の必要金額を取得
-    methods = Method.objects.all() # 全支払方法
+    # 全支払方法
+    methods = Method.objects.all().order_by(
+        'account__user', 'account__bank'
+    )
     method_requires = [] # 支払方法別の必要金額
     require_sum = 0 # 必要金額の合計値
     for method in methods:
@@ -701,6 +951,7 @@ def method_require(request, year, month):
         method_requires.append(method_require)
 
     return render(request, 'income_and_expense/method_require.html', {
+        'path_name': const_data.const.PATH_NAME_METHOD_REQUIRE,
         'this_year': year,
         'this_mon': month,
         'method_requires': method_requires,
@@ -753,3 +1004,48 @@ def method_done(request, year, month, pk):
             args=(year, month)
         )
     )
+
+@login_required
+def loan(request, year, month):
+    """loanページ用のビュー関数。
+
+    Parameters
+    ----------
+    request : HttpRequest
+        HttpRequestオブジェクト
+    year : int
+        会計年
+    month : int
+        会計月
+
+    Returns
+    -------
+    HttpResponse
+        HttpResponseオブジェクト
+    """
+
+    loans_and_completes = [] # 各ローンと終了しているかどうか
+
+    # ローン一覧を取得
+    loans = Loan.objects.all().order_by('method') # 全ローン
+
+    for loan in loans:
+        loan_and_complete = {}
+        loan_and_complete['loan'] = loan
+
+        is_over_year = year > loan.last_year
+        is_same_year_and_over_month = (
+            (year == loan.last_year) and (month > loan.last_month)
+        )
+        loan_and_complete['complete'] = (
+            is_over_year or is_same_year_and_over_month
+        )
+
+        loans_and_completes.append(loan_and_complete)
+
+    return render(request, 'income_and_expense/loan.html', {
+        'path_name': const_data.const.PATH_NAME_LOAN,
+        'this_year': year,
+        'this_mon': month,
+        'loans_and_completes': loans_and_completes,
+    })

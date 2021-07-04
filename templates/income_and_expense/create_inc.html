@@ -3,13 +3,13 @@
 {% load widget_tweaks %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'income_and_expense/css/modal-form.css' %}">
-<script src="{% static 'income_and_expense/js/create-modal-form.js' %}"></script>
+<script src="{% static 'income_and_expense/js/create-inc-modal-form.js' %}"></script>
 
 <form method="post" action="">
     {% csrf_token %}
 
     <div class="modal-header">
-        <h3 class="modal-title">支出追加</h3>
+        <h3 class="modal-title">収入追加</h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
