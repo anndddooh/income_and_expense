@@ -16,7 +16,7 @@ from .models import (
     Expense, Income, DefaultExpenseMonth, DefaultIncomeMonth, Account,
     Method, TemplateExpense, Loan
 )
-from .forms import LoginForm, IncomeForm, ExpenseForm, BalanceForm
+from .forms import LoginForm, IncomeForm, ExpenseForm, BalanceForm, LoanForm
 from .const import const_data
 
 def can_add_default_inex(year, month):
@@ -515,6 +515,50 @@ class BalanceUpdateView(BSModalUpdateView):
         )
 
 
+class LoanCreateView(BSModalCreateView):
+    template_name = 'income_and_expense/create_loan.html'
+    form_class = LoanForm
+    success_message = '成功: %(name)sが追加されました。'
+
+    def get_success_url(self):
+        return reverse_lazy(
+            'income_and_expense:loan',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        )
+
+
+class LoanUpdateView(BSModalUpdateView):
+    model = Loan
+    template_name = 'income_and_expense/update_loan.html'
+    form_class = LoanForm
+    success_message = '成功: %(name)sが更新されました。'
+
+    def get_success_url(self):
+        return reverse_lazy(
+            'income_and_expense:loan',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        )
+
+
+class LoanDeleteView(BSModalDeleteView):
+    model = Loan
+    template_name = 'income_and_expense/delete_loan.html'
+    form_class = LoanForm
+
+    def post(self, request, *args, **kwargs):
+        messages.success(
+            self.request,
+            "成功: %sが削除されました。" % Loan.objects.get(id=kwargs['pk']).name
+        )
+        return super().delete(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy(
+            'income_and_expense:loan',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        )
+
+
 @login_required
 def index(request):
     """トップページ用のビュー関数。
@@ -960,3 +1004,48 @@ def method_done(request, year, month, pk):
             args=(year, month)
         )
     )
+
+@login_required
+def loan(request, year, month):
+    """loanページ用のビュー関数。
+
+    Parameters
+    ----------
+    request : HttpRequest
+        HttpRequestオブジェクト
+    year : int
+        会計年
+    month : int
+        会計月
+
+    Returns
+    -------
+    HttpResponse
+        HttpResponseオブジェクト
+    """
+
+    loans_and_completes = [] # 各ローンと終了しているかどうか
+
+    # ローン一覧を取得
+    loans = Loan.objects.all().order_by('method') # 全ローン
+
+    for loan in loans:
+        loan_and_complete = {}
+        loan_and_complete['loan'] = loan
+
+        is_over_year = year > loan.last_year
+        is_same_year_and_over_month = (
+            (year == loan.last_year) and (month > loan.last_month)
+        )
+        loan_and_complete['complete'] = (
+            is_over_year or is_same_year_and_over_month
+        )
+
+        loans_and_completes.append(loan_and_complete)
+
+    return render(request, 'income_and_expense/loan.html', {
+        'path_name': const_data.const.PATH_NAME_LOAN,
+        'this_year': year,
+        'this_mon': month,
+        'loans_and_completes': loans_and_completes,
+    })
