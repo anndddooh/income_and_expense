@@ -278,3 +278,50 @@ class TemplateExpense(models.Model):
     def account_info(self):
         return self.method.account
     account_info.short_description = const_data.const.SHOWN_NAME_ACCOUNT
+
+
+class Loan(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    pay_day = models.PositiveIntegerField(validators=[
+        validators.MinValueValidator(1),
+        validators.MaxValueValidator(28)
+    ])
+    first_year = models.PositiveIntegerField()
+    first_month = models.PositiveIntegerField(validators=[
+        validators.MinValueValidator(1),
+        validators.MaxValueValidator(12)
+    ])
+    last_year = models.PositiveIntegerField()
+    last_month = models.PositiveIntegerField(validators=[
+        validators.MinValueValidator(1),
+        validators.MaxValueValidator(12)
+    ])
+    method = models.ForeignKey(Method, on_delete=models.PROTECT)
+    amount_first = models.PositiveIntegerField()
+    amount_from_second = models.PositiveIntegerField()
+    undecided = models.BooleanField()
+
+    class Meta:
+        verbose_name = const_data.const.SHOWN_NAME_LOAN
+        verbose_name_plural = const_data.const.SHOWN_NAME_LOAN
+
+    def __str__(self):
+        return self.name
+
+    def account_info(self):
+        return self.method.account
+    account_info.short_description = const_data.const.SHOWN_NAME_ACCOUNT
+
+    def formed_amount_first(self):
+        return "¥{:,}".format(self.amount_first)
+    formed_amount_first.short_description = (
+        const_data.const.SHOWN_NAME_AMOUNT +
+        const_data.const.SHOWN_NAME_FIRST
+    )
+
+    def formed_amount_from_second(self):
+        return "¥{:,}".format(self.amount_from_second)
+    formed_amount_from_second.short_description = (
+        const_data.const.SHOWN_NAME_AMOUNT +
+        const_data.const.SHOWN_NAME_FROM_SECOND
+    )

@@ -266,6 +266,58 @@ class TemplateExpenseAdmin(admin.ModelAdmin):
     )
 
 
+class LoanAdmin(admin.ModelAdmin):
+    list_display = (
+        'name_custom', 'undecided_custom', 'formed_amount_first',
+        'formed_amount_from_second', 'method_custom', 'account_info',
+        'pay_day_custom', 'first_year_custom', 'first_month_custom',
+        'last_year_custom', 'last_month_custom'
+    )
+
+    def name_custom(self, obj):
+        return obj.name
+
+    def undecided_custom(self, obj):
+        return obj.undecided
+
+    def method_custom(self, obj):
+        return obj.method
+
+    def pay_day_custom(self, obj):
+        return obj.pay_day
+
+    def first_year_custom(self, obj):
+        return obj.first_year
+
+    def first_month_custom(self, obj):
+        return obj.first_month
+
+    def last_year_custom(self, obj):
+        return obj.last_year
+
+    def last_month_custom(self, obj):
+        return obj.last_month
+
+    name_custom.short_description = const_data.const.SHOWN_NAME_NAME
+    undecided_custom.short_description = (
+        const_data.const.SHOWN_NAME_UNDECIDED
+    )
+    method_custom.short_description = const_data.const.SHOWN_NAME_METHOD
+    pay_day_custom.short_description = const_data.const.SHOWN_NAME_PAY_DAY
+    first_year_custom.short_description = (
+        const_data.const.SHOWN_NAME_FIRST_YEAR
+    )
+    first_month_custom.short_description = (
+        const_data.const.SHOWN_NAME_FIRST_MONTH
+    )
+    last_year_custom.short_description = (
+        const_data.const.SHOWN_NAME_LAST_YEAR
+    )
+    last_month_custom.short_description = (
+        const_data.const.SHOWN_NAME_LAST_MONTH
+    )
+
+
 admin.site.register(Bank)
 admin.site.register(User)
 admin.site.register(Account, AccountAdmin)
@@ -277,3 +329,4 @@ admin.site.register(DefaultIncome, DefaultIncomeAdmin)
 admin.site.register(DefaultExpenseMonth, DefaultExpenseMonthAdmin)
 admin.site.register(DefaultIncomeMonth, DefaultIncomeMonthAdmin)
 admin.site.register(TemplateExpense, TemplateExpenseAdmin)
+admin.site.register(Loan, LoanAdmin)

@@ -8,12 +8,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.views import LoginView, LogoutView
+from django.db.models import Q
 from bootstrap_modal_forms.generic import (
     BSModalCreateView, BSModalUpdateView, BSModalDeleteView
 )
 from .models import (
     Expense, Income, DefaultExpenseMonth, DefaultIncomeMonth, Account,
-    Method, TemplateExpense
+    Method, TemplateExpense, Loan
 )
 from .forms import LoginForm, IncomeForm, ExpenseForm, BalanceForm
 from .const import const_data
@@ -130,8 +131,8 @@ def add_incs_from_default(year, month):
 
     return add_num
 
-def add_exps_from_default(year, month):
-    """デフォルトの支出から支出を追加する。
+def add_exps_from_default_and_loan(year, month):
+    """デフォルトの支出とローンから支出を追加する。
 
     Parameters
     ----------
@@ -176,6 +177,34 @@ def add_exps_from_default(year, month):
                 pay_date=datetime.date(year, month, def_exp.pay_day),
                 method=def_exp.method,
                 amount=def_exp.amount, undecided=def_exp.undecided,
+            ).save()
+            add_num += 1
+
+    # ローンから支出を追加
+    loans = Loan.objects.filter(
+        (Q(first_year__lt=year) | Q(first_year=year, first_month__lte=month)),
+        (Q(last_year__gt=year) | Q(last_year=year, last_month__gte=month))
+    )
+    for loan in loans:
+        can_add = True
+        # 既に登録されているかのチェック
+        for this_month_exp in this_month_exps:
+            if loan.name == this_month_exp.name:
+                # 既に登録されている場合
+                can_add = False
+                break
+        # 追加
+        if can_add:
+            # まだ登録されていない場合
+            if year == loan.first_year and month == loan.first_month:
+                amount = loan.amount_first
+            else:
+                amount = loan.amount_from_second
+
+            Expense(
+                name=loan.name,
+                pay_date=datetime.date(year, month, loan.pay_day),
+                method=loan.method, amount=amount, undecided=loan.undecided,
             ).save()
             add_num += 1
 
@@ -693,9 +722,9 @@ def add_default_exps(request, year, month):
         HttpResponseRedirectオブジェクト
     """
 
-    # デフォルトの支出から支出を追加
+    # デフォルトの支出とローンから支出を追加
     if can_add_default_inex(year, month):
-        if add_exps_from_default(year, month) > 0:
+        if add_exps_from_default_and_loan(year, month) > 0:
             messages.success(request, "成功: デフォルト支出が追加されました。")
         else:
             messages.error(request, "失敗: 追加できるデフォルト支出が存在しませんでした。")
