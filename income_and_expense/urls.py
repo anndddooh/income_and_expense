@@ -118,5 +118,29 @@ urlpatterns = [
         'method_done/<int:year>/<int:month>/<int:pk>',
         views.method_done,
         name='method_done'
+    ),
+    # ex: /income_and_expense/loan/2019/3/
+    path(
+        'loan/<int:year>/<int:month>',
+        views.loan,
+        name='loan'
+    ),
+    # ex: /income_and_expense/create_loan/2019/3/
+    path(
+        'create_loan/<int:year>/<int:month>',
+        views.LoanCreateView.as_view(),
+        name='create_loan'
+    ),
+    # ex: /income_and_expense/update_loan/2019/3/567/
+    path(
+        'update_loan/<int:year>/<int:month>/<int:pk>',
+        views.LoanUpdateView.as_view(),
+        name='update_loan'
+    ),
+    # ex: /income_and_expense/delete_loan/2019/3/567/
+    path(
+        'delete_loan/<int:year>/<int:month>/<int:pk>',
+        views.LoanDeleteView.as_view(),
+        name='delete_loan'
     )
 ]

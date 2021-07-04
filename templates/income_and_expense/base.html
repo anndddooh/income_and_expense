@@ -57,7 +57,7 @@
 					<a class="nav-link" href="{% url 'income_and_expense:method_require' this_year this_mon %}">支払別必要額</a>
 				</li>
 				<li class="nav-item" id="nav-item-loan">
-					<a class="nav-link" href="#">ローン支払登録</a>
+					<a class="nav-link" href="{% url 'income_and_expense:loan' this_year this_mon %}">ローン</a>
 				</li>
 				<li class="nav-item" id="nav-item-logout">
 					<a class="nav-link" href="{% url 'income_and_expense:logout' %}">ログアウト</a>

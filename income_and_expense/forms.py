@@ -3,7 +3,7 @@ from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 from django.contrib.auth import forms as auth_forms
 from django import forms
-from .models import Income, Expense, Account
+from .models import Income, Expense, Account, Loan
 from bootstrap_modal_forms.forms import BSModalForm
 from income_and_expense.const import const_data
 
@@ -92,4 +92,30 @@ class BalanceForm(BSModalForm):
             'bank': const_data.const.SHOWN_NAME_ACCOUNT,
             'user': const_data.const.SHOWN_NAME_USER,
             'balance': const_data.const.SHOWN_NAME_BALANCE
+        }
+
+
+class LoanForm(BSModalForm):
+    class Meta:
+        model = Loan
+        fields = ['name', 'pay_day', 'first_year', 'first_month',
+            'last_year', 'last_month', 'method', 'amount_first',
+            'amount_from_second', 'undecided']
+        labels = {
+            'name': const_data.const.SHOWN_NAME_NAME,
+            'pay_day': const_data.const.SHOWN_NAME_PAY_DATE,
+            'first_year': const_data.const.SHOWN_NAME_FIRST_YEAR,
+            'first_month': const_data.const.SHOWN_NAME_FIRST_MONTH,
+            'last_year': const_data.const.SHOWN_NAME_LAST_YEAR,
+            'last_month': const_data.const.SHOWN_NAME_LAST_MONTH,
+            'method': const_data.const.SHOWN_NAME_METHOD,
+            'amount_first': (
+                const_data.const.SHOWN_NAME_AMOUNT
+                + const_data.const.SHOWN_NAME_FIRST
+            ),
+            'amount_from_second': (
+                const_data.const.SHOWN_NAME_AMOUNT
+                + const_data.const.SHOWN_NAME_FROM_SECOND
+            ),
+            'undecided': const_data.const.SHOWN_NAME_UNDECIDED
         }

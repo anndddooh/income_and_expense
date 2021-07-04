@@ -8,14 +8,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.views import LoginView, LogoutView
+from django.db.models import Q
 from bootstrap_modal_forms.generic import (
     BSModalCreateView, BSModalUpdateView, BSModalDeleteView
 )
 from .models import (
     Expense, Income, DefaultExpenseMonth, DefaultIncomeMonth, Account,
-    Method, TemplateExpense
+    Method, TemplateExpense, Loan
 )
-from .forms import LoginForm, IncomeForm, ExpenseForm, BalanceForm
+from .forms import LoginForm, IncomeForm, ExpenseForm, BalanceForm, LoanForm
 from .const import const_data
 
 def can_add_default_inex(year, month):
@@ -130,8 +131,8 @@ def add_incs_from_default(year, month):
 
     return add_num
 
-def add_exps_from_default(year, month):
-    """デフォルトの支出から支出を追加する。
+def add_exps_from_default_and_loan(year, month):
+    """デフォルトの支出とローンから支出を追加する。
 
     Parameters
     ----------
@@ -176,6 +177,34 @@ def add_exps_from_default(year, month):
                 pay_date=datetime.date(year, month, def_exp.pay_day),
                 method=def_exp.method,
                 amount=def_exp.amount, undecided=def_exp.undecided,
+            ).save()
+            add_num += 1
+
+    # ローンから支出を追加
+    loans = Loan.objects.filter(
+        (Q(first_year__lt=year) | Q(first_year=year, first_month__lte=month)),
+        (Q(last_year__gt=year) | Q(last_year=year, last_month__gte=month))
+    )
+    for loan in loans:
+        can_add = True
+        # 既に登録されているかのチェック
+        for this_month_exp in this_month_exps:
+            if loan.name == this_month_exp.name:
+                # 既に登録されている場合
+                can_add = False
+                break
+        # 追加
+        if can_add:
+            # まだ登録されていない場合
+            if year == loan.first_year and month == loan.first_month:
+                amount = loan.amount_first
+            else:
+                amount = loan.amount_from_second
+
+            Expense(
+                name=loan.name,
+                pay_date=datetime.date(year, month, loan.pay_day),
+                method=loan.method, amount=amount, undecided=loan.undecided,
             ).save()
             add_num += 1
 
@@ -486,6 +515,50 @@ class BalanceUpdateView(BSModalUpdateView):
         )
 
 
+class LoanCreateView(BSModalCreateView):
+    template_name = 'income_and_expense/create_loan.html'
+    form_class = LoanForm
+    success_message = '成功: %(name)sが追加されました。'
+
+    def get_success_url(self):
+        return reverse_lazy(
+            'income_and_expense:loan',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        )
+
+
+class LoanUpdateView(BSModalUpdateView):
+    model = Loan
+    template_name = 'income_and_expense/update_loan.html'
+    form_class = LoanForm
+    success_message = '成功: %(name)sが更新されました。'
+
+    def get_success_url(self):
+        return reverse_lazy(
+            'income_and_expense:loan',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        )
+
+
+class LoanDeleteView(BSModalDeleteView):
+    model = Loan
+    template_name = 'income_and_expense/delete_loan.html'
+    form_class = LoanForm
+
+    def post(self, request, *args, **kwargs):
+        messages.success(
+            self.request,
+            "成功: %sが削除されました。" % Loan.objects.get(id=kwargs['pk']).name
+        )
+        return super().delete(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy(
+            'income_and_expense:loan',
+            args=[self.kwargs['year'], self.kwargs['month']]
+        )
+
+
 @login_required
 def index(request):
     """トップページ用のビュー関数。
@@ -693,9 +766,9 @@ def add_default_exps(request, year, month):
         HttpResponseRedirectオブジェクト
     """
 
-    # デフォルトの支出から支出を追加
+    # デフォルトの支出とローンから支出を追加
     if can_add_default_inex(year, month):
-        if add_exps_from_default(year, month) > 0:
+        if add_exps_from_default_and_loan(year, month) > 0:
             messages.success(request, "成功: デフォルト支出が追加されました。")
         else:
             messages.error(request, "失敗: 追加できるデフォルト支出が存在しませんでした。")
@@ -931,3 +1004,48 @@ def method_done(request, year, month, pk):
             args=(year, month)
         )
     )
+
+@login_required
+def loan(request, year, month):
+    """loanページ用のビュー関数。
+
+    Parameters
+    ----------
+    request : HttpRequest
+        HttpRequestオブジェクト
+    year : int
+        会計年
+    month : int
+        会計月
+
+    Returns
+    -------
+    HttpResponse
+        HttpResponseオブジェクト
+    """
+
+    loans_and_completes = [] # 各ローンと終了しているかどうか
+
+    # ローン一覧を取得
+    loans = Loan.objects.all().order_by('method') # 全ローン
+
+    for loan in loans:
+        loan_and_complete = {}
+        loan_and_complete['loan'] = loan
+
+        is_over_year = year > loan.last_year
+        is_same_year_and_over_month = (
+            (year == loan.last_year) and (month > loan.last_month)
+        )
+        loan_and_complete['complete'] = (
+            is_over_year or is_same_year_and_over_month
+        )
+
+        loans_and_completes.append(loan_and_complete)
+
+    return render(request, 'income_and_expense/loan.html', {
+        'path_name': const_data.const.PATH_NAME_LOAN,
+        'this_year': year,
+        'this_mon': month,
+        'loans_and_completes': loans_and_completes,
+    })

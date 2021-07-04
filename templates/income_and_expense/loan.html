@@ -1,0 +1,85 @@
+{% extends 'income_and_expense/base.html' %}
+
+{% load static %}
+
+{% block main %}
+	<div class="row pt-4">
+		<div class="col text-center">
+			<h1 class="align-middle d-inline">ローン</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col text-center">
+			<span class="align-middle text-muted">{{ this_year }}年{{ this_mon }}月</span>
+		</div>
+	</div>
+	<div class="row pt-2">
+		<div class="col text-center">
+			<button class="btn" id="create-button" type="button" name="button">
+				<span><i class="fas fa-plus mr-2"></i>ローン追加</span>
+			</button>
+		</div>
+	</div>
+	<div class="row pt-4 pb-4 justify-content-center">
+		<div class="col-lg-10">
+			<div class="table-responsive">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th class="text-nowrap">名前</th>
+							<th class="text-nowrap">支払日</th>
+							<th class="text-nowrap">開始年月</th>
+							<th class="text-nowrap">終了年月</th>
+							<th class="text-nowrap">支払方法</th>
+							<th class="text-nowrap">口座名</th>
+							<th class="text-nowrap">金額（初回）</th>
+							<th class="text-nowrap">金額（２回目以降）</th>
+							<th class="text-nowrap">未定</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for loan_and_complete in loans_and_completes %}
+							{% if loan_and_complete.complete == True %}
+								<tr class="table-danger">
+							{% else %}
+								<tr>
+							{% endif %}
+									<td class="align-middle text-nowrap update-loan" data-url="{% url 'income_and_expense:update_loan' this_year this_mon loan_and_complete.loan.pk %}">{{ loan_and_complete.loan.name }}</td>
+									<td class="align-middle text-nowrap update-loan" data-url="{% url 'income_and_expense:update_loan' this_year this_mon loan_and_complete.loan.pk %}">{{ loan_and_complete.loan.pay_day }}</td>
+									<td class="align-middle text-nowrap update-loan" data-url="{% url 'income_and_expense:update_loan' this_year this_mon loan_and_complete.loan.pk %}">{{ loan_and_complete.loan.first_year }}年{{ loan_and_complete.loan.first_month }}月</td>
+									<td class="align-middle text-nowrap update-loan" data-url="{% url 'income_and_expense:update_loan' this_year this_mon loan_and_complete.loan.pk %}">{{ loan_and_complete.loan.last_year }}年{{ loan_and_complete.loan.last_month }}月</td>
+									<td class="align-middle text-nowrap update-loan" data-url="{% url 'income_and_expense:update_loan' this_year this_mon loan_and_complete.loan.pk %}">{{ loan_and_complete.loan.method }}</td>
+									<td class="align-middle text-nowrap update-loan" data-url="{% url 'income_and_expense:update_loan' this_year this_mon loan_and_complete.loan.pk %}">{{ loan_and_complete.loan.method.account }}</td>
+									<td class="align-middle text-nowrap update-loan" data-url="{% url 'income_and_expense:update_loan' this_year this_mon loan_and_complete.loan.pk %}">¥ {{ loan_and_complete.loan.amount_first }}</td>
+									<td class="align-middle text-nowrap update-loan" data-url="{% url 'income_and_expense:update_loan' this_year this_mon loan_and_complete.loan.pk %}">¥ {{ loan_and_complete.loan.amount_from_second }}</td>
+									<td class="align-middle text-nowrap update-loan" data-url="{% url 'income_and_expense:update_loan' this_year this_mon loan_and_complete.loan.pk %}">{{ loan_and_complete.loan.undecided }}</td>
+									<td class="align-middle text-nowrap">
+										<button type="button" class="delete-button btn btn-sm btn-danger" data-url="{% url 'income_and_expense:delete_loan' this_year this_mon loan_and_complete.loan.pk %}">
+											<span><i class="fas fa-trash"></i></span>
+										</button>
+									</td>
+								</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+			</div>
+		</div>
+	</div>
+
+	<script src="{% static 'income_and_expense/js/loan.js' %}"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$("#create-button").modalForm({
+				formURL: "{% url 'income_and_expense:create_loan' this_year this_mon %}"
+			});
+		});
+	</script>
+{% endblock %}
