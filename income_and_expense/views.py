@@ -425,7 +425,7 @@ class ExpenseCreateView(BSModalCreateView):
                     pay_date = datetime.date(
                         today.year, today.month, template_exp.pay_day
                     ) + relativedelta(months=1)
-            context_template_exp["pay_date"] = "{0}/{1}/{2}".format(
+            context_template_exp["pay_date"] = "{0}-{1}-{2}".format(
                 pay_date.year,
                 str(pay_date.month).zfill(2),
                 str(pay_date.day).zfill(2)

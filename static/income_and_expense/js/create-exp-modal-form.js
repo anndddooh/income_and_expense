@@ -1,6 +1,12 @@
 $(document).ready(function () {
     if ($('#id_pay_date').val() != "") {
-        flatpickr('#id_pay_date', {dateFormat: "Y/m/d"});
+        flatpickr(
+            '#id_pay_date',
+            {
+                dateFormat: "Y-m-d",
+                disableMobile: "true"
+            }
+        );
     } else {
         current_date = new Date();
         date_info = [
@@ -11,8 +17,9 @@ $(document).ready(function () {
         flatpickr(
             '#id_pay_date',
             {
-                defaultDate: date_info.join('/'),
-                dateFormat: "Y/m/d"
+                defaultDate: date_info.join('-'),
+                dateFormat: "Y-m-d",
+                disableMobile: "true"
             }
         );
     }
