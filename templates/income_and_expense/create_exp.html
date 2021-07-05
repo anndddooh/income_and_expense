@@ -2,8 +2,11 @@
 {% load static %}
 {% load widget_tweaks %}
 
+{{ template_exps|json_script:"template-exps" }}
+
 <link rel="stylesheet" type="text/css" href="{% static 'income_and_expense/css/modal-form.css' %}">
-<script src="{% static 'income_and_expense/js/create-modal-form.js' %}"></script>
+<script src="{% static 'income_and_expense/js/func.js' %}"></script>
+<script src="{% static 'income_and_expense/js/create-exp-modal-form.js' %}"></script>
 
 <form method="post" action="">
     {% csrf_token %}
@@ -16,8 +19,17 @@
     </div>
 
     <div class="modal-body">
+        <div class="form-group">
+            <label for="expense_type">簡易入力</label>
+            <select name="expense_type" placeholder="支出種別" class="form-control is-valid" required="" id="expense_type">
+                <option value="0">---------</option>
+                {% for template_exp in template_exps %}
+                    <option value="{{ forloop.counter }}">{{ template_exp.template_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
         {% for field in form %}
-            <div class="form-group">
+            <div class="form-group" id="input-form">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {% if field.errors %}
                     {% render_field field class="form-control is-invalid" placeholder=field.label %}
