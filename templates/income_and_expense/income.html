@@ -40,9 +40,9 @@
 					<tbody>
 						{% for inc in incs %}
 							{% if inc.undecided == True %}
-								<tr class="table-danger">
-							{% elif inc.done == False %}
 								<tr class="table-warning">
+							{% elif inc.done == True %}
+								<tr class="table-secondary">
 							{% else %}
 								<tr>
 							{% endif %}

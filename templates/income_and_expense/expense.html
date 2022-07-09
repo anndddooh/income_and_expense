@@ -40,9 +40,9 @@
 					<tbody>
 						{% for exp in exps %}
 							{% if exp.undecided == True %}
-								<tr class="table-danger">
-							{% elif exp.done == False %}
 								<tr class="table-warning">
+							{% elif exp.done == True %}
+								<tr class="table-secondary">
 							{% else %}
 								<tr>
 							{% endif %}
