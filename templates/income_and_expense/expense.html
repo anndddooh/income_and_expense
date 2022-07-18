@@ -39,9 +39,9 @@
 					</thead>
 					<tbody>
 						{% for exp in exps %}
-							{% if exp.undecided == True %}
+							{% if exp.state == 1 %}
 								<tr class="table-warning">
-							{% elif exp.done == True %}
+							{% elif exp.state == 3 %}
 								<tr class="table-secondary">
 							{% else %}
 								<tr>

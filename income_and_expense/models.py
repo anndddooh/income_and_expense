@@ -64,13 +64,18 @@ class Method(models.Model):
         return my_str
 
 
+class StateChoices(models.IntegerChoices):
+    UNDECIDED = 1, const_data.const.SHOWN_NAME_UNDECIDED
+    DECIDED = 2, const_data.const.SHOWN_NAME_DECIDED
+    DONE = 3, const_data.const.SHOWN_NAME_DONE
+
+
 class Expense(models.Model):
     name = models.CharField(max_length=50)
     pay_date = models.DateField('payment date')
     method = models.ForeignKey(Method, on_delete=models.PROTECT)
     amount = models.PositiveIntegerField()
-    undecided = models.BooleanField()
-    done = models.BooleanField(default=False)
+    state = models.IntegerField(choices=StateChoices.choices, default=StateChoices.UNDECIDED)
 
     class Meta:
         verbose_name = const_data.const.SHOWN_NAME_EXPENSE
@@ -86,6 +91,10 @@ class Expense(models.Model):
     def formed_amount(self):
         return "¥{:,}".format(self.amount)
     formed_amount.short_description = const_data.const.SHOWN_NAME_AMOUNT
+
+    def state_info(self):
+        return (StateChoices(self.state).label)
+    state_info.short_description = const_data.const.SHOWN_NAME_STATE
 
 
 class Income(models.Model):

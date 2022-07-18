@@ -4,31 +4,24 @@ from .models import *
 
 from income_and_expense.const import const_data
 
-def unmark_undecided(modeladmin, request, queryset):
-    queryset.update(undecided=False)
-unmark_undecided.short_description = (
-    const_data.const.SHOWN_NAME_DECIDED +
-    const_data.const.SHOWN_NAME_CHANGE_TO
-)
-
-def mark_undecided(modeladmin, request, queryset):
-    queryset.update(undecided=True)
-mark_undecided.short_description = (
+def set_undecided(modeladmin, request, queryset):
+    queryset.update(state=StateChoices.UNDECIDED)
+set_undecided.short_description = (
     const_data.const.SHOWN_NAME_UNDECIDED +
     const_data.const.SHOWN_NAME_CHANGE_TO
 )
 
-def mark_done(modeladmin, request, queryset):
-    queryset.update(done=True)
-mark_done.short_description = (
-    const_data.const.SHOWN_NAME_DONE +
+def set_decided(modeladmin, request, queryset):
+    queryset.update(state=StateChoices.DECIDED)
+set_decided.short_description = (
+    const_data.const.SHOWN_NAME_DECIDED +
     const_data.const.SHOWN_NAME_CHANGE_TO
 )
 
-def unmark_done(modeladmin, request, queryset):
-    queryset.update(done=False)
-unmark_done.short_description = (
-    const_data.const.SHOWN_NAME_NOT_DONE +
+def set_done(modeladmin, request, queryset):
+    queryset.update(state=StateChoices.DONE)
+set_done.short_description = (
+    const_data.const.SHOWN_NAME_DONE +
     const_data.const.SHOWN_NAME_CHANGE_TO
 )
 
@@ -78,20 +71,14 @@ class MethodAdmin(admin.ModelAdmin):
 
 class ExpenseAdmin(admin.ModelAdmin):
     list_display = (
-        'name_custom', 'done_custom', 'undecided_custom', 'formed_amount',
+        'name_custom', 'state_info', 'formed_amount',
         'method_custom', 'account_info', 'pay_date_custom'
     )
-    list_filter = ('done', 'method', 'undecided')
-    actions = [unmark_undecided, mark_undecided, mark_done, unmark_done]
+    list_filter = ('state', 'method')
+    actions = [set_undecided, set_decided, set_done]
 
     def name_custom(self, obj):
         return obj.name
-
-    def done_custom(self, obj):
-        return obj.done
-
-    def undecided_custom(self, obj):
-        return obj.undecided
 
     def method_custom(self, obj):
         return obj.method
@@ -100,10 +87,6 @@ class ExpenseAdmin(admin.ModelAdmin):
         return obj.pay_date
 
     name_custom.short_description = const_data.const.SHOWN_NAME_NAME
-    done_custom.short_description = const_data.const.SHOWN_NAME_DONE
-    undecided_custom.short_description = (
-        const_data.const.SHOWN_NAME_UNDECIDED
-    )
     method_custom.short_description = const_data.const.SHOWN_NAME_METHOD
     pay_date_custom.short_description = const_data.const.SHOWN_NAME_PAY_DATE
 
@@ -114,7 +97,7 @@ class IncomeAdmin(admin.ModelAdmin):
         'method_custom', 'account_info', 'pay_date_custom'
     )
     list_filter = ('done', 'method', 'undecided')
-    actions = [unmark_undecided, mark_undecided, mark_done, unmark_done]
+    actions = [set_undecided, set_decided, set_done]
 
     def name_custom(self, obj):
         return obj.name

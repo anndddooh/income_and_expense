@@ -47,14 +47,13 @@ class LoginForm(auth_forms.AuthenticationForm):
 class ExpenseForm(BSModalModelForm):
     class Meta:
         model = Expense
-        fields = ['name', 'pay_date', 'method', 'amount', 'undecided', 'done']
+        fields = ['name', 'pay_date', 'method', 'amount', 'state']
         labels = {
             'name': const_data.const.SHOWN_NAME_NAME,
             'pay_date': const_data.const.SHOWN_NAME_PAY_DATE,
             'method': const_data.const.SHOWN_NAME_METHOD,
             'amount': const_data.const.SHOWN_NAME_AMOUNT,
-            'undecided': const_data.const.SHOWN_NAME_UNDECIDED,
-            'done': const_data.const.SHOWN_NAME_DONE
+            'state': const_data.const.SHOWN_NAME_STATE
         }
 
     def clean_pay_date(self):
