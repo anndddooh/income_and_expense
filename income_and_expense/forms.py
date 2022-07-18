@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.contrib.auth import forms as auth_forms
 from django import forms
 from .models import Income, Expense, Account, Loan
-from bootstrap_modal_forms.forms import BSModalForm
+from bootstrap_modal_forms.forms import BSModalModelForm
 from income_and_expense.const import const_data
 
 
@@ -44,7 +44,7 @@ class LoginForm(auth_forms.AuthenticationForm):
             field.widget.attrs['placeholder'] = field.label
 
 
-class ExpenseForm(BSModalForm):
+class ExpenseForm(BSModalModelForm):
     class Meta:
         model = Expense
         fields = ['name', 'pay_date', 'method', 'amount', 'undecided', 'done']
@@ -64,7 +64,7 @@ class ExpenseForm(BSModalForm):
         return pay_date
 
 
-class IncomeForm(BSModalForm):
+class IncomeForm(BSModalModelForm):
     class Meta:
         model = Income
         fields = ['name', 'pay_date', 'method', 'amount', 'undecided', 'done']
@@ -84,7 +84,7 @@ class IncomeForm(BSModalForm):
         return pay_date
 
 
-class BalanceForm(BSModalForm):
+class BalanceForm(BSModalModelForm):
     class Meta:
         model = Account
         fields = ['bank', 'user', 'balance']
@@ -95,7 +95,7 @@ class BalanceForm(BSModalForm):
         }
 
 
-class LoanForm(BSModalForm):
+class LoanForm(BSModalModelForm):
     class Meta:
         model = Loan
         fields = ['name', 'pay_day', 'first_year', 'first_month',

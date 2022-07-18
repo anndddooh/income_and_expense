@@ -119,3 +119,5 @@ LOGIN_URL = '/income_and_expense/login'
 LOGIN_REDIRECT_URL = '/income_and_expense'
 
 LOGOUT_REDIRECT_URL = '/income_and_expense'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

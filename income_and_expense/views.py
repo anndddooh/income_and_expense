@@ -357,6 +357,7 @@ class IncomeDeleteView(BSModalDeleteView):
     model = Income
     template_name = 'income_and_expense/delete_inc.html'
     form_class = IncomeForm
+    success_message = ''
 
     def post(self, request, *args, **kwargs):
         pay_date = Income.objects.get(pk=kwargs['pk']).pay_date
@@ -476,6 +477,7 @@ class ExpenseDeleteView(BSModalDeleteView):
     model = Expense
     template_name = 'income_and_expense/delete_exp.html'
     form_class = ExpenseForm
+    success_message = ''
 
     def post(self, request, *args, **kwargs):
         pay_date = Expense.objects.get(pk=kwargs['pk']).pay_date
@@ -548,6 +550,7 @@ class LoanDeleteView(BSModalDeleteView):
     model = Loan
     template_name = 'income_and_expense/delete_loan.html'
     form_class = LoanForm
+    success_message = ''
 
     def post(self, request, *args, **kwargs):
         messages.success(
