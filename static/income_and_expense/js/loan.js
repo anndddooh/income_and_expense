@@ -5,9 +5,9 @@ $(document).ready(function () {
         $(this).modalForm({
             formURL: $(this).data('url')
         });
-    })
+    });
 
-    $(".update-loan").on('click', function () {
+    $(".update-loan").each(function () {
         $(this).modalForm({
             formURL: $(this).data('url')
         });

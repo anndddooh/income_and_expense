@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $("#nav-item-balance").addClass("active");
 
-    $(".update-balance").on('click', function () {
+    $(".update-balance").each(function () {
         $(this).modalForm({ formURL: $(this).data('url') });
     });
 });

@@ -5,9 +5,9 @@ $(document).ready(function () {
         $(this).modalForm({
             formURL: $(this).data('url')
         });
-    })
+    });
 
-    $(".update-inc").on('click', function () {
+    $(".update-inc").each(function () {
         $(this).modalForm({
             formURL: $(this).data('url')
         });
