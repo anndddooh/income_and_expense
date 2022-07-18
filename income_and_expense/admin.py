@@ -93,20 +93,14 @@ class ExpenseAdmin(admin.ModelAdmin):
 
 class IncomeAdmin(admin.ModelAdmin):
     list_display = (
-        'name_custom', 'done_custom', 'undecided_custom', 'formed_amount',
+        'name_custom', 'state_info', 'formed_amount',
         'method_custom', 'account_info', 'pay_date_custom'
     )
-    list_filter = ('done', 'method', 'undecided')
+    list_filter = ('state', 'method')
     actions = [set_undecided, set_decided, set_done]
 
     def name_custom(self, obj):
         return obj.name
-
-    def done_custom(self, obj):
-        return obj.done
-
-    def undecided_custom(self, obj):
-        return obj.undecided
 
     def method_custom(self, obj):
         return obj.method
@@ -115,10 +109,6 @@ class IncomeAdmin(admin.ModelAdmin):
         return obj.pay_date
 
     name_custom.short_description = const_data.const.SHOWN_NAME_NAME
-    done_custom.short_description = const_data.const.SHOWN_NAME_DONE
-    undecided_custom.short_description = (
-        const_data.const.SHOWN_NAME_UNDECIDED
-    )
     method_custom.short_description = const_data.const.SHOWN_NAME_METHOD
     pay_date_custom.short_description = const_data.const.SHOWN_NAME_PAY_DATE
 
