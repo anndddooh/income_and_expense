@@ -65,9 +65,9 @@ class Method(models.Model):
 
 
 class StateChoices(models.IntegerChoices):
-    UNDECIDED = 1, const_data.const.SHOWN_NAME_UNDECIDED
-    DECIDED = 2, const_data.const.SHOWN_NAME_DECIDED
-    DONE = 3, const_data.const.SHOWN_NAME_DONE
+    UNDECIDED = 0, const_data.const.SHOWN_NAME_UNDECIDED
+    DECIDED = 1, const_data.const.SHOWN_NAME_DECIDED
+    DONE = 2, const_data.const.SHOWN_NAME_DONE
 
 
 class Expense(models.Model):
@@ -132,7 +132,7 @@ class DefaultExpense(models.Model):
     ])
     method = models.ForeignKey(Method, on_delete=models.PROTECT)
     amount = models.PositiveIntegerField()
-    undecided = models.BooleanField()
+    state = models.IntegerField(choices=StateChoices.choices, default=StateChoices.UNDECIDED)
 
     class Meta:
         verbose_name = (
@@ -154,6 +154,10 @@ class DefaultExpense(models.Model):
     def formed_amount(self):
         return "¥{:,}".format(self.amount)
     formed_amount.short_description = const_data.const.SHOWN_NAME_AMOUNT
+
+    def state_info(self):
+        return (StateChoices(self.state).label)
+    state_info.short_description = const_data.const.SHOWN_NAME_STATE
 
 
 class DefaultIncome(models.Model):
@@ -164,7 +168,7 @@ class DefaultIncome(models.Model):
     ])
     method = models.ForeignKey(Method, on_delete=models.PROTECT)
     amount = models.PositiveIntegerField()
-    undecided = models.BooleanField()
+    state = models.IntegerField(choices=StateChoices.choices, default=StateChoices.UNDECIDED)
 
     class Meta:
         verbose_name = (
@@ -186,6 +190,10 @@ class DefaultIncome(models.Model):
     def formed_amount(self):
         return "¥{:,}".format(self.amount)
     formed_amount.short_description = const_data.const.SHOWN_NAME_AMOUNT
+
+    def state_info(self):
+        return (StateChoices(self.state).label)
+    state_info.short_description = const_data.const.SHOWN_NAME_STATE
 
 
 class DefaultExpenseMonth(models.Model):
@@ -271,8 +279,7 @@ class TemplateExpense(models.Model):
         null=True, blank=True
     )
     method = models.ForeignKey(Method, on_delete=models.PROTECT)
-    undecided = models.BooleanField()
-    done = models.BooleanField()
+    state = models.IntegerField(choices=StateChoices.choices, default=StateChoices.UNDECIDED)
 
     class Meta:
         verbose_name = (
@@ -290,6 +297,10 @@ class TemplateExpense(models.Model):
     def account_info(self):
         return self.method.account
     account_info.short_description = const_data.const.SHOWN_NAME_ACCOUNT
+
+    def state_info(self):
+        return (StateChoices(self.state).label)
+    state_info.short_description = const_data.const.SHOWN_NAME_STATE
 
 
 class Loan(models.Model):
@@ -311,7 +322,7 @@ class Loan(models.Model):
     method = models.ForeignKey(Method, on_delete=models.PROTECT)
     amount_first = models.PositiveIntegerField()
     amount_from_second = models.PositiveIntegerField()
-    undecided = models.BooleanField()
+    state = models.IntegerField(choices=StateChoices.choices, default=StateChoices.UNDECIDED)
 
     class Meta:
         verbose_name = const_data.const.SHOWN_NAME_LOAN
@@ -337,3 +348,7 @@ class Loan(models.Model):
         const_data.const.SHOWN_NAME_AMOUNT +
         const_data.const.SHOWN_NAME_FROM_SECOND
     )
+
+    def state_info(self):
+        return (StateChoices(self.state).label)
+    state_info.short_description = const_data.const.SHOWN_NAME_STATE

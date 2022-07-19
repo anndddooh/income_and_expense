@@ -115,17 +115,14 @@ class IncomeAdmin(admin.ModelAdmin):
 
 class DefaultExpenseAdmin(admin.ModelAdmin):
     list_display = (
-        'name_custom', 'undecided_custom', 'formed_amount',
+        'name_custom', 'state_info', 'formed_amount',
         'method_custom', 'account_info', 'pay_day_custom'
     )
-    list_filter = ('method', 'undecided')
+    list_filter = ('method', 'state')
     inlines = [DefaultExpenseMonthInline]
 
     def name_custom(self, obj):
         return obj.name
-
-    def undecided_custom(self, obj):
-        return obj.undecided
 
     def method_custom(self, obj):
         return obj.method
@@ -134,26 +131,20 @@ class DefaultExpenseAdmin(admin.ModelAdmin):
         return obj.pay_day
 
     name_custom.short_description = const_data.const.SHOWN_NAME_NAME
-    undecided_custom.short_description = (
-        const_data.const.SHOWN_NAME_UNDECIDED
-    )
     method_custom.short_description = const_data.const.SHOWN_NAME_METHOD
     pay_day_custom.short_description = const_data.const.SHOWN_NAME_PAY_DAY
 
 
 class DefaultIncomeAdmin(admin.ModelAdmin):
     list_display = (
-        'name_custom', 'undecided_custom', 'formed_amount',
+        'name_custom', 'state_info', 'formed_amount',
         'method_custom', 'account_info', 'pay_day_custom'
     )
-    list_filter = ('method', 'undecided')
+    list_filter = ('method', 'state')
     inlines = [DefaultIncomeMonthInline]
 
     def name_custom(self, obj):
         return obj.name
-
-    def undecided_custom(self, obj):
-        return obj.undecided
 
     def method_custom(self, obj):
         return obj.method
@@ -162,9 +153,6 @@ class DefaultIncomeAdmin(admin.ModelAdmin):
         return obj.pay_day
 
     name_custom.short_description = const_data.const.SHOWN_NAME_NAME
-    undecided_custom.short_description = (
-        const_data.const.SHOWN_NAME_UNDECIDED
-    )
     method_custom.short_description = const_data.const.SHOWN_NAME_METHOD
     pay_day_custom.short_description = const_data.const.SHOWN_NAME_PAY_DAY
 
@@ -191,8 +179,8 @@ class DefaultIncomeMonthAdmin(admin.ModelAdmin):
 
 class TemplateExpenseAdmin(admin.ModelAdmin):
     list_display = (
-        'template_name_custom', 'name_custom', 'undecided_custom',
-        'done_custom', 'method_custom', 'account_info', 'date_type_custom',
+        'template_name_custom', 'name_custom', 'state_info',
+        'method_custom', 'account_info', 'date_type_custom',
         'pay_day_custom', 'limit_day_of_this_month_custom'
     )
 
@@ -201,12 +189,6 @@ class TemplateExpenseAdmin(admin.ModelAdmin):
 
     def name_custom(self, obj):
         return obj.name
-
-    def undecided_custom(self, obj):
-        return obj.undecided
-
-    def done_custom(self, obj):
-        return obj.done
 
     def method_custom(self, obj):
         return obj.method
@@ -225,10 +207,6 @@ class TemplateExpenseAdmin(admin.ModelAdmin):
         + const_data.const.SHOWN_NAME_TEMPLATE
     )
     name_custom.short_description = const_data.const.SHOWN_NAME_NAME
-    undecided_custom.short_description = (
-        const_data.const.SHOWN_NAME_UNDECIDED
-    )
-    done_custom.short_description = const_data.const.SHOWN_NAME_DONE
     method_custom.short_description = const_data.const.SHOWN_NAME_METHOD
     date_type_custom.short_description = (
         const_data.const.SHOWN_NAME_DATE_TYPE
@@ -241,7 +219,7 @@ class TemplateExpenseAdmin(admin.ModelAdmin):
 
 class LoanAdmin(admin.ModelAdmin):
     list_display = (
-        'name_custom', 'undecided_custom', 'formed_amount_first',
+        'name_custom', 'state_info', 'formed_amount_first',
         'formed_amount_from_second', 'method_custom', 'account_info',
         'pay_day_custom', 'first_year_custom', 'first_month_custom',
         'last_year_custom', 'last_month_custom'
@@ -249,9 +227,6 @@ class LoanAdmin(admin.ModelAdmin):
 
     def name_custom(self, obj):
         return obj.name
-
-    def undecided_custom(self, obj):
-        return obj.undecided
 
     def method_custom(self, obj):
         return obj.method
@@ -272,9 +247,6 @@ class LoanAdmin(admin.ModelAdmin):
         return obj.last_month
 
     name_custom.short_description = const_data.const.SHOWN_NAME_NAME
-    undecided_custom.short_description = (
-        const_data.const.SHOWN_NAME_UNDECIDED
-    )
     method_custom.short_description = const_data.const.SHOWN_NAME_METHOD
     pay_day_custom.short_description = const_data.const.SHOWN_NAME_PAY_DAY
     first_year_custom.short_description = (

@@ -98,7 +98,7 @@ class LoanForm(BSModalModelForm):
         model = Loan
         fields = ['name', 'pay_day', 'first_year', 'first_month',
             'last_year', 'last_month', 'method', 'amount_first',
-            'amount_from_second', 'undecided']
+            'amount_from_second', 'state']
         labels = {
             'name': const_data.const.SHOWN_NAME_NAME,
             'pay_day': const_data.const.SHOWN_NAME_PAY_DATE,
@@ -115,5 +115,5 @@ class LoanForm(BSModalModelForm):
                 const_data.const.SHOWN_NAME_AMOUNT
                 + const_data.const.SHOWN_NAME_FROM_SECOND
             ),
-            'undecided': const_data.const.SHOWN_NAME_UNDECIDED
+            'state': const_data.const.SHOWN_NAME_STATE
         }

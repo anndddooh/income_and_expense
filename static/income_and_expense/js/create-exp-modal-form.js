@@ -37,16 +37,9 @@ $(document).ready(function () {
             $('#id_method option').filter(function(index) {
                 return $(this).text() === template_exp['method'];
             }).prop('selected', true);
-            if (template_exp['undecided'] === 'True') {
-                $('#id_undecided').prop("checked", true);
-            } else {
-                $('#id_undecided').prop("checked", false);
-            }
-            if (template_exp['done'] === 'True') {
-                $('#id_done').prop("checked", true);
-            } else {
-                $('#id_done').prop("checked", false);
-            }
+            $('#id_state option').filter(function(index) {
+                return $(this).val() == template_exp['state'];
+            }).prop('selected', true);
         }
     });
 });

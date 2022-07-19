@@ -9,11 +9,11 @@ def apply_state_settings(apps, schema_editor):
 
     for income in Income.objects.all():
         if income.undecided == True:
-            income.state = 1
+            income.state = 0
         elif income.done == False:
-            income.state = 2
+            income.state = 1
         else:
-            income.state = 3
+            income.state = 2
         income.save()
 
 
@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='income',
             name='state',
-            field=models.IntegerField(choices=[(1, '未定'), (2, '確定'), (3, '完了')], default=1),
+            field=models.IntegerField(choices=[(0, '未定'), (1, '確定'), (2, '完了')], default=1),
         ),
         migrations.RunPython(apply_state_settings, None),
         migrations.RemoveField(

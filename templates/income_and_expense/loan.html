@@ -34,7 +34,7 @@
 							<th class="text-nowrap">口座名</th>
 							<th class="text-nowrap">金額（初回）</th>
 							<th class="text-nowrap">金額（２回目以降）</th>
-							<th class="text-nowrap">未定</th>
+							<th class="text-nowrap">状態</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -53,7 +53,7 @@
 									<td class="align-middle text-nowrap update-loan" data-url="{% url 'income_and_expense:update_loan' this_year this_mon loan_and_complete.loan.pk %}">{{ loan_and_complete.loan.method.account }}</td>
 									<td class="align-middle text-nowrap update-loan" data-url="{% url 'income_and_expense:update_loan' this_year this_mon loan_and_complete.loan.pk %}">¥ {{ loan_and_complete.loan.amount_first }}</td>
 									<td class="align-middle text-nowrap update-loan" data-url="{% url 'income_and_expense:update_loan' this_year this_mon loan_and_complete.loan.pk %}">¥ {{ loan_and_complete.loan.amount_from_second }}</td>
-									<td class="align-middle text-nowrap update-loan" data-url="{% url 'income_and_expense:update_loan' this_year this_mon loan_and_complete.loan.pk %}">{{ loan_and_complete.loan.undecided }}</td>
+									<td class="align-middle text-nowrap update-loan" data-url="{% url 'income_and_expense:update_loan' this_year this_mon loan_and_complete.loan.pk %}">{{ loan_and_complete.loan.state_info }}</td>
 									<td class="align-middle text-nowrap">
 										<button type="button" class="delete-button btn btn-sm btn-danger" data-url="{% url 'income_and_expense:delete_loan' this_year this_mon loan_and_complete.loan.pk %}">
 											<span><i class="fas fa-trash"></i></span>

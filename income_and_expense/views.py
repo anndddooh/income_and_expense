@@ -14,7 +14,7 @@ from bootstrap_modal_forms.generic import (
 )
 from .models import (
     Expense, Income, DefaultExpenseMonth, DefaultIncomeMonth, Account,
-    Method, TemplateExpense, Loan
+    Method, TemplateExpense, Loan, StateChoices
 )
 from .forms import LoginForm, IncomeForm, ExpenseForm, BalanceForm, LoanForm
 from .const import const_data
@@ -125,7 +125,7 @@ def add_incs_from_default(year, month):
                 name=def_inc.name,
                 pay_date=datetime.date(year, month, def_inc.pay_day),
                 method=def_inc.method, amount=def_inc.amount,
-                undecided=def_inc.undecided,
+                state=def_inc.state,
             ).save()
             add_num += 1
 
@@ -176,7 +176,7 @@ def add_exps_from_default_and_loan(year, month):
                 name=def_exp.name,
                 pay_date=datetime.date(year, month, def_exp.pay_day),
                 method=def_exp.method,
-                amount=def_exp.amount, undecided=def_exp.undecided,
+                amount=def_exp.amount, state=def_exp.state,
             ).save()
             add_num += 1
 
@@ -204,7 +204,7 @@ def add_exps_from_default_and_loan(year, month):
             Expense(
                 name=loan.name,
                 pay_date=datetime.date(year, month, loan.pay_day),
-                method=loan.method, amount=amount, undecided=loan.undecided,
+                method=loan.method, amount=amount, state=loan.state,
             ).save()
             add_num += 1
 
@@ -242,13 +242,13 @@ def get_balance_done(year, month):
 
     # 残高を計算
     # 今月までの収入（完了分）の合計
-    done_incs = incs_to_this_month.filter(done=True)
+    done_incs = incs_to_this_month.filter(state=StateChoices.DONE)
     done_inc_sums = done_incs.aggregate(Sum('amount'))
     done_inc_sum = done_inc_sums['amount__sum']
     if done_inc_sum is None:
         done_inc_sum = 0
     # 今月の支出（完了分）を減算
-    done_exps = exps_to_this_month.filter(done=True)
+    done_exps = exps_to_this_month.filter(state=StateChoices.DONE)
     done_exp_sums = done_exps.aggregate(Sum('amount'))
     done_exp_sum = done_exp_sums['amount__sum']
     if done_exp_sum is None:
@@ -409,10 +409,8 @@ class ExpenseCreateView(BSModalCreateView):
             context_template_exp["name"] = str(template_exp.name)
             # 支払方法
             context_template_exp["method"] = str(template_exp.method)
-            # 未定
-            context_template_exp["undecided"] = str(template_exp.undecided)
-            # 完了
-            context_template_exp["done"] = str(template_exp.done)
+            # 状態
+            context_template_exp["state"] = str(template_exp.state)
 
             # 支払日
             if template_exp.date_type == 'today':
@@ -873,8 +871,8 @@ def account_require(request, year, month):
     is_insufficient = False # 口座残高が不足しているかどうか
     insufficient_amount = 0 # 各口座の不足額
     for account in accounts:
-        require = this_month_exps.filter(
-            method__account=account, done=False
+        require = this_month_exps.filter(method__account=account).exclude(
+            state=StateChoices.DONE
         ).aggregate(Sum('amount'))['amount__sum']
         if require is None:
             require = 0
@@ -944,8 +942,8 @@ def method_require(request, year, month):
     method_requires = [] # 支払方法別の必要金額
     require_sum = 0 # 必要金額の合計値
     for method in methods:
-        require = this_month_exps.filter(
-            method=method, done=False
+        require = this_month_exps.filter(method=method).exclude(
+            state=StateChoices.DONE
         ).aggregate(Sum('amount'))['amount__sum']
         if require is None:
             require = 0
@@ -998,8 +996,7 @@ def method_done(request, year, month, pk):
         pay_date__gte=first_date, pay_date__lte=last_date
     )
     for target_exp in target_exps:
-        target_exp.done = True
-        target_exp.undecided = False
+        target_exp.state = StateChoices.DONE
         target_exp.save()
 
     messages.success(request, "成功: 支払済一括登録されました。")
