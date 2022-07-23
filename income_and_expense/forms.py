@@ -104,6 +104,12 @@ class BalanceForm(BSModalModelForm):
 
 
 class LoanForm(BSModalModelForm):
+    method = forms.ModelChoiceField(
+        Method.objects.order_by(
+            'name', 'account__user__name', 'account__bank__name'
+        ),
+        label=const_data.const.SHOWN_NAME_METHOD
+    )
     class Meta:
         model = Loan
         fields = ['name', 'pay_day', 'first_year', 'first_month',
@@ -116,7 +122,6 @@ class LoanForm(BSModalModelForm):
             'first_month': const_data.const.SHOWN_NAME_FIRST_MONTH,
             'last_year': const_data.const.SHOWN_NAME_LAST_YEAR,
             'last_month': const_data.const.SHOWN_NAME_LAST_MONTH,
-            'method': const_data.const.SHOWN_NAME_METHOD,
             'amount_first': (
                 const_data.const.SHOWN_NAME_AMOUNT
                 + const_data.const.SHOWN_NAME_FIRST

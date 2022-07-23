@@ -810,7 +810,10 @@ def balance(request, year, month):
     """
 
     # 各口座の実残高を取得
-    accounts = Account.objects.all().order_by('user') # 全口座
+    # 全口座
+    accounts = Account.objects.all().order_by(
+        'user__name', 'bank__name'
+    )
     balances = [] # 各口座の実残高
     balance_sum = 0 # 口座の実残高の合計
     for account in accounts:
@@ -866,7 +869,10 @@ def account_require(request, year, month):
     )
 
     # 各口座の必要金額を取得
-    accounts = Account.objects.all().order_by('user') # 全口座
+    # 全口座
+    accounts = Account.objects.all().order_by(
+        'user__name', 'bank__name'
+    )
     account_requires = [] # 各口座の必要金額
     require_sum = 0 # 必要金額の合計値
     insufficient_sum = 0 # 不足額の合計値
@@ -939,7 +945,7 @@ def method_require(request, year, month):
     # 支払方法別の必要金額を取得
     # 全支払方法
     methods = Method.objects.all().order_by(
-        'account__user', 'account__bank'
+        'account__user__name', 'name', 'account__bank__name'
     )
     method_requires = [] # 支払方法別の必要金額
     require_sum = 0 # 必要金額の合計値
@@ -1033,7 +1039,7 @@ def loan(request, year, month):
     loans_and_completes = [] # 各ローンと終了しているかどうか
 
     # ローン一覧を取得
-    loans = Loan.objects.all().order_by('method') # 全ローン
+    loans = Loan.objects.all().order_by('first_year', 'first_month') # 全ローン
 
     for loan in loans:
         loan_and_complete = {}
