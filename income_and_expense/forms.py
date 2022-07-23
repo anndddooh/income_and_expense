@@ -3,7 +3,7 @@ from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 from django.contrib.auth import forms as auth_forms
 from django import forms
-from .models import Income, Expense, Account, Loan
+from .models import Income, Expense, Account, Loan, Method
 from bootstrap_modal_forms.forms import BSModalModelForm
 from income_and_expense.const import const_data
 
@@ -45,13 +45,13 @@ class LoginForm(auth_forms.AuthenticationForm):
 
 
 class ExpenseForm(BSModalModelForm):
+    method = forms.ModelChoiceField(Method.objects.order_by('name', 'account__user', 'account__bank'), label=const_data.const.SHOWN_NAME_METHOD)
     class Meta:
         model = Expense
         fields = ['name', 'pay_date', 'method', 'amount', 'state']
         labels = {
             'name': const_data.const.SHOWN_NAME_NAME,
             'pay_date': const_data.const.SHOWN_NAME_PAY_DATE,
-            'method': const_data.const.SHOWN_NAME_METHOD,
             'amount': const_data.const.SHOWN_NAME_AMOUNT,
             'state': const_data.const.SHOWN_NAME_STATE
         }
@@ -64,13 +64,13 @@ class ExpenseForm(BSModalModelForm):
 
 
 class IncomeForm(BSModalModelForm):
+    method = forms.ModelChoiceField(Method.objects.order_by('name', 'account__user', 'account__bank'), label=const_data.const.SHOWN_NAME_METHOD)
     class Meta:
         model = Income
         fields = ['name', 'pay_date', 'method', 'amount', 'state']
         labels = {
             'name': const_data.const.SHOWN_NAME_NAME,
             'pay_date': const_data.const.SHOWN_NAME_PAY_DATE,
-            'method': const_data.const.SHOWN_NAME_METHOD,
             'amount': const_data.const.SHOWN_NAME_AMOUNT,
             'state': const_data.const.SHOWN_NAME_STATE
         }
