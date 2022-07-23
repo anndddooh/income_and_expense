@@ -647,8 +647,8 @@ def income(request, year, month):
 
     # 今月の収入リストを取得
     this_month_incs = Income.objects.order_by(
-        'method__account__user', 'method__name', 'method__account__bank',
-        'state', 'pay_date', 'name'
+        'method__account__user__name', 'method__name',
+        'method__account__bank__name', 'state', 'pay_date', 'name'
     ).filter(pay_date__gte=first_date, pay_date__lte=last_date)
 
     # 今月の収入の合計を取得
@@ -735,8 +735,8 @@ def expense(request, year, month):
 
     # 今月の支出リストを取得
     this_month_exps = Expense.objects.order_by(
-        'method__account__user', 'method__name', 'method__account__bank',
-        'state', 'pay_date', 'name'
+        'method__account__user__name', 'method__name',
+        'method__account__bank__name', 'state', 'pay_date', 'name'
     ).filter(pay_date__gte=first_date, pay_date__lte=last_date)
 
     # 今月の支出の合計を取得

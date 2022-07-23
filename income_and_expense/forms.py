@@ -45,7 +45,12 @@ class LoginForm(auth_forms.AuthenticationForm):
 
 
 class ExpenseForm(BSModalModelForm):
-    method = forms.ModelChoiceField(Method.objects.order_by('name', 'account__user', 'account__bank'), label=const_data.const.SHOWN_NAME_METHOD)
+    method = forms.ModelChoiceField(
+        Method.objects.order_by(
+            'name', 'account__user__name', 'account__bank__name'
+        ),
+        label=const_data.const.SHOWN_NAME_METHOD
+    )
     class Meta:
         model = Expense
         fields = ['name', 'pay_date', 'method', 'amount', 'state']
@@ -64,7 +69,12 @@ class ExpenseForm(BSModalModelForm):
 
 
 class IncomeForm(BSModalModelForm):
-    method = forms.ModelChoiceField(Method.objects.order_by('name', 'account__user', 'account__bank'), label=const_data.const.SHOWN_NAME_METHOD)
+    method = forms.ModelChoiceField(
+        Method.objects.order_by(
+            'name', 'account__user__name', 'account__bank__name'
+        ),
+        label=const_data.const.SHOWN_NAME_METHOD
+    )
     class Meta:
         model = Income
         fields = ['name', 'pay_date', 'method', 'amount', 'state']
