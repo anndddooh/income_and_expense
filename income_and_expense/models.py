@@ -76,6 +76,7 @@ class Expense(models.Model):
     method = models.ForeignKey(Method, on_delete=models.PROTECT)
     amount = models.PositiveIntegerField()
     state = models.IntegerField(choices=StateChoices.choices, default=StateChoices.UNDECIDED)
+    memo = models.TextField(blank=True, null=True)
 
     class Meta:
         verbose_name = const_data.const.SHOWN_NAME_EXPENSE
@@ -103,6 +104,7 @@ class Income(models.Model):
     method = models.ForeignKey(Method, on_delete=models.PROTECT)
     amount = models.PositiveIntegerField()
     state = models.IntegerField(choices=StateChoices.choices, default=StateChoices.UNDECIDED)
+    memo = models.TextField(blank=True, null=True)
 
     class Meta:
         verbose_name = const_data.const.SHOWN_NAME_INCOME

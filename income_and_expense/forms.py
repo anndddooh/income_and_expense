@@ -53,12 +53,13 @@ class ExpenseForm(BSModalModelForm):
     )
     class Meta:
         model = Expense
-        fields = ['name', 'pay_date', 'method', 'amount', 'state']
+        fields = ['name', 'pay_date', 'method', 'amount', 'state', 'memo']
         labels = {
             'name': const_data.const.SHOWN_NAME_NAME,
             'pay_date': const_data.const.SHOWN_NAME_PAY_DATE,
             'amount': const_data.const.SHOWN_NAME_AMOUNT,
-            'state': const_data.const.SHOWN_NAME_STATE
+            'state': const_data.const.SHOWN_NAME_STATE,
+            'memo': const_data.const.SHOWN_NAME_MEMO
         }
 
     def clean_pay_date(self):
@@ -77,12 +78,13 @@ class IncomeForm(BSModalModelForm):
     )
     class Meta:
         model = Income
-        fields = ['name', 'pay_date', 'method', 'amount', 'state']
+        fields = ['name', 'pay_date', 'method', 'amount', 'state', 'memo']
         labels = {
             'name': const_data.const.SHOWN_NAME_NAME,
             'pay_date': const_data.const.SHOWN_NAME_PAY_DATE,
             'amount': const_data.const.SHOWN_NAME_AMOUNT,
-            'state': const_data.const.SHOWN_NAME_STATE
+            'state': const_data.const.SHOWN_NAME_STATE,
+            'memo': const_data.const.SHOWN_NAME_MEMO
         }
 
     def clean_pay_date(self):
