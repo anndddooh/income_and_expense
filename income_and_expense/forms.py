@@ -61,6 +61,9 @@ class ExpenseForm(BSModalModelForm):
             'state': const_data.const.SHOWN_NAME_STATE,
             'memo': const_data.const.SHOWN_NAME_MEMO
         }
+        widgets = {
+            'memo': forms.Textarea(attrs={'rows':5})
+        }
 
     def clean_pay_date(self):
         pay_date = self.cleaned_data.get('pay_date')
@@ -85,6 +88,9 @@ class IncomeForm(BSModalModelForm):
             'amount': const_data.const.SHOWN_NAME_AMOUNT,
             'state': const_data.const.SHOWN_NAME_STATE,
             'memo': const_data.const.SHOWN_NAME_MEMO
+        }
+        widgets = {
+            'memo': forms.Textarea(attrs={'rows':5})
         }
 
     def clean_pay_date(self):
