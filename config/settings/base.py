@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'bootstrap_modal_forms',
     'income_and_expense.apps.IncomeAndExpenseConfig',
+    'fontawesomefree',
 ]
 
 MIDDLEWARE = [
