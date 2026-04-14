@@ -7,3 +7,5 @@ local_settings.py
 .sass-cache/
 *.css.map
 .idea/
+.DS_Store
+.env
