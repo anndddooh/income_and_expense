@@ -37,6 +37,9 @@ export default function Home() {
         <li>
           <Link to={`/incomes/${year}/${month}`}>収入一覧</Link>
         </li>
+        <li>
+          <Link to={`/expenses/${year}/${month}`}>支出一覧</Link>
+        </li>
       </ul>
     </div>
   )

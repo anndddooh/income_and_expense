@@ -7,6 +7,7 @@ app_name = 'api'
 
 router = DefaultRouter()
 router.register(r'incomes', api_views.IncomeViewSet, basename='income')
+router.register(r'expenses', api_views.ExpenseViewSet, basename='expense')
 
 urlpatterns = [
     path('', include(router.urls)),

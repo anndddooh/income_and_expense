@@ -4,7 +4,7 @@ from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 from rest_framework import serializers
 
-from income_and_expense.models import Income, Method, StateChoices
+from income_and_expense.models import Expense, Income, Method, StateChoices
 
 
 def is_valid_pay_date(pay_date):
@@ -28,19 +28,12 @@ class MethodSerializer(serializers.ModelSerializer):
         return str(obj)
 
 
-class IncomeSerializer(serializers.ModelSerializer):
+class _InexSerializerBase(serializers.ModelSerializer):
+    """Income/Expenseで共通の表示フィールドを生やす基底。"""
     account = serializers.SerializerMethodField()
     method_name = serializers.CharField(source='method.name', read_only=True)
     state_label = serializers.SerializerMethodField()
     formed_amount = serializers.CharField(read_only=True)
-
-    class Meta:
-        model = Income
-        fields = [
-            'id', 'name', 'pay_date', 'method', 'method_name',
-            'account', 'amount', 'formed_amount',
-            'state', 'state_label', 'memo',
-        ]
 
     def get_account(self, obj):
         acc = obj.method.account
@@ -59,3 +52,23 @@ class IncomeSerializer(serializers.ModelSerializer):
                 "1か月前より前の日付は指定できません。"
             )
         return value
+
+
+class IncomeSerializer(_InexSerializerBase):
+    class Meta:
+        model = Income
+        fields = [
+            'id', 'name', 'pay_date', 'method', 'method_name',
+            'account', 'amount', 'formed_amount',
+            'state', 'state_label', 'memo',
+        ]
+
+
+class ExpenseSerializer(_InexSerializerBase):
+    class Meta:
+        model = Expense
+        fields = [
+            'id', 'name', 'pay_date', 'method', 'method_name',
+            'account', 'amount', 'formed_amount',
+            'state', 'state_label', 'memo',
+        ]
