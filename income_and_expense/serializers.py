@@ -4,7 +4,9 @@ from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 from rest_framework import serializers
 
-from income_and_expense.models import Expense, Income, Method, StateChoices
+from income_and_expense.models import (
+    Account, Expense, Income, Method, StateChoices,
+)
 
 
 def is_valid_pay_date(pay_date):
@@ -29,7 +31,6 @@ class MethodSerializer(serializers.ModelSerializer):
 
 
 class _InexSerializerBase(serializers.ModelSerializer):
-    """Income/Expenseで共通の表示フィールドを生やす基底。"""
     account = serializers.SerializerMethodField()
     method_name = serializers.CharField(source='method.name', read_only=True)
     state_label = serializers.SerializerMethodField()
@@ -71,4 +72,17 @@ class ExpenseSerializer(_InexSerializerBase):
             'id', 'name', 'pay_date', 'method', 'method_name',
             'account', 'amount', 'formed_amount',
             'state', 'state_label', 'memo',
+        ]
+
+
+class AccountSerializer(serializers.ModelSerializer):
+    user_name = serializers.CharField(source='user.name', read_only=True)
+    bank_name = serializers.CharField(source='bank.name', read_only=True)
+    formed_balance = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Account
+        fields = [
+            'id', 'bank', 'user', 'bank_name', 'user_name',
+            'balance', 'formed_balance',
         ]

@@ -1,18 +1,19 @@
 import datetime
 
 from dateutil.relativedelta import relativedelta
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.utils import timezone
-from rest_framework import generics, status, viewsets
+from rest_framework import generics, status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from income_and_expense.models import (
-    DefaultExpenseMonth, DefaultIncomeMonth, Expense, Income, Loan, Method,
+    Account, DefaultExpenseMonth, DefaultIncomeMonth, Expense, Income, Loan,
+    Method, StateChoices,
 )
 from income_and_expense.serializers import (
-    ExpenseSerializer, IncomeSerializer, MethodSerializer,
+    AccountSerializer, ExpenseSerializer, IncomeSerializer, MethodSerializer,
 )
 
 
@@ -46,8 +47,19 @@ def _can_add_default(year, month):
     return datetime.date(year, month, 1) >= current_first
 
 
+def _get_balance_done(year, month):
+    """該当月末までの残高(完了分)。"""
+    _, last_date = _month_range(year, month)
+    inc = Income.objects.filter(
+        pay_date__lte=last_date, state=StateChoices.DONE
+    ).aggregate(Sum('amount'))['amount__sum'] or 0
+    exp = Expense.objects.filter(
+        pay_date__lte=last_date, state=StateChoices.DONE
+    ).aggregate(Sum('amount'))['amount__sum'] or 0
+    return inc - exp
+
+
 class _InexViewSetBase(viewsets.ModelViewSet):
-    """Income/Expense共通のCRUD & 月フィルタ & 更新削除ガード。"""
     model = None
 
     def get_queryset(self):
@@ -121,7 +133,6 @@ class ExpenseViewSet(_InexViewSetBase):
 
     @action(detail=False, methods=['post'], url_path='add_defaults')
     def add_defaults(self, request):
-        """デフォルト支出とローンから今月分を追加。"""
         year, month = _parse_year_month(request)
         if not _can_add_default(year, month):
             raise ValidationError("過去の月にはデフォルトを追加できません。")
@@ -134,7 +145,6 @@ class ExpenseViewSet(_InexViewSetBase):
         )
 
         add_num = 0
-        # デフォルト支出
         for dem in DefaultExpenseMonth.objects.filter(month=month):
             de = dem.def_exp
             if de.name in existing_names:
@@ -147,7 +157,6 @@ class ExpenseViewSet(_InexViewSetBase):
             add_num += 1
             existing_names.add(de.name)
 
-        # ローン
         loans = Loan.objects.filter(
             (Q(first_year__lt=year) | Q(first_year=year, first_month__lte=month)),
             (Q(last_year__gt=year) | Q(last_year=year, last_month__gte=month))
@@ -171,7 +180,6 @@ class ExpenseViewSet(_InexViewSetBase):
 
 
 class MethodListAPIView(generics.ListAPIView):
-    """Method一覧。フォームのプルダウン用。"""
     serializer_class = MethodSerializer
 
     def get_queryset(self):
@@ -180,3 +188,44 @@ class MethodListAPIView(generics.ListAPIView):
         ).order_by(
             'name', 'account__user__name', 'account__bank__name'
         )
+
+
+class AccountViewSet(viewsets.ModelViewSet):
+    """口座一覧と残高更新用。"""
+    serializer_class = AccountSerializer
+    queryset = Account.objects.select_related('user', 'bank').order_by(
+        'user__name', 'bank__name'
+    )
+
+
+class BalanceAPIView(views.APIView):
+    """残高サマリ。口座一覧 + DB上残高(完了分) + 差額。"""
+
+    def get(self, request):
+        year, month = _parse_year_month(request)
+        accounts = Account.objects.select_related('user', 'bank').order_by(
+            'user__name', 'bank__name'
+        )
+        account_rows = []
+        balance_sum = 0
+        for a in accounts:
+            account_rows.append({
+                'id': a.id,
+                'bank': a.bank.name,
+                'user': a.user.name,
+                'balance': a.balance,
+                'formed_balance': a.formed_balance(),
+            })
+            balance_sum += a.balance
+
+        balance_on_db = _get_balance_done(year, month)
+        balance_diff = balance_sum - balance_on_db
+
+        return Response({
+            'year': year,
+            'month': month,
+            'accounts': account_rows,
+            'balance_sum': balance_sum,
+            'balance_on_db': balance_on_db,
+            'balance_diff': balance_diff,
+        })

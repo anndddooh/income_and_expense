@@ -40,6 +40,9 @@ export default function Home() {
         <li>
           <Link to={`/expenses/${year}/${month}`}>支出一覧</Link>
         </li>
+        <li>
+          <Link to={`/balance/${year}/${month}`}>残高</Link>
+        </li>
       </ul>
     </div>
   )
