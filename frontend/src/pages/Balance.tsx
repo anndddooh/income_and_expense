@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import MonthNav from '../components/MonthNav'
 import {
   fetchBalance,
   updateAccountBalance,
@@ -43,12 +44,8 @@ export default function Balance() {
 
   return (
     <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
-      <h1>
-        {year}年{month}月 残高
-      </h1>
-      <p>
-        <Link to="/">← ホーム</Link>
-      </p>
+      <MonthNav year={year} month={month} basePath="/balance" />
+      <h1>残高</h1>
 
       <table border={1} cellPadding={6} style={{ borderCollapse: 'collapse' }}>
         <thead>

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import MonthNav from '../components/MonthNav'
 import { fetchMethodRequire, methodDone } from '../api/requires'
 
 export default function MethodRequire() {
@@ -29,12 +30,8 @@ export default function MethodRequire() {
 
   return (
     <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
-      <h1>
-        {year}年{month}月 支払方法別必要金額
-      </h1>
-      <p>
-        <Link to="/">← ホーム</Link>
-      </p>
+      <MonthNav year={year} month={month} basePath="/method_require" />
+      <h1>支払方法別必要金額</h1>
 
       <table border={1} cellPadding={6} style={{ borderCollapse: 'collapse' }}>
         <thead>

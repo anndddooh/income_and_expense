@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import MonthNav from '../components/MonthNav'
 import { fetchAccountRequire } from '../api/requires'
 
 export default function AccountRequire() {
@@ -17,12 +18,8 @@ export default function AccountRequire() {
 
   return (
     <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
-      <h1>
-        {year}年{month}月 口座別必要金額
-      </h1>
-      <p>
-        <Link to="/">← ホーム</Link>
-      </p>
+      <MonthNav year={year} month={month} basePath="/account_require" />
+      <h1>口座別必要金額</h1>
 
       <table border={1} cellPadding={6} style={{ borderCollapse: 'collapse' }}>
         <thead>

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import MonthNav from '../components/MonthNav'
 import {
   addDefaultIncomes,
   deleteIncome,
@@ -41,11 +42,9 @@ export default function IncomeList() {
 
   return (
     <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
-      <h1>
-        {year}年{month}月 収入一覧
-      </h1>
+      <MonthNav year={year} month={month} basePath="/incomes" />
+      <h1>収入一覧</h1>
       <p>
-        <Link to="/">← ホーム</Link>{' '}
         <button onClick={() => navigate(`/incomes/${year}/${month}/new`)}>
           新規作成
         </button>{' '}

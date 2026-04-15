@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import MonthNav from '../components/MonthNav'
 import { deleteLoan, fetchLoans } from '../api/loans'
 
 export default function LoanList() {
@@ -28,11 +29,9 @@ export default function LoanList() {
 
   return (
     <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
-      <h1>
-        {year}年{month}月 ローン一覧
-      </h1>
+      <MonthNav year={year} month={month} basePath="/loans" />
+      <h1>ローン一覧</h1>
       <p>
-        <Link to="/">← ホーム</Link>{' '}
         <button onClick={() => navigate(`/loans/${year}/${month}/new`)}>
           新規作成
         </button>
