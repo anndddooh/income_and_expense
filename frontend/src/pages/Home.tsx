@@ -43,6 +43,9 @@ export default function Home() {
         <li>
           <Link to={`/balance/${year}/${month}`}>残高</Link>
         </li>
+        <li>
+          <Link to={`/loans/${year}/${month}`}>ローン一覧</Link>
+        </li>
       </ul>
     </div>
   )

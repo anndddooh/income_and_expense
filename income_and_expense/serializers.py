@@ -5,7 +5,7 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from income_and_expense.models import (
-    Account, Expense, Income, Method, StateChoices,
+    Account, Expense, Income, Loan, Method, StateChoices,
 )
 
 
@@ -73,6 +73,36 @@ class ExpenseSerializer(_InexSerializerBase):
             'account', 'amount', 'formed_amount',
             'state', 'state_label', 'memo',
         ]
+
+
+class LoanSerializer(serializers.ModelSerializer):
+    method_name = serializers.CharField(source='method.name', read_only=True)
+    account = serializers.SerializerMethodField()
+    state_label = serializers.SerializerMethodField()
+    formed_amount_first = serializers.CharField(read_only=True)
+    formed_amount_from_second = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Loan
+        fields = [
+            'id', 'name', 'pay_day',
+            'first_year', 'first_month', 'last_year', 'last_month',
+            'method', 'method_name', 'account',
+            'amount_first', 'amount_from_second',
+            'formed_amount_first', 'formed_amount_from_second',
+            'state', 'state_label',
+        ]
+
+    def get_account(self, obj):
+        acc = obj.method.account
+        return {
+            'id': acc.id,
+            'user': acc.user.name,
+            'bank': acc.bank.name,
+        }
+
+    def get_state_label(self, obj):
+        return StateChoices(obj.state).label
 
 
 class AccountSerializer(serializers.ModelSerializer):

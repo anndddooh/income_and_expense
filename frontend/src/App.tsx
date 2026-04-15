@@ -6,6 +6,8 @@ import ExpenseList from './pages/ExpenseList'
 import Home from './pages/Home'
 import IncomeForm from './pages/IncomeForm'
 import IncomeList from './pages/IncomeList'
+import LoanForm from './pages/LoanForm'
+import LoanList from './pages/LoanList'
 
 const queryClient = new QueryClient()
 
@@ -28,6 +30,9 @@ export default function App() {
             element={<ExpenseForm />}
           />
           <Route path="/balance/:year/:month" element={<Balance />} />
+          <Route path="/loans/:year/:month" element={<LoanList />} />
+          <Route path="/loans/:year/:month/new" element={<LoanForm />} />
+          <Route path="/loans/:year/:month/:id/edit" element={<LoanForm />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

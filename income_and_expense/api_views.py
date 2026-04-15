@@ -13,7 +13,8 @@ from income_and_expense.models import (
     Method, StateChoices,
 )
 from income_and_expense.serializers import (
-    AccountSerializer, ExpenseSerializer, IncomeSerializer, MethodSerializer,
+    AccountSerializer, ExpenseSerializer, IncomeSerializer, LoanSerializer,
+    MethodSerializer,
 )
 
 
@@ -188,6 +189,13 @@ class MethodListAPIView(generics.ListAPIView):
         ).order_by(
             'name', 'account__user__name', 'account__bank__name'
         )
+
+
+class LoanViewSet(viewsets.ModelViewSet):
+    serializer_class = LoanSerializer
+    queryset = Loan.objects.select_related(
+        'method__account__user', 'method__account__bank'
+    ).order_by('first_year', 'first_month')
 
 
 class AccountViewSet(viewsets.ModelViewSet):
