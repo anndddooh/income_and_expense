@@ -46,6 +46,16 @@ export default function Home() {
         <li>
           <Link to={`/loans/${year}/${month}`}>ローン一覧</Link>
         </li>
+        <li>
+          <Link to={`/account_require/${year}/${month}`}>
+            口座別必要金額
+          </Link>
+        </li>
+        <li>
+          <Link to={`/method_require/${year}/${month}`}>
+            支払方法別必要金額
+          </Link>
+        </li>
       </ul>
     </div>
   )

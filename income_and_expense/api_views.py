@@ -206,6 +206,96 @@ class AccountViewSet(viewsets.ModelViewSet):
     )
 
 
+class AccountRequireAPIView(views.APIView):
+    """口座別の必要金額(未完了支出の合計)と不足額。"""
+
+    def get(self, request):
+        year, month = _parse_year_month(request)
+        first_date, last_date = _month_range(year, month)
+        exps = Expense.objects.filter(
+            pay_date__gte=first_date, pay_date__lte=last_date
+        )
+        rows = []
+        require_sum = 0
+        insufficient_sum = 0
+        for a in Account.objects.select_related('user', 'bank').order_by(
+            'user__name', 'bank__name'
+        ):
+            require = exps.filter(method__account=a).exclude(
+                state=StateChoices.DONE
+            ).aggregate(Sum('amount'))['amount__sum'] or 0
+            if a.balance < require:
+                insufficient = require - a.balance
+                is_insufficient = True
+            else:
+                insufficient = 0
+                is_insufficient = False
+            require_sum += require
+            insufficient_sum += insufficient
+            rows.append({
+                'id': a.id,
+                'user': a.user.name,
+                'bank': a.bank.name,
+                'balance': a.balance,
+                'formed_balance': a.formed_balance(),
+                'require': require,
+                'formed_require': '¥{:,}'.format(require),
+                'insufficient_amount': insufficient,
+                'formed_insufficient': '¥{:,}'.format(insufficient),
+                'is_insufficient': is_insufficient,
+            })
+        return Response({
+            'accounts': rows,
+            'require_sum': require_sum,
+            'insufficient_sum': insufficient_sum,
+        })
+
+
+class MethodRequireAPIView(views.APIView):
+    """支払方法別の必要金額(未完了支出の合計)。"""
+
+    def get(self, request):
+        year, month = _parse_year_month(request)
+        first_date, last_date = _month_range(year, month)
+        exps = Expense.objects.filter(
+            pay_date__gte=first_date, pay_date__lte=last_date
+        )
+        rows = []
+        require_sum = 0
+        for m in Method.objects.select_related(
+            'account__user', 'account__bank'
+        ).order_by('account__user__name', 'name', 'account__bank__name'):
+            require = exps.filter(method=m).exclude(
+                state=StateChoices.DONE
+            ).aggregate(Sum('amount'))['amount__sum'] or 0
+            require_sum += require
+            rows.append({
+                'id': m.id,
+                'name': m.name,
+                'display_name': str(m),
+                'require': require,
+                'formed_require': '¥{:,}'.format(require),
+            })
+        return Response({
+            'methods': rows,
+            'require_sum': require_sum,
+        })
+
+
+class MethodDoneAPIView(views.APIView):
+    """指定支払方法の今月の未完了支出をすべて完了にする。"""
+
+    def post(self, request, pk):
+        year, month = _parse_year_month(request)
+        first_date, last_date = _month_range(year, month)
+        qs = Expense.objects.filter(
+            method__pk=pk,
+            pay_date__gte=first_date, pay_date__lte=last_date,
+        )
+        updated = qs.update(state=StateChoices.DONE)
+        return Response({'updated': updated})
+
+
 class BalanceAPIView(views.APIView):
     """残高サマリ。口座一覧 + DB上残高(完了分) + 差額。"""
 

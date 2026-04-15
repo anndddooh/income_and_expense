@@ -1,6 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import AccountRequire from './pages/AccountRequire'
 import Balance from './pages/Balance'
+import MethodRequire from './pages/MethodRequire'
 import ExpenseForm from './pages/ExpenseForm'
 import ExpenseList from './pages/ExpenseList'
 import Home from './pages/Home'
@@ -33,6 +35,14 @@ export default function App() {
           <Route path="/loans/:year/:month" element={<LoanList />} />
           <Route path="/loans/:year/:month/new" element={<LoanForm />} />
           <Route path="/loans/:year/:month/:id/edit" element={<LoanForm />} />
+          <Route
+            path="/account_require/:year/:month"
+            element={<AccountRequire />}
+          />
+          <Route
+            path="/method_require/:year/:month"
+            element={<MethodRequire />}
+          />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

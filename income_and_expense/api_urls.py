@@ -14,5 +14,20 @@ router.register(r'loans', api_views.LoanViewSet, basename='loan')
 urlpatterns = [
     path('', include(router.urls)),
     path('methods/', api_views.MethodListAPIView.as_view(), name='method-list'),
+    path(
+        'methods/<int:pk>/done/',
+        api_views.MethodDoneAPIView.as_view(),
+        name='method-done',
+    ),
     path('balance/', api_views.BalanceAPIView.as_view(), name='balance'),
+    path(
+        'account_require/',
+        api_views.AccountRequireAPIView.as_view(),
+        name='account-require',
+    ),
+    path(
+        'method_require/',
+        api_views.MethodRequireAPIView.as_view(),
+        name='method-require',
+    ),
 ]
