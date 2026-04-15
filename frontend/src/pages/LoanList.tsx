@@ -1,3 +1,14 @@
+import {
+  Anchor,
+  Badge,
+  Button,
+  Container,
+  Group,
+  Loader,
+  Table,
+  Text,
+  Title,
+} from '@mantine/core'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import MonthNav from '../components/MonthNav'
@@ -21,80 +32,97 @@ export default function LoanList() {
     onError: (e: unknown) => alert('削除失敗: ' + String(e)),
   })
 
-  if (isLoading) return <p>読み込み中...</p>
-  if (error) return <p style={{ color: 'red' }}>エラー: {String(error)}</p>
+  if (isLoading) return <Loader m="md" />
+  if (error) return <Text c="red" m="md">エラー: {String(error)}</Text>
 
   const isComplete = (l: { last_year: number; last_month: number }) =>
     year > l.last_year || (year === l.last_year && month > l.last_month)
 
   return (
-    <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
+    <Container size="xl" py="md">
       <MonthNav year={year} month={month} basePath="/loans" />
-      <h1>ローン一覧</h1>
-      <p>
-        <button onClick={() => navigate(`/loans/${year}/${month}/new`)}>
+      <Group justify="space-between" mb="md">
+        <Title order={2}>ローン一覧</Title>
+        <Button
+          color="grape"
+          onClick={() => navigate(`/loans/${year}/${month}/new`)}
+        >
           新規作成
-        </button>
-      </p>
+        </Button>
+      </Group>
 
-      <table border={1} cellPadding={6} style={{ borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>名称</th>
-            <th>支払日</th>
-            <th>開始</th>
-            <th>終了</th>
-            <th>方法</th>
-            <th>初回</th>
-            <th>2回目以降</th>
-            <th>状態</th>
-            <th>完了</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loans.map((l) => (
-            <tr
-              key={l.id}
-              style={isComplete(l) ? { color: '#999' } : undefined}
-            >
-              <td>{l.name}</td>
-              <td>{l.pay_day}</td>
-              <td>
-                {l.first_year}/{l.first_month}
-              </td>
-              <td>
-                {l.last_year}/{l.last_month}
-              </td>
-              <td>{l.method_name}</td>
-              <td style={{ textAlign: 'right' }}>{l.formed_amount_first}</td>
-              <td style={{ textAlign: 'right' }}>
-                {l.formed_amount_from_second}
-              </td>
-              <td>{l.state_label}</td>
-              <td>{isComplete(l) ? '✓' : ''}</td>
-              <td>
-                <Link to={`/loans/${year}/${month}/${l.id}/edit`}>編集</Link>{' '}
-                <button
-                  onClick={() => {
-                    if (confirm(`「${l.name}」を削除しますか?`))
-                      delMut.mutate(l.id)
-                  }}
-                >
-                  削除
-                </button>
-              </td>
-            </tr>
-          ))}
+      <Table striped highlightOnHover withTableBorder>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>名称</Table.Th>
+            <Table.Th>支払日</Table.Th>
+            <Table.Th>開始</Table.Th>
+            <Table.Th>終了</Table.Th>
+            <Table.Th>方法</Table.Th>
+            <Table.Th ta="right">初回</Table.Th>
+            <Table.Th ta="right">2回目以降</Table.Th>
+            <Table.Th>状態</Table.Th>
+            <Table.Th>完了</Table.Th>
+            <Table.Th>操作</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          {loans.map((l) => {
+            const complete = isComplete(l)
+            return (
+              <Table.Tr
+                key={l.id}
+                style={complete ? { opacity: 0.5 } : undefined}
+              >
+                <Table.Td>{l.name}</Table.Td>
+                <Table.Td>{l.pay_day}</Table.Td>
+                <Table.Td>
+                  {l.first_year}/{l.first_month}
+                </Table.Td>
+                <Table.Td>
+                  {l.last_year}/{l.last_month}
+                </Table.Td>
+                <Table.Td>{l.method_name}</Table.Td>
+                <Table.Td ta="right">{l.formed_amount_first}</Table.Td>
+                <Table.Td ta="right">{l.formed_amount_from_second}</Table.Td>
+                <Table.Td>{l.state_label}</Table.Td>
+                <Table.Td>
+                  {complete ? <Badge color="gray">完了</Badge> : '-'}
+                </Table.Td>
+                <Table.Td>
+                  <Group gap="xs">
+                    <Anchor
+                      component={Link}
+                      to={`/loans/${year}/${month}/${l.id}/edit`}
+                      size="sm"
+                    >
+                      編集
+                    </Anchor>
+                    <Button
+                      size="xs"
+                      color="red"
+                      variant="subtle"
+                      onClick={() => {
+                        if (confirm(`「${l.name}」を削除しますか?`))
+                          delMut.mutate(l.id)
+                      }}
+                    >
+                      削除
+                    </Button>
+                  </Group>
+                </Table.Td>
+              </Table.Tr>
+            )
+          })}
           {loans.length === 0 && (
-            <tr>
-              <td colSpan={10} style={{ textAlign: 'center', color: '#888' }}>
+            <Table.Tr>
+              <Table.Td colSpan={10} ta="center" c="dimmed">
                 データがありません
-              </td>
-            </tr>
+              </Table.Td>
+            </Table.Tr>
           )}
-        </tbody>
-      </table>
-    </div>
+        </Table.Tbody>
+      </Table>
+    </Container>
   )
 }

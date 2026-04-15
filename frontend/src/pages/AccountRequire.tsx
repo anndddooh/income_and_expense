@@ -1,3 +1,12 @@
+import {
+  Box,
+  Container,
+  Loader,
+  Stack,
+  Table,
+  Text,
+  Title,
+} from '@mantine/core'
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import MonthNav from '../components/MonthNav'
@@ -12,58 +21,61 @@ export default function AccountRequire() {
     queryFn: () => fetchAccountRequire(year, month),
   })
 
-  if (isLoading) return <p>読み込み中...</p>
-  if (error || !data)
-    return <p style={{ color: 'red' }}>エラー: {String(error)}</p>
+  if (isLoading) return <Loader m="md" />
+  if (error || !data) return <Text c="red" m="md">エラー: {String(error)}</Text>
 
   return (
-    <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
+    <Container size="lg" py="md">
       <MonthNav year={year} month={month} basePath="/account_require" />
-      <h1>口座別必要金額</h1>
+      <Title order={2} mb="md">口座別必要金額</Title>
 
-      <table border={1} cellPadding={6} style={{ borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>ユーザー</th>
-            <th>銀行</th>
-            <th>残高</th>
-            <th>必要額</th>
-            <th>不足額</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table striped highlightOnHover withTableBorder>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>ユーザー</Table.Th>
+            <Table.Th>銀行</Table.Th>
+            <Table.Th ta="right">残高</Table.Th>
+            <Table.Th ta="right">必要額</Table.Th>
+            <Table.Th ta="right">不足額</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
           {data.accounts.map((a) => (
-            <tr
+            <Table.Tr
               key={a.id}
-              style={
-                a.is_insufficient
-                  ? { backgroundColor: '#fee' }
-                  : undefined
-              }
+              bg={a.is_insufficient ? 'red.0' : undefined}
             >
-              <td>{a.user}</td>
-              <td>{a.bank}</td>
-              <td style={{ textAlign: 'right' }}>{a.formed_balance}</td>
-              <td style={{ textAlign: 'right' }}>{a.formed_require}</td>
-              <td style={{ textAlign: 'right' }}>
-                {a.is_insufficient ? a.formed_insufficient : '-'}
-              </td>
-            </tr>
+              <Table.Td>{a.user}</Table.Td>
+              <Table.Td>{a.bank}</Table.Td>
+              <Table.Td ta="right">{a.formed_balance}</Table.Td>
+              <Table.Td ta="right">{a.formed_require}</Table.Td>
+              <Table.Td ta="right">
+                {a.is_insufficient ? (
+                  <Text span c="red" fw={700}>
+                    {a.formed_insufficient}
+                  </Text>
+                ) : (
+                  '-'
+                )}
+              </Table.Td>
+            </Table.Tr>
           ))}
-        </tbody>
-      </table>
+        </Table.Tbody>
+      </Table>
 
-      <div style={{ marginTop: 16 }}>
-        <p>
-          必要額合計: <b>¥{data.require_sum.toLocaleString()}</b>
-        </p>
-        <p>
-          不足額合計:{' '}
-          <b style={{ color: data.insufficient_sum > 0 ? 'red' : 'green' }}>
-            ¥{data.insufficient_sum.toLocaleString()}
-          </b>
-        </p>
-      </div>
-    </div>
+      <Box mt="lg">
+        <Stack gap={4}>
+          <Text>
+            必要額合計: <b>¥{data.require_sum.toLocaleString()}</b>
+          </Text>
+          <Text>
+            不足額合計:{' '}
+            <Text span fw={700} c={data.insufficient_sum > 0 ? 'red' : 'green'}>
+              ¥{data.insufficient_sum.toLocaleString()}
+            </Text>
+          </Text>
+        </Stack>
+      </Box>
+    </Container>
   )
 }

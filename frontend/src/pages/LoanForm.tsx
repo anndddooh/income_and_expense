@@ -1,3 +1,14 @@
+import {
+  Button,
+  Container,
+  Group,
+  NumberInput,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+} from '@mantine/core'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -94,12 +105,14 @@ export default function LoanForm() {
     },
   })
 
-  const setN = (k: keyof LoanInput) => (v: string) =>
+  const setN = (k: keyof LoanInput) => (v: string | number) =>
     setForm({ ...form, [k]: Number(v) })
 
   return (
-    <div style={{ padding: 24, fontFamily: 'sans-serif', maxWidth: 600 }}>
-      <h1>{isEdit ? 'ローンを編集' : 'ローンを追加'}</h1>
+    <Container size="sm" py="md">
+      <Title order={2} mb="md">
+        {isEdit ? 'ローンを編集' : 'ローンを追加'}
+      </Title>
       <form
         onSubmit={(e) => {
           e.preventDefault()
@@ -107,134 +120,107 @@ export default function LoanForm() {
           mut.mutate()
         }}
       >
-        <Row label="名称">
-          <input
+        <Stack>
+          <TextInput
+            label="名称"
             required
             value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            onChange={(e) =>
+              setForm({ ...form, name: e.currentTarget.value })
+            }
           />
-        </Row>
-        <Row label="支払日(1-28)">
-          <input
-            type="number"
+          <NumberInput
+            label="支払日(1-28)"
             required
             min={1}
             max={28}
             value={form.pay_day}
-            onChange={(e) => setN('pay_day')(e.target.value)}
+            onChange={setN('pay_day')}
           />
-        </Row>
-        <Row label="開始年月">
-          <input
-            type="number"
+          <Group grow>
+            <NumberInput
+              label="開始年"
+              required
+              value={form.first_year}
+              onChange={setN('first_year')}
+            />
+            <NumberInput
+              label="開始月"
+              required
+              min={1}
+              max={12}
+              value={form.first_month}
+              onChange={setN('first_month')}
+            />
+          </Group>
+          <Group grow>
+            <NumberInput
+              label="終了年"
+              required
+              value={form.last_year}
+              onChange={setN('last_year')}
+            />
+            <NumberInput
+              label="終了月"
+              required
+              min={1}
+              max={12}
+              value={form.last_month}
+              onChange={setN('last_month')}
+            />
+          </Group>
+          <Select
+            label="方法"
             required
-            value={form.first_year}
-            onChange={(e) => setN('first_year')(e.target.value)}
-            style={{ width: 90 }}
-          />{' '}
-          <input
-            type="number"
-            required
-            min={1}
-            max={12}
-            value={form.first_month}
-            onChange={(e) => setN('first_month')(e.target.value)}
-            style={{ width: 60 }}
+            data={methods.map((m) => ({
+              value: String(m.id),
+              label: m.display_name,
+            }))}
+            value={form.method ? String(form.method) : null}
+            onChange={(v) => setForm({ ...form, method: Number(v) })}
           />
-        </Row>
-        <Row label="終了年月">
-          <input
-            type="number"
-            required
-            value={form.last_year}
-            onChange={(e) => setN('last_year')(e.target.value)}
-            style={{ width: 90 }}
-          />{' '}
-          <input
-            type="number"
-            required
-            min={1}
-            max={12}
-            value={form.last_month}
-            onChange={(e) => setN('last_month')(e.target.value)}
-            style={{ width: 60 }}
-          />
-        </Row>
-        <Row label="方法">
-          <select
-            required
-            value={form.method}
-            onChange={(e) => setN('method')(e.target.value)}
-          >
-            {methods.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.display_name}
-              </option>
-            ))}
-          </select>
-        </Row>
-        <Row label="初回金額">
-          <input
-            type="number"
+          <NumberInput
+            label="初回金額"
             required
             min={0}
             value={form.amount_first}
-            onChange={(e) => setN('amount_first')(e.target.value)}
+            onChange={setN('amount_first')}
           />
-        </Row>
-        <Row label="2回目以降金額">
-          <input
-            type="number"
+          <NumberInput
+            label="2回目以降金額"
             required
             min={0}
             value={form.amount_from_second}
-            onChange={(e) => setN('amount_from_second')(e.target.value)}
+            onChange={setN('amount_from_second')}
           />
-        </Row>
-        <Row label="状態">
-          <select
-            value={form.state}
-            onChange={(e) =>
-              setForm({ ...form, state: Number(e.target.value) as StateValue })
+          <Select
+            label="状態"
+            data={STATES.map((s) => ({
+              value: String(s.value),
+              label: s.label,
+            }))}
+            value={String(form.state)}
+            onChange={(v) =>
+              setForm({ ...form, state: Number(v) as StateValue })
             }
-          >
-            {STATES.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </select>
-        </Row>
+          />
 
-        {submitError && <p style={{ color: 'red' }}>エラー: {submitError}</p>}
+          {submitError && <Text c="red">エラー: {submitError}</Text>}
 
-        <div style={{ marginTop: 16 }}>
-          <button type="submit" disabled={mut.isPending}>
-            {isEdit ? '更新' : '追加'}
-          </button>{' '}
-          <button
-            type="button"
-            onClick={() => navigate(`/loans/${year}/${month}`)}
-          >
-            キャンセル
-          </button>
-        </div>
+          <Group>
+            <Button type="submit" loading={mut.isPending} color="grape">
+              {isEdit ? '更新' : '追加'}
+            </Button>
+            <Button
+              type="button"
+              variant="default"
+              onClick={() => navigate(`/loans/${year}/${month}`)}
+            >
+              キャンセル
+            </Button>
+          </Group>
+        </Stack>
       </form>
-    </div>
-  )
-}
-
-function Row({
-  label,
-  children,
-}: {
-  label: string
-  children: React.ReactNode
-}) {
-  return (
-    <div style={{ marginBottom: 12 }}>
-      <label style={{ display: 'block', fontWeight: 'bold' }}>{label}</label>
-      {children}
-    </div>
+    </Container>
   )
 }

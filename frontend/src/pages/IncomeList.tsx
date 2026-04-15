@@ -1,3 +1,13 @@
+import {
+  Anchor,
+  Button,
+  Container,
+  Group,
+  Loader,
+  Table,
+  Text,
+  Title,
+} from '@mantine/core'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import MonthNav from '../components/MonthNav'
@@ -37,76 +47,93 @@ export default function IncomeList() {
 
   const total = incomes.reduce((s, i) => s + i.amount, 0)
 
-  if (isLoading) return <p>読み込み中...</p>
-  if (error) return <p style={{ color: 'red' }}>エラー: {String(error)}</p>
+  if (isLoading) return <Loader m="md" />
+  if (error) return <Text c="red" m="md">エラー: {String(error)}</Text>
 
   return (
-    <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
+    <Container size="lg" py="md">
       <MonthNav year={year} month={month} basePath="/incomes" />
-      <h1>収入一覧</h1>
-      <p>
-        <button onClick={() => navigate(`/incomes/${year}/${month}/new`)}>
-          新規作成
-        </button>{' '}
-        <button
-          onClick={() => {
-            if (confirm('デフォルトから追加しますか?')) addDefMut.mutate()
-          }}
-          disabled={addDefMut.isPending}
-        >
-          デフォルトから追加
-        </button>
-      </p>
+      <Group justify="space-between" mb="md">
+        <Title order={2}>収入一覧</Title>
+        <Group>
+          <Button
+            color="teal"
+            onClick={() => navigate(`/incomes/${year}/${month}/new`)}
+          >
+            新規作成
+          </Button>
+          <Button
+            variant="light"
+            loading={addDefMut.isPending}
+            onClick={() => {
+              if (confirm('デフォルトから追加しますか?')) addDefMut.mutate()
+            }}
+          >
+            デフォルトから追加
+          </Button>
+        </Group>
+      </Group>
 
-      <table border={1} cellPadding={6} style={{ borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>支払日</th>
-            <th>名称</th>
-            <th>方法</th>
-            <th>口座</th>
-            <th>金額</th>
-            <th>状態</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table striped highlightOnHover withTableBorder>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>支払日</Table.Th>
+            <Table.Th>名称</Table.Th>
+            <Table.Th>方法</Table.Th>
+            <Table.Th>口座</Table.Th>
+            <Table.Th ta="right">金額</Table.Th>
+            <Table.Th>状態</Table.Th>
+            <Table.Th>操作</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
           {incomes.map((i) => (
-            <tr key={i.id}>
-              <td>{i.pay_date}</td>
-              <td>{i.name}</td>
-              <td>{i.method_name}</td>
-              <td>
+            <Table.Tr key={i.id}>
+              <Table.Td>{i.pay_date}</Table.Td>
+              <Table.Td>{i.name}</Table.Td>
+              <Table.Td>{i.method_name}</Table.Td>
+              <Table.Td>
                 {i.account.user} / {i.account.bank}
-              </td>
-              <td style={{ textAlign: 'right' }}>{i.formed_amount}</td>
-              <td>{i.state_label}</td>
-              <td>
-                <Link to={`/incomes/${year}/${month}/${i.id}/edit`}>編集</Link>{' '}
-                <button
-                  onClick={() => {
-                    if (confirm(`「${i.name}」を削除しますか?`))
-                      delMut.mutate(i.id)
-                  }}
-                >
-                  削除
-                </button>
-              </td>
-            </tr>
+              </Table.Td>
+              <Table.Td ta="right">{i.formed_amount}</Table.Td>
+              <Table.Td>{i.state_label}</Table.Td>
+              <Table.Td>
+                <Group gap="xs">
+                  <Anchor
+                    component={Link}
+                    to={`/incomes/${year}/${month}/${i.id}/edit`}
+                    size="sm"
+                  >
+                    編集
+                  </Anchor>
+                  <Button
+                    size="xs"
+                    color="red"
+                    variant="subtle"
+                    onClick={() => {
+                      if (confirm(`「${i.name}」を削除しますか?`))
+                        delMut.mutate(i.id)
+                    }}
+                  >
+                    削除
+                  </Button>
+                </Group>
+              </Table.Td>
+            </Table.Tr>
           ))}
           {incomes.length === 0 && (
-            <tr>
-              <td colSpan={7} style={{ textAlign: 'center', color: '#888' }}>
+            <Table.Tr>
+              <Table.Td colSpan={7} ta="center" c="dimmed">
                 データがありません
-              </td>
-            </tr>
+              </Table.Td>
+            </Table.Tr>
           )}
-        </tbody>
-      </table>
-      <p>
-        合計: ¥{total.toLocaleString()} ({incomes.length}件)
-      </p>
-    </div>
+        </Table.Tbody>
+      </Table>
+      <Text mt="md">
+        合計: <b>¥{total.toLocaleString()}</b> ({incomes.length}件)
+      </Text>
+    </Container>
   )
 }
 

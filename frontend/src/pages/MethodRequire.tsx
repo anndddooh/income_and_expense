@@ -1,3 +1,11 @@
+import {
+  Button,
+  Container,
+  Loader,
+  Table,
+  Text,
+  Title,
+} from '@mantine/core'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import MonthNav from '../components/MonthNav'
@@ -24,32 +32,33 @@ export default function MethodRequire() {
     onError: (e: unknown) => alert('失敗: ' + String(e)),
   })
 
-  if (isLoading) return <p>読み込み中...</p>
-  if (error || !data)
-    return <p style={{ color: 'red' }}>エラー: {String(error)}</p>
+  if (isLoading) return <Loader m="md" />
+  if (error || !data) return <Text c="red" m="md">エラー: {String(error)}</Text>
 
   return (
-    <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
+    <Container size="md" py="md">
       <MonthNav year={year} month={month} basePath="/method_require" />
-      <h1>支払方法別必要金額</h1>
+      <Title order={2} mb="md">支払方法別必要金額</Title>
 
-      <table border={1} cellPadding={6} style={{ borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>支払方法</th>
-            <th>必要額</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table striped highlightOnHover withTableBorder>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>支払方法</Table.Th>
+            <Table.Th ta="right">必要額</Table.Th>
+            <Table.Th>操作</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
           {data.methods.map((m) => (
-            <tr key={m.id}>
-              <td>{m.display_name}</td>
-              <td style={{ textAlign: 'right' }}>{m.formed_require}</td>
-              <td>
+            <Table.Tr key={m.id}>
+              <Table.Td>{m.display_name}</Table.Td>
+              <Table.Td ta="right">{m.formed_require}</Table.Td>
+              <Table.Td>
                 {m.require > 0 && (
-                  <button
-                    disabled={doneMut.isPending}
+                  <Button
+                    size="xs"
+                    variant="light"
+                    loading={doneMut.isPending}
                     onClick={() => {
                       if (
                         confirm(
@@ -60,17 +69,17 @@ export default function MethodRequire() {
                     }}
                   >
                     一括完了
-                  </button>
+                  </Button>
                 )}
-              </td>
-            </tr>
+              </Table.Td>
+            </Table.Tr>
           ))}
-        </tbody>
-      </table>
+        </Table.Tbody>
+      </Table>
 
-      <p style={{ marginTop: 16 }}>
+      <Text mt="lg">
         必要額合計: <b>¥{data.require_sum.toLocaleString()}</b>
-      </p>
-    </div>
+      </Text>
+    </Container>
   )
 }

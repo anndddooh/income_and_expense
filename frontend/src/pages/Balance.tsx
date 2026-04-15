@@ -1,3 +1,15 @@
+import {
+  Box,
+  Button,
+  Container,
+  Group,
+  Loader,
+  NumberInput,
+  Stack,
+  Table,
+  Text,
+  Title,
+} from '@mantine/core'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -33,9 +45,8 @@ export default function Balance() {
     onError: (e: unknown) => alert('更新失敗: ' + String(e)),
   })
 
-  if (isLoading) return <p>読み込み中...</p>
-  if (error || !data)
-    return <p style={{ color: 'red' }}>エラー: {String(error)}</p>
+  if (isLoading) return <Loader m="md" />
+  if (error || !data) return <Text c="red" m="md">エラー: {String(error)}</Text>
 
   const startEdit = (row: AccountRow) => {
     setEditing(row.id)
@@ -43,72 +54,86 @@ export default function Balance() {
   }
 
   return (
-    <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
+    <Container size="lg" py="md">
       <MonthNav year={year} month={month} basePath="/balance" />
-      <h1>残高</h1>
+      <Title order={2} mb="md">残高</Title>
 
-      <table border={1} cellPadding={6} style={{ borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>ユーザー</th>
-            <th>銀行</th>
-            <th>実残高</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table striped highlightOnHover withTableBorder>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>ユーザー</Table.Th>
+            <Table.Th>銀行</Table.Th>
+            <Table.Th ta="right">実残高</Table.Th>
+            <Table.Th>操作</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
           {data.accounts.map((a) => (
-            <tr key={a.id}>
-              <td>{a.user}</td>
-              <td>{a.bank}</td>
-              <td style={{ textAlign: 'right' }}>
+            <Table.Tr key={a.id}>
+              <Table.Td>{a.user}</Table.Td>
+              <Table.Td>{a.bank}</Table.Td>
+              <Table.Td ta="right">
                 {editing === a.id ? (
-                  <input
-                    type="number"
+                  <NumberInput
                     value={draft}
-                    onChange={(e) => setDraft(Number(e.target.value))}
-                    style={{ width: 120 }}
+                    onChange={(v) => setDraft(Number(v))}
+                    w={140}
+                    hideControls
                   />
                 ) : (
                   a.formed_balance
                 )}
-              </td>
-              <td>
+              </Table.Td>
+              <Table.Td>
                 {editing === a.id ? (
-                  <>
-                    <button
-                      onClick={() =>
-                        mut.mutate({ id: a.id, balance: draft })
-                      }
-                      disabled={mut.isPending}
+                  <Group gap="xs">
+                    <Button
+                      size="xs"
+                      color="blue"
+                      loading={mut.isPending}
+                      onClick={() => mut.mutate({ id: a.id, balance: draft })}
                     >
                       保存
-                    </button>{' '}
-                    <button onClick={() => setEditing(null)}>キャンセル</button>
-                  </>
+                    </Button>
+                    <Button
+                      size="xs"
+                      variant="default"
+                      onClick={() => setEditing(null)}
+                    >
+                      キャンセル
+                    </Button>
+                  </Group>
                 ) : (
-                  <button onClick={() => startEdit(a)}>編集</button>
+                  <Button size="xs" variant="light" onClick={() => startEdit(a)}>
+                    編集
+                  </Button>
                 )}
-              </td>
-            </tr>
+              </Table.Td>
+            </Table.Tr>
           ))}
-        </tbody>
-      </table>
+        </Table.Tbody>
+      </Table>
 
-      <div style={{ marginTop: 16 }}>
-        <p>
-          実残高合計: <b>¥{data.balance_sum.toLocaleString()}</b>
-        </p>
-        <p>
-          DB残高(完了分): <b>¥{data.balance_on_db.toLocaleString()}</b>
-        </p>
-        <p>
-          差額:{' '}
-          <b style={{ color: data.balance_diff === 0 ? 'green' : 'red' }}>
-            ¥{data.balance_diff.toLocaleString()}
-          </b>
-        </p>
-      </div>
-    </div>
+      <Box mt="lg">
+        <Stack gap={4}>
+          <Text>
+            実残高合計: <b>¥{data.balance_sum.toLocaleString()}</b>
+          </Text>
+          <Text>
+            DB残高(完了分): <b>¥{data.balance_on_db.toLocaleString()}</b>
+          </Text>
+          <Text>
+            差額:{' '}
+            <Text
+              span
+              fw={700}
+              c={data.balance_diff === 0 ? 'green' : 'red'}
+            >
+              ¥{data.balance_diff.toLocaleString()}
+            </Text>
+          </Text>
+        </Stack>
+      </Box>
+    </Container>
   )
 }
