@@ -196,7 +196,7 @@ class LoanViewSet(viewsets.ModelViewSet):
     serializer_class = LoanSerializer
     queryset = Loan.objects.select_related(
         'method__account__user', 'method__account__bank'
-    ).order_by('first_year', 'first_month')
+    ).order_by('-last_year', '-last_month')
 
 
 class AccountViewSet(viewsets.ModelViewSet):
