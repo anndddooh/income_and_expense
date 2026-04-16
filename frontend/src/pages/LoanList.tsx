@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Pencil, Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -85,7 +85,7 @@ export default function LoanList() {
                 <TableHead className="text-right">2回目以降</TableHead>
                 <TableHead>状態</TableHead>
                 <TableHead>完了</TableHead>
-                <TableHead className="w-32 text-right">操作</TableHead>
+                <TableHead className="w-16 text-right">操作</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -115,7 +115,19 @@ export default function LoanList() {
                 return (
                   <TableRow
                     key={l.id}
-                    className={cn(complete && 'text-muted-foreground')}
+                    tabIndex={0}
+                    className={cn(
+                      'cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                      complete && 'text-muted-foreground'
+                    )}
+                    onClick={() =>
+                      navigate(`/loans/${year}/${month}/${l.id}/edit`)
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        navigate(`/loans/${year}/${month}/${l.id}/edit`)
+                      }
+                    }}
                   >
                     <TableCell
                       className={`font-medium ${stateBarClass(l.state as State)}`}
@@ -146,26 +158,17 @@ export default function LoanList() {
                       {complete ? <Badge variant="secondary">完了</Badge> : '-'}
                     </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex justify-end gap-1">
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          onClick={() =>
-                            navigate(`/loans/${year}/${month}/${l.id}/edit`)
-                          }
-                          aria-label="編集"
-                        >
-                          <Pencil className="size-4" />
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          onClick={() => setDeleting(l)}
-                          aria-label="削除"
-                        >
-                          <Trash2 className="size-4 text-destructive" />
-                        </Button>
-                      </div>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setDeleting(l)
+                        }}
+                        aria-label="削除"
+                      >
+                        <Trash2 className="size-4 text-destructive" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 )

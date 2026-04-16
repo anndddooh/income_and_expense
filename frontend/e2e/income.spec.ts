@@ -34,8 +34,8 @@ test.describe('収入CRUDフロー', () => {
     await expect(row).toBeVisible()
     await expect(row).toContainText('¥12,345')
 
-    // 編集
-    await row.getByRole('button', { name: '編集' }).click()
+    // 編集(行クリックで編集画面へ)
+    await row.click()
     await expect(
       page.getByRole('heading', { name: /収入を編集/ })
     ).toBeVisible()

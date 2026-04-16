@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Pencil, Plus, RefreshCcw, Trash2 } from 'lucide-react'
+import { Plus, RefreshCcw, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -105,7 +105,7 @@ export default function IncomeList() {
                 <TableHead>口座</TableHead>
                 <TableHead className="text-right">金額</TableHead>
                 <TableHead>状態</TableHead>
-                <TableHead className="w-32 text-right">操作</TableHead>
+                <TableHead className="w-16 text-right">操作</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -131,7 +131,19 @@ export default function IncomeList() {
                 </TableRow>
               )}
               {incomes.map((i) => (
-                <TableRow key={i.id}>
+                <TableRow
+                  key={i.id}
+                  tabIndex={0}
+                  className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  onClick={() =>
+                    navigate(`/incomes/${year}/${month}/${i.id}/edit`)
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      navigate(`/incomes/${year}/${month}/${i.id}/edit`)
+                    }
+                  }}
+                >
                   <TableCell
                     className={`tabular-nums ${stateBarClass(i.state as State)}`}
                   >
@@ -149,26 +161,17 @@ export default function IncomeList() {
                     <StateBadge state={i.state as State} label={i.state_label} />
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        onClick={() =>
-                          navigate(`/incomes/${year}/${month}/${i.id}/edit`)
-                        }
-                        aria-label="編集"
-                      >
-                        <Pencil className="size-4" />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => setDeleting(i)}
-                        aria-label="削除"
-                      >
-                        <Trash2 className="size-4 text-destructive" />
-                      </Button>
-                    </div>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setDeleting(i)
+                      }}
+                      aria-label="削除"
+                    >
+                      <Trash2 className="size-4 text-destructive" />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
