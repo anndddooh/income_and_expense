@@ -20,6 +20,7 @@ urlpatterns = [
         name='method-done',
     ),
     path('balance/', api_views.BalanceAPIView.as_view(), name='balance'),
+    path('trends/', api_views.TrendAPIView.as_view(), name='trends'),
     path(
         'account_require/',
         api_views.AccountRequireAPIView.as_view(),

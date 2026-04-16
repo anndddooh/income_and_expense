@@ -2,6 +2,7 @@ import datetime
 
 from dateutil.relativedelta import relativedelta
 from django.db.models import Q, Sum
+from django.db.models.functions import TruncMonth
 from django.utils import timezone
 from rest_framework import generics, status, views, viewsets
 from rest_framework.decorators import action
@@ -294,6 +295,63 @@ class MethodDoneAPIView(views.APIView):
         )
         updated = qs.update(state=StateChoices.DONE)
         return Response({'updated': updated})
+
+
+class TrendAPIView(views.APIView):
+    """月次の収入・支出推移を返す。
+
+    Query:
+      months=12 (default 12)
+      end_year / end_month: 末尾の月。未指定ならクエリ時点の月。
+    """
+
+    def get(self, request):
+        try:
+            months = int(request.query_params.get('months', '12'))
+        except (TypeError, ValueError):
+            raise ValidationError('months は整数で指定してください')
+        months = max(1, min(months, 36))
+
+        end_year = request.query_params.get('end_year')
+        end_month = request.query_params.get('end_month')
+        if end_year and end_month:
+            try:
+                ey, em = int(end_year), int(end_month)
+            except (TypeError, ValueError):
+                raise ValidationError('end_year / end_month は整数で指定してください')
+        else:
+            now = timezone.now()
+            ey, em = now.year, now.month
+
+        end_first = datetime.date(ey, em, 1)
+        start_first = end_first - relativedelta(months=months - 1)
+        end_last = end_first + relativedelta(months=1) - datetime.timedelta(days=1)
+
+        def _aggregate(model):
+            rows = (
+                model.objects
+                .filter(pay_date__gte=start_first, pay_date__lte=end_last)
+                .annotate(m=TruncMonth('pay_date'))
+                .values('m')
+                .annotate(total=Sum('amount'))
+            )
+            return {r['m']: r['total'] or 0 for r in rows}
+
+        inc_map = _aggregate(Income)
+        exp_map = _aggregate(Expense)
+
+        months_data = []
+        cur = start_first
+        while cur <= end_first:
+            months_data.append({
+                'year': cur.year,
+                'month': cur.month,
+                'income': inc_map.get(cur, 0),
+                'expense': exp_map.get(cur, 0),
+            })
+            cur = cur + relativedelta(months=1)
+
+        return Response({'months': months_data})
 
 
 class BalanceAPIView(views.APIView):
