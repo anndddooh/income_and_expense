@@ -145,9 +145,15 @@ export default function AppLayout() {
     <SidebarProvider>
       <Sidebar collapsible="icon">
         <SidebarHeader>
-          <div className="flex items-center gap-2 px-2 py-1">
-            <BadgeDollarSign className="size-5" />
-            <span className="text-sm font-semibold">家計簿</span>
+          <div className="flex items-center gap-2 px-2 py-1 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center">
+            <img
+              src="/icon.png"
+              alt="INEX"
+              className="h-6 w-auto shrink-0"
+            />
+            <span className="text-sm font-semibold tracking-wide group-data-[collapsible=icon]:hidden">
+              INEX
+            </span>
           </div>
         </SidebarHeader>
         <SidebarContent>
