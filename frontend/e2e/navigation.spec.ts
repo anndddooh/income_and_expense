@@ -17,7 +17,7 @@ test.describe('サイドバーナビゲーション', () => {
       { link: '残高', heading: '残高' },
       { link: 'ローン', heading: /ローン一覧/ },
       { link: '口座別必要額', heading: '口座別必要金額' },
-      { link: '方法別必要額', heading: '支払方法別必要金額' },
+      { link: '支払方法別必要額', heading: '支払方法別必要金額' },
     ]
 
     for (const c of checks) {

@@ -81,7 +81,7 @@ const MAIN_NAV: NavItem[] = [
     requiresMonth: true,
   },
   {
-    label: '方法別必要額',
+    label: '支払方法別必要額',
     path: '/method_require',
     icon: <BadgeDollarSign className="size-4" />,
     requiresMonth: true,
