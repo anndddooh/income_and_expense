@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import PageHeader from '@/components/PageHeader'
+import { StateBadge, stateBarClass, type State } from '@/components/StateIndicator'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -131,7 +132,11 @@ export default function ExpenseList() {
               )}
               {items.map((i) => (
                 <TableRow key={i.id}>
-                  <TableCell className="tabular-nums">{i.pay_date}</TableCell>
+                  <TableCell
+                    className={`tabular-nums ${stateBarClass(i.state as State)}`}
+                  >
+                    {i.pay_date}
+                  </TableCell>
                   <TableCell className="font-medium">{i.name}</TableCell>
                   <TableCell>{i.method_name}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">
@@ -140,7 +145,9 @@ export default function ExpenseList() {
                   <TableCell className="text-right tabular-nums">
                     {i.formed_amount}
                   </TableCell>
-                  <TableCell>{i.state_label}</TableCell>
+                  <TableCell>
+                    <StateBadge state={i.state as State} label={i.state_label} />
+                  </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
                       <Button

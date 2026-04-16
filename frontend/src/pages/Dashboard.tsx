@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import PageHeader from '@/components/PageHeader'
+import { StateDot, type State } from '@/components/StateIndicator'
 import TrendChart from '@/components/TrendChart'
 import { Button } from '@/components/ui/button'
 import {
@@ -73,6 +74,7 @@ export default function Dashboard() {
       method: r.method_name,
       kind: '収入' as const,
       amount: r.amount,
+      state: r.state as State,
     })),
     ...(expensesQ.data ?? []).map((r) => ({
       id: `e-${r.id}`,
@@ -81,6 +83,7 @@ export default function Dashboard() {
       method: r.method_name,
       kind: '支出' as const,
       amount: r.amount,
+      state: r.state as State,
     })),
   ]
     .sort((a, b) => b.pay_date.localeCompare(a.pay_date))
@@ -181,7 +184,10 @@ export default function Dashboard() {
                       {r.pay_date}
                     </TableCell>
                     <TableCell className="truncate max-w-32">
-                      {r.name}
+                      <span className="inline-flex items-center gap-1.5">
+                        <StateDot state={r.state} />
+                        {r.name}
+                      </span>
                     </TableCell>
                     <TableCell>
                       <span

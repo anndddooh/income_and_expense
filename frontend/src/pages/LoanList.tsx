@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import PageHeader from '@/components/PageHeader'
+import { StateBadge, stateBarClass, type State } from '@/components/StateIndicator'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -116,7 +117,11 @@ export default function LoanList() {
                     key={l.id}
                     className={cn(complete && 'text-muted-foreground')}
                   >
-                    <TableCell className="font-medium">{l.name}</TableCell>
+                    <TableCell
+                      className={`font-medium ${stateBarClass(l.state as State)}`}
+                    >
+                      {l.name}
+                    </TableCell>
                     <TableCell>{l.pay_day}</TableCell>
                     <TableCell>
                       {l.first_year}/{l.first_month}
@@ -131,7 +136,12 @@ export default function LoanList() {
                     <TableCell className="text-right tabular-nums">
                       {l.formed_amount_from_second}
                     </TableCell>
-                    <TableCell>{l.state_label}</TableCell>
+                    <TableCell>
+                      <StateBadge
+                        state={l.state as State}
+                        label={l.state_label}
+                      />
+                    </TableCell>
                     <TableCell>
                       {complete ? <Badge variant="secondary">完了</Badge> : '-'}
                     </TableCell>
