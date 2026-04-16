@@ -160,7 +160,9 @@ export default function Dashboard() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>最近の取引</CardTitle>
-            <CardDescription>今月の収入・支出から最新 {recent.length} 件</CardDescription>
+            <CardDescription>
+              当月の収支から最新 {recent.length} 件
+            </CardDescription>
           </CardHeader>
           <CardContent className="p-0">
             <Table>

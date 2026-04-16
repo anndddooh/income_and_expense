@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import AppLayout from '@/components/AppLayout'
 import { Toaster } from '@/components/ui/sonner'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import AccountRequire from '@/pages/AccountRequire'
 import Balance from '@/pages/Balance'
 import Dashboard from '@/pages/Dashboard'
@@ -18,6 +19,7 @@ const queryClient = new QueryClient()
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
       <BrowserRouter>
         <Routes>
           <Route element={<AppLayout />}>
@@ -50,6 +52,7 @@ export default function App() {
         </Routes>
       </BrowserRouter>
       <Toaster richColors position="top-right" />
+      </TooltipProvider>
     </QueryClientProvider>
   )
 }
