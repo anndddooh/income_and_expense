@@ -1,11 +1,21 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
+import { z } from 'zod'
 import PageHeader from '@/components/PageHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -13,20 +23,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  createLoan,
-  fetchLoan,
-  updateLoan,
-  type LoanInput,
-} from '@/api/loans'
+import { applyServerErrors } from '@/lib/form-errors'
+import { createLoan, fetchLoan, updateLoan } from '@/api/loans'
 import { fetchMethods } from '@/api/methods'
-import type { StateValue } from '@/api/types'
 
-const STATES: { value: StateValue; label: string }[] = [
-  { value: 0, label: '未定' },
-  { value: 1, label: '確定' },
-  { value: 2, label: '完了' },
+const schema = z.object({
+  name: z.string().min(1, '名称は必須です'),
+  pay_day: z
+    .number()
+    .int()
+    .min(1, '1〜28の範囲で指定してください')
+    .max(28, '1〜28の範囲で指定してください'),
+  first_year: z.number().int().positive('開始年を入力してください'),
+  first_month: z.number().int().min(1).max(12),
+  last_year: z.number().int().positive('終了年を入力してください'),
+  last_month: z.number().int().min(1).max(12),
+  method: z.number().int().positive('方法を選択してください'),
+  amount_first: z.number().int().min(0, '金額は0以上'),
+  amount_from_second: z.number().int().min(0, '金額は0以上'),
+  state: z.number().int().min(0).max(2),
+})
+
+type FormValues = z.infer<typeof schema>
+
+const STATES = [
+  { value: '0', label: '未定' },
+  { value: '1', label: '確定' },
+  { value: '2', label: '完了' },
 ]
+
+const FIELDS = [
+  'name',
+  'pay_day',
+  'first_year',
+  'first_month',
+  'last_year',
+  'last_month',
+  'method',
+  'amount_first',
+  'amount_from_second',
+  'state',
+] as const
 
 export default function LoanForm() {
   const { year: y, month: m, id } = useParams<{
@@ -41,19 +78,21 @@ export default function LoanForm() {
   const navigate = useNavigate()
   const qc = useQueryClient()
 
-  const [form, setForm] = useState<LoanInput>({
-    name: '',
-    pay_day: 1,
-    first_year: year,
-    first_month: month,
-    last_year: year,
-    last_month: month,
-    method: 0,
-    amount_first: 0,
-    amount_from_second: 0,
-    state: 0,
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: '',
+      pay_day: 1,
+      first_year: year,
+      first_month: month,
+      last_year: year,
+      last_month: month,
+      method: 0,
+      amount_first: 0,
+      amount_from_second: 0,
+      state: 0,
+    },
   })
-  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const { data: methods = [] } = useQuery({
     queryKey: ['methods'],
@@ -67,7 +106,7 @@ export default function LoanForm() {
 
   useEffect(() => {
     if (existing) {
-      setForm({
+      form.reset({
         name: existing.name,
         pay_day: existing.pay_day,
         first_year: existing.first_year,
@@ -80,205 +119,274 @@ export default function LoanForm() {
         state: existing.state,
       })
     }
-  }, [existing])
+  }, [existing, form])
 
   useEffect(() => {
-    if (!isEdit && form.method === 0 && methods[0]) {
-      setForm((f) => ({ ...f, method: methods[0].id }))
+    if (!isEdit && form.getValues('method') === 0 && methods[0]) {
+      form.setValue('method', methods[0].id)
     }
-  }, [methods, isEdit, form.method])
+  }, [methods, isEdit, form])
 
   const mut = useMutation({
-    mutationFn: () =>
-      isEdit ? updateLoan(itemId!, form) : createLoan(form),
+    mutationFn: (values: FormValues) => {
+      const payload = { ...values, state: values.state as 0 | 1 | 2 }
+      return isEdit ? updateLoan(itemId!, payload) : createLoan(payload)
+    },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['loans'] })
       navigate(`/loans/${year}/${month}`)
     },
     onError: (e: unknown) => {
-      type AxiosLike = { response?: { data?: unknown }; message?: string }
-      const ax = e as AxiosLike
-      setSubmitError(
-        ax?.response?.data
-          ? JSON.stringify(ax.response.data)
-          : ax?.message ?? String(e)
-      )
+      const rootMsg = applyServerErrors(e, form.setError, FIELDS)
+      if (rootMsg) form.setError('root', { type: 'server', message: rootMsg })
     },
   })
-
-  const setN = (k: keyof LoanInput) => (v: string) =>
-    setForm({ ...form, [k]: Number(v) })
 
   return (
     <div className="max-w-xl">
       <PageHeader title={isEdit ? 'ローンを編集' : 'ローンを追加'} />
-
       <Card>
         <CardContent className="pt-6">
-          <form
-            className="space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault()
-              setSubmitError(null)
-              mut.mutate()
-            }}
-          >
-            <Field label="名称" htmlFor="f-name">
-              <Input
-                id="f-name"
-                required
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
+          <Form {...form}>
+            <form
+              className="space-y-4"
+              onSubmit={form.handleSubmit((v) => {
+                form.clearErrors('root')
+                mut.mutate(v)
+              })}
+            >
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>名称</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </Field>
-            <Field label="支払日 (1-28)" htmlFor="f-pay-day">
-              <Input
-                id="f-pay-day"
-                type="number"
-                required
-                min={1}
-                max={28}
-                value={form.pay_day}
-                onChange={(e) => setN('pay_day')(e.target.value)}
+              <FormField
+                control={form.control}
+                name="pay_day"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>支払日 (1-28)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={1}
+                        max={28}
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </Field>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="開始年" htmlFor="f-first-year">
-                <Input
-                  id="f-first-year"
-                  type="number"
-                  required
-                  value={form.first_year}
-                  onChange={(e) => setN('first_year')(e.target.value)}
-                />
-              </Field>
-              <Field label="開始月" htmlFor="f-first-month">
-                <Input
-                  id="f-first-month"
-                  type="number"
-                  required
-                  min={1}
-                  max={12}
-                  value={form.first_month}
-                  onChange={(e) => setN('first_month')(e.target.value)}
-                />
-              </Field>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="終了年" htmlFor="f-last-year">
-                <Input
-                  id="f-last-year"
-                  type="number"
-                  required
-                  value={form.last_year}
-                  onChange={(e) => setN('last_year')(e.target.value)}
-                />
-              </Field>
-              <Field label="終了月" htmlFor="f-last-month">
-                <Input
-                  id="f-last-month"
-                  type="number"
-                  required
-                  min={1}
-                  max={12}
-                  value={form.last_month}
-                  onChange={(e) => setN('last_month')(e.target.value)}
-                />
-              </Field>
-            </div>
-            <Field label="方法" htmlFor="f-method">
-              <Select
-                value={form.method ? String(form.method) : undefined}
-                onValueChange={(v) => setForm({ ...form, method: Number(v) })}
-              >
-                <SelectTrigger id="f-method">
-                  <SelectValue placeholder="選択" />
-                </SelectTrigger>
-                <SelectContent>
-                  {methods.map((m) => (
-                    <SelectItem key={m.id} value={String(m.id)}>
-                      {m.display_name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-            <Field label="初回金額" htmlFor="f-amount-first">
-              <Input
-                id="f-amount-first"
-                type="number"
-                required
-                min={0}
-                value={form.amount_first}
-                onChange={(e) => setN('amount_first')(e.target.value)}
-              />
-            </Field>
-            <Field label="2回目以降金額" htmlFor="f-amount-from-second">
-              <Input
-                id="f-amount-from-second"
-                type="number"
-                required
-                min={0}
-                value={form.amount_from_second}
-                onChange={(e) => setN('amount_from_second')(e.target.value)}
-              />
-            </Field>
-            <Field label="状態" htmlFor="f-state">
-              <Select
-                value={String(form.state)}
-                onValueChange={(v) =>
-                  setForm({ ...form, state: Number(v) as StateValue })
-                }
-              >
-                <SelectTrigger id="f-state">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {STATES.map((s) => (
-                    <SelectItem key={s.value} value={String(s.value)}>
-                      {s.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
 
-            {submitError && (
-              <p className="text-sm text-destructive">エラー: {submitError}</p>
-            )}
+              <div className="grid grid-cols-2 gap-3">
+                <FormField
+                  control={form.control}
+                  name="first_year"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>開始年</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="first_month"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>開始月</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min={1}
+                          max={12}
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-            <div className="flex gap-2 pt-2">
-              <Button type="submit" disabled={mut.isPending}>
-                {isEdit ? '更新' : '追加'}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => navigate(`/loans/${year}/${month}`)}
-              >
-                キャンセル
-              </Button>
-            </div>
-          </form>
+              <div className="grid grid-cols-2 gap-3">
+                <FormField
+                  control={form.control}
+                  name="last_year"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>終了年</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="last_month"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>終了月</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min={1}
+                          max={12}
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="method"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>方法</FormLabel>
+                    <Select
+                      value={field.value ? String(field.value) : undefined}
+                      onValueChange={(v) => field.onChange(Number(v))}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="選択" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {methods.map((m) => (
+                          <SelectItem key={m.id} value={String(m.id)}>
+                            {m.display_name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="amount_first"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>初回金額</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={0}
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="amount_from_second"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>2回目以降金額</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={0}
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="state"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>状態</FormLabel>
+                    <Select
+                      value={String(field.value)}
+                      onValueChange={(v) => field.onChange(Number(v))}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {STATES.map((s) => (
+                          <SelectItem key={s.value} value={s.value}>
+                            {s.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {form.formState.errors.root && (
+                <p className="text-sm text-destructive">
+                  {form.formState.errors.root.message}
+                </p>
+              )}
+
+              <div className="flex gap-2 pt-2">
+                <Button type="submit" disabled={mut.isPending}>
+                  {isEdit ? '更新' : '追加'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => navigate(`/loans/${year}/${month}`)}
+                >
+                  キャンセル
+                </Button>
+              </div>
+            </form>
+          </Form>
         </CardContent>
       </Card>
-    </div>
-  )
-}
-
-function Field({
-  label,
-  htmlFor,
-  children,
-}: {
-  label: string
-  htmlFor: string
-  children: React.ReactNode
-}) {
-  return (
-    <div className="space-y-1.5">
-      <Label htmlFor={htmlFor}>{label}</Label>
-      {children}
     </div>
   )
 }
