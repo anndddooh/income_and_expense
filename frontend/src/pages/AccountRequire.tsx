@@ -1,16 +1,23 @@
-import {
-  Box,
-  Container,
-  Loader,
-  Stack,
-  Table,
-  Text,
-  Title,
-} from '@mantine/core'
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
-import MonthNav from '../components/MonthNav'
-import { fetchAccountRequire } from '../api/requires'
+import PageHeader from '@/components/PageHeader'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { cn } from '@/lib/utils'
+import { fetchAccountRequire } from '@/api/requires'
 
 export default function AccountRequire() {
   const { year: y, month: m } = useParams<{ year: string; month: string }>()
@@ -21,61 +28,89 @@ export default function AccountRequire() {
     queryFn: () => fetchAccountRequire(year, month),
   })
 
-  if (isLoading) return <Loader m="md" />
-  if (error || !data) return <Text c="red" m="md">エラー: {String(error)}</Text>
-
   return (
-    <Container size="lg" py="md">
-      <MonthNav year={year} month={month} basePath="/account_require" />
-      <Title order={2} mb="md">口座別必要金額</Title>
+    <>
+      <PageHeader
+        title="口座別必要金額"
+        description={`${year}年${month}月`}
+      />
 
-      <Table striped highlightOnHover withTableBorder>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>ユーザー</Table.Th>
-            <Table.Th>銀行</Table.Th>
-            <Table.Th ta="right">残高</Table.Th>
-            <Table.Th ta="right">必要額</Table.Th>
-            <Table.Th ta="right">不足額</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          {data.accounts.map((a) => (
-            <Table.Tr
-              key={a.id}
-              bg={a.is_insufficient ? 'red.0' : undefined}
-            >
-              <Table.Td>{a.user}</Table.Td>
-              <Table.Td>{a.bank}</Table.Td>
-              <Table.Td ta="right">{a.formed_balance}</Table.Td>
-              <Table.Td ta="right">{a.formed_require}</Table.Td>
-              <Table.Td ta="right">
-                {a.is_insufficient ? (
-                  <Text span c="red" fw={700}>
-                    {a.formed_insufficient}
-                  </Text>
-                ) : (
-                  '-'
-                )}
-              </Table.Td>
-            </Table.Tr>
-          ))}
-        </Table.Tbody>
-      </Table>
+      {isLoading && <p className="text-muted-foreground">読み込み中...</p>}
+      {error && <p className="text-destructive">エラー: {String(error)}</p>}
 
-      <Box mt="lg">
-        <Stack gap={4}>
-          <Text>
-            必要額合計: <b>¥{data.require_sum.toLocaleString()}</b>
-          </Text>
-          <Text>
-            不足額合計:{' '}
-            <Text span fw={700} c={data.insufficient_sum > 0 ? 'red' : 'green'}>
-              ¥{data.insufficient_sum.toLocaleString()}
-            </Text>
-          </Text>
-        </Stack>
-      </Box>
-    </Container>
+      {data && (
+        <>
+          <div className="mb-6 grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardDescription>必要額合計</CardDescription>
+                <CardTitle className="text-2xl tabular-nums">
+                  ¥{data.require_sum.toLocaleString()}
+                </CardTitle>
+              </CardHeader>
+              <CardContent />
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardDescription>不足額合計</CardDescription>
+                <CardTitle
+                  className={cn(
+                    'text-2xl tabular-nums',
+                    data.insufficient_sum > 0
+                      ? 'text-destructive'
+                      : 'text-green-600'
+                  )}
+                >
+                  ¥{data.insufficient_sum.toLocaleString()}
+                </CardTitle>
+              </CardHeader>
+              <CardContent />
+            </Card>
+          </div>
+
+          <Card>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ユーザー</TableHead>
+                    <TableHead>銀行</TableHead>
+                    <TableHead className="text-right">残高</TableHead>
+                    <TableHead className="text-right">必要額</TableHead>
+                    <TableHead className="text-right">不足額</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data.accounts.map((a) => (
+                    <TableRow
+                      key={a.id}
+                      className={cn(a.is_insufficient && 'bg-destructive/10')}
+                    >
+                      <TableCell>{a.user}</TableCell>
+                      <TableCell>{a.bank}</TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {a.formed_balance}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {a.formed_require}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {a.is_insufficient ? (
+                          <span className="font-semibold text-destructive">
+                            {a.formed_insufficient}
+                          </span>
+                        ) : (
+                          '-'
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </>
+      )}
+    </>
   )
 }

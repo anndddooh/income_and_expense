@@ -1,26 +1,27 @@
-import {
-  Button,
-  Container,
-  Group,
-  NumberInput,
-  Select,
-  Stack,
-  Text,
-  TextInput,
-  Textarea,
-  Title,
-} from '@mantine/core'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import PageHeader from '@/components/PageHeader'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
 import {
   createExpense,
   fetchExpense,
   updateExpense,
   type ExpenseInput,
-} from '../api/expenses'
-import { fetchMethods } from '../api/methods'
-import type { StateValue } from '../api/types'
+} from '@/api/expenses'
+import { fetchMethods } from '@/api/methods'
+import type { StateValue } from '@/api/types'
 
 const STATES: { value: StateValue; label: string }[] = [
   { value: 0, label: '未定' },
@@ -99,88 +100,129 @@ export default function ExpenseForm() {
   })
 
   return (
-    <Container size="sm" py="md">
-      <Title order={2} mb="md">
-        {isEdit ? '支出を編集' : '支出を追加'}
-      </Title>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          setSubmitError(null)
-          mut.mutate()
-        }}
-      >
-        <Stack>
-          <TextInput
-            label="名称"
-            required
-            value={form.name}
-            onChange={(e) =>
-              setForm({ ...form, name: e.currentTarget.value })
-            }
-          />
-          <TextInput
-            label="支払日"
-            type="date"
-            required
-            value={form.pay_date}
-            onChange={(e) =>
-              setForm({ ...form, pay_date: e.currentTarget.value })
-            }
-          />
-          <Select
-            label="方法"
-            required
-            data={methods.map((m) => ({
-              value: String(m.id),
-              label: m.display_name,
-            }))}
-            value={form.method ? String(form.method) : null}
-            onChange={(v) => setForm({ ...form, method: Number(v) })}
-          />
-          <NumberInput
-            label="金額"
-            required
-            min={0}
-            value={form.amount}
-            onChange={(v) => setForm({ ...form, amount: Number(v) })}
-          />
-          <Select
-            label="状態"
-            data={STATES.map((s) => ({
-              value: String(s.value),
-              label: s.label,
-            }))}
-            value={String(form.state)}
-            onChange={(v) =>
-              setForm({ ...form, state: Number(v) as StateValue })
-            }
-          />
-          <Textarea
-            label="メモ"
-            rows={4}
-            value={form.memo ?? ''}
-            onChange={(e) =>
-              setForm({ ...form, memo: e.currentTarget.value })
-            }
-          />
+    <div className="max-w-xl">
+      <PageHeader title={isEdit ? '支出を編集' : '支出を追加'} description={`${year}年${month}月`} />
 
-          {submitError && <Text c="red">エラー: {submitError}</Text>}
+      <Card>
+        <CardContent className="pt-6">
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault()
+              setSubmitError(null)
+              mut.mutate()
+            }}
+          >
+            <Field label="名称" htmlFor="f-name">
+              <Input
+                id="f-name"
+                required
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+              />
+            </Field>
+            <Field label="支払日" htmlFor="f-pay-date">
+              <Input
+                id="f-pay-date"
+                type="date"
+                required
+                value={form.pay_date}
+                onChange={(e) => setForm({ ...form, pay_date: e.target.value })}
+              />
+            </Field>
+            <Field label="方法" htmlFor="f-method">
+              <Select
+                value={form.method ? String(form.method) : undefined}
+                onValueChange={(v) => setForm({ ...form, method: Number(v) })}
+              >
+                <SelectTrigger id="f-method">
+                  <SelectValue placeholder="選択" />
+                </SelectTrigger>
+                <SelectContent>
+                  {methods.map((m) => (
+                    <SelectItem key={m.id} value={String(m.id)}>
+                      {m.display_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field label="金額" htmlFor="f-amount">
+              <Input
+                id="f-amount"
+                type="number"
+                required
+                min={0}
+                value={form.amount}
+                onChange={(e) =>
+                  setForm({ ...form, amount: Number(e.target.value) })
+                }
+              />
+            </Field>
+            <Field label="状態" htmlFor="f-state">
+              <Select
+                value={String(form.state)}
+                onValueChange={(v) =>
+                  setForm({ ...form, state: Number(v) as StateValue })
+                }
+              >
+                <SelectTrigger id="f-state">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {STATES.map((s) => (
+                    <SelectItem key={s.value} value={String(s.value)}>
+                      {s.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field label="メモ" htmlFor="f-memo">
+              <Textarea
+                id="f-memo"
+                rows={4}
+                value={form.memo ?? ''}
+                onChange={(e) => setForm({ ...form, memo: e.target.value })}
+              />
+            </Field>
 
-          <Group>
-            <Button type="submit" loading={mut.isPending} color="pink">
-              {isEdit ? '更新' : '追加'}
-            </Button>
-            <Button
-              type="button"
-              variant="default"
-              onClick={() => navigate(`/expenses/${year}/${month}`)}
-            >
-              キャンセル
-            </Button>
-          </Group>
-        </Stack>
-      </form>
-    </Container>
+            {submitError && (
+              <p className="text-sm text-destructive">エラー: {submitError}</p>
+            )}
+
+            <div className="flex gap-2 pt-2">
+              <Button type="submit" disabled={mut.isPending}>
+                {isEdit ? '更新' : '追加'}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => navigate(`/expenses/${year}/${month}`)}
+              >
+                キャンセル
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+function Field({
+  label,
+  htmlFor,
+  children,
+}: {
+  label: string
+  htmlFor: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="space-y-1.5">
+      <Label htmlFor={htmlFor}>{label}</Label>
+      {children}
+    </div>
   )
 }

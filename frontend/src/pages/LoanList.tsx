@@ -1,18 +1,32 @@
-import {
-  Anchor,
-  Badge,
-  Button,
-  Container,
-  Group,
-  Loader,
-  Table,
-  Text,
-  Title,
-} from '@mantine/core'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import MonthNav from '../components/MonthNav'
-import { deleteLoan, fetchLoans } from '../api/loans'
+import { Pencil, Plus, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { toast } from 'sonner'
+import PageHeader from '@/components/PageHeader'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { cn } from '@/lib/utils'
+import { deleteLoan, fetchLoans, type Loan } from '@/api/loans'
 
 export default function LoanList() {
   const { year: y, month: m } = useParams<{ year: string; month: string }>()
@@ -20,6 +34,7 @@ export default function LoanList() {
   const month = Number(m)
   const qc = useQueryClient()
   const navigate = useNavigate()
+  const [deleting, setDeleting] = useState<Loan | null>(null)
 
   const { data: loans = [], isLoading, error } = useQuery({
     queryKey: ['loans'],
@@ -28,101 +43,147 @@ export default function LoanList() {
 
   const delMut = useMutation({
     mutationFn: (id: number) => deleteLoan(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['loans'] }),
-    onError: (e: unknown) => alert('削除失敗: ' + String(e)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['loans'] })
+      setDeleting(null)
+      toast.success('削除しました')
+    },
+    onError: (e: unknown) => toast.error('削除失敗: ' + String(e)),
   })
-
-  if (isLoading) return <Loader m="md" />
-  if (error) return <Text c="red" m="md">エラー: {String(error)}</Text>
 
   const isComplete = (l: { last_year: number; last_month: number }) =>
     year > l.last_year || (year === l.last_year && month > l.last_month)
 
   return (
-    <Container size="xl" py="md">
-      <MonthNav year={year} month={month} basePath="/loans" />
-      <Group justify="space-between" mb="md">
-        <Title order={2}>ローン一覧</Title>
-        <Button
-          color="grape"
-          onClick={() => navigate(`/loans/${year}/${month}/new`)}
-        >
-          新規作成
-        </Button>
-      </Group>
+    <>
+      <PageHeader
+        title="ローン一覧"
+        description={`${year}年${month}月`}
+        actions={
+          <Button
+            size="sm"
+            onClick={() => navigate(`/loans/${year}/${month}/new`)}
+          >
+            <Plus className="size-4" />
+            新規作成
+          </Button>
+        }
+      />
 
-      <Table striped highlightOnHover withTableBorder>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>名称</Table.Th>
-            <Table.Th>支払日</Table.Th>
-            <Table.Th>開始</Table.Th>
-            <Table.Th>終了</Table.Th>
-            <Table.Th>方法</Table.Th>
-            <Table.Th ta="right">初回</Table.Th>
-            <Table.Th ta="right">2回目以降</Table.Th>
-            <Table.Th>状態</Table.Th>
-            <Table.Th>完了</Table.Th>
-            <Table.Th>操作</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          {loans.map((l) => {
-            const complete = isComplete(l)
-            return (
-              <Table.Tr
-                key={l.id}
-                style={complete ? { opacity: 0.5 } : undefined}
-              >
-                <Table.Td>{l.name}</Table.Td>
-                <Table.Td>{l.pay_day}</Table.Td>
-                <Table.Td>
-                  {l.first_year}/{l.first_month}
-                </Table.Td>
-                <Table.Td>
-                  {l.last_year}/{l.last_month}
-                </Table.Td>
-                <Table.Td>{l.method_name}</Table.Td>
-                <Table.Td ta="right">{l.formed_amount_first}</Table.Td>
-                <Table.Td ta="right">{l.formed_amount_from_second}</Table.Td>
-                <Table.Td>{l.state_label}</Table.Td>
-                <Table.Td>
-                  {complete ? <Badge color="gray">完了</Badge> : '-'}
-                </Table.Td>
-                <Table.Td>
-                  <Group gap="xs">
-                    <Anchor
-                      component={Link}
-                      to={`/loans/${year}/${month}/${l.id}/edit`}
-                      size="sm"
-                    >
-                      編集
-                    </Anchor>
-                    <Button
-                      size="xs"
-                      color="red"
-                      variant="subtle"
-                      onClick={() => {
-                        if (confirm(`「${l.name}」を削除しますか?`))
-                          delMut.mutate(l.id)
-                      }}
-                    >
-                      削除
-                    </Button>
-                  </Group>
-                </Table.Td>
-              </Table.Tr>
-            )
-          })}
-          {loans.length === 0 && (
-            <Table.Tr>
-              <Table.Td colSpan={10} ta="center" c="dimmed">
-                データがありません
-              </Table.Td>
-            </Table.Tr>
-          )}
-        </Table.Tbody>
-      </Table>
-    </Container>
+      <Card>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>名称</TableHead>
+                <TableHead>支払日</TableHead>
+                <TableHead>開始</TableHead>
+                <TableHead>終了</TableHead>
+                <TableHead>方法</TableHead>
+                <TableHead className="text-right">初回</TableHead>
+                <TableHead className="text-right">2回目以降</TableHead>
+                <TableHead>状態</TableHead>
+                <TableHead>完了</TableHead>
+                <TableHead className="w-32 text-right">操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading && (
+                <TableRow>
+                  <TableCell colSpan={10} className="text-center text-muted-foreground">
+                    読み込み中...
+                  </TableCell>
+                </TableRow>
+              )}
+              {error && (
+                <TableRow>
+                  <TableCell colSpan={10} className="text-center text-destructive">
+                    エラー: {String(error)}
+                  </TableCell>
+                </TableRow>
+              )}
+              {!isLoading && !error && loans.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={10} className="text-center text-muted-foreground">
+                    データがありません
+                  </TableCell>
+                </TableRow>
+              )}
+              {loans.map((l) => {
+                const complete = isComplete(l)
+                return (
+                  <TableRow
+                    key={l.id}
+                    className={cn(complete && 'text-muted-foreground')}
+                  >
+                    <TableCell className="font-medium">{l.name}</TableCell>
+                    <TableCell>{l.pay_day}</TableCell>
+                    <TableCell>
+                      {l.first_year}/{l.first_month}
+                    </TableCell>
+                    <TableCell>
+                      {l.last_year}/{l.last_month}
+                    </TableCell>
+                    <TableCell>{l.method_name}</TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {l.formed_amount_first}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {l.formed_amount_from_second}
+                    </TableCell>
+                    <TableCell>{l.state_label}</TableCell>
+                    <TableCell>
+                      {complete ? <Badge variant="secondary">完了</Badge> : '-'}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() =>
+                            navigate(`/loans/${year}/${month}/${l.id}/edit`)
+                          }
+                          aria-label="編集"
+                        >
+                          <Pencil className="size-4" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => setDeleting(l)}
+                          aria-label="削除"
+                        >
+                          <Trash2 className="size-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>削除しますか?</AlertDialogTitle>
+            <AlertDialogDescription>
+              「{deleting?.name}」を削除します。
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>キャンセル</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleting && delMut.mutate(deleting.id)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              削除
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }
