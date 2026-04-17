@@ -6,7 +6,7 @@ import {
   Plus,
   Wallet,
 } from 'lucide-react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import PageHeader from '@/components/PageHeader'
 import { StateDot, type State } from '@/components/StateIndicator'
 import TrendChart from '@/components/TrendChart'
@@ -35,10 +35,10 @@ import { fetchTrends } from '@/api/trends'
 import { todayYearMonth } from '@/util/date'
 
 export default function Dashboard() {
-  const location = useLocation() as { state?: { year?: number; month?: number } }
+  const params = useParams<{ year?: string; month?: string }>()
   const now = todayYearMonth()
-  const year = location.state?.year ?? now.year
-  const month = location.state?.month ?? now.month
+  const year = params.year ? Number(params.year) : now.year
+  const month = params.month ? Number(params.month) : now.month
 
   const incomesQ = useQuery({
     queryKey: ['incomes', year, month],

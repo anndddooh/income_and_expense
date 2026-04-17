@@ -24,6 +24,7 @@ export default function App() {
         <Routes>
           <Route element={<AppLayout />}>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/dashboard/:year/:month" element={<Dashboard />} />
             <Route path="/incomes/:year/:month" element={<IncomeList />} />
             <Route path="/incomes/:year/:month/new" element={<IncomeForm />} />
             <Route

@@ -1,5 +1,6 @@
 import {
   BadgeDollarSign,
+  CalendarCheck,
   ChevronLeft,
   ChevronRight,
   CreditCard,
@@ -58,9 +59,9 @@ type NavItem = {
 const MAIN_NAV: NavItem[] = [
   {
     label: 'ダッシュボード',
-    path: '',
+    path: '/dashboard',
     icon: <LayoutDashboard className="size-4" />,
-    requiresMonth: false,
+    requiresMonth: true,
   },
   {
     label: '収入',
@@ -120,12 +121,8 @@ export default function AppLayout() {
 
   const goTo = (y: number, m: number) => {
     const seg = location.pathname.split('/').filter(Boolean)
-    const base = seg[0] ? `/${seg[0]}` : ''
-    if (base) {
-      navigate(`${base}/${y}/${m}`)
-    } else {
-      navigate(`/`, { state: { year: y, month: m } })
-    }
+    const base = seg[0] ? `/${seg[0]}` : 'dashboard'
+    navigate(`/${base}/${y}/${m}`)
   }
 
   const shift = (delta: number) => {
@@ -162,12 +159,10 @@ export default function AppLayout() {
             <SidebarGroupContent>
               <SidebarMenu>
                 {MAIN_NAV.map((item) => {
-                  const to = item.requiresMonth
-                    ? `${item.path}/${year}/${month}`
-                    : '/'
-                  const active = item.path
-                    ? location.pathname.startsWith(item.path)
-                    : location.pathname === '/'
+                  const to = `${item.path}/${year}/${month}`
+                  const active = item.path === '/dashboard'
+                    ? location.pathname === '/' || location.pathname.startsWith('/dashboard')
+                    : location.pathname.startsWith(item.path)
                   return (
                     <SidebarMenuItem key={item.label}>
                       <SidebarMenuButton
@@ -262,6 +257,17 @@ export default function AppLayout() {
               次月
               <ChevronRight className="size-4" />
             </Button>
+            {(year !== todayYearMonth().year || month !== todayYearMonth().month) && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => goTo(todayYearMonth().year, todayYearMonth().month)}
+                aria-label="今月に戻る"
+              >
+                <CalendarCheck className="size-4" />
+                今月
+              </Button>
+            )}
           </div>
         </header>
         <main className="flex-1 p-6">
