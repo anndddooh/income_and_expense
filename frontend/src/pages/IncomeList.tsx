@@ -210,6 +210,15 @@ export default function IncomeList() {
 function extractError(e: unknown): string {
   type AxiosLike = { response?: { data?: unknown }; message?: string }
   const ax = e as AxiosLike
-  if (ax?.response?.data) return JSON.stringify(ax.response.data)
+  const data = ax?.response?.data
+  if (Array.isArray(data)) return data.join(' ')
+  if (typeof data === 'string') return data
+  if (data && typeof data === 'object') {
+    const record = data as Record<string, unknown>
+    if (typeof record.detail === 'string') return record.detail
+    return Object.values(record)
+      .map((v) => (Array.isArray(v) ? v.join(' ') : String(v)))
+      .join('\n')
+  }
   return ax?.message ?? String(e)
 }
