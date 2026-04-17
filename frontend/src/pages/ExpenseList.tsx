@@ -101,7 +101,7 @@ export default function ExpenseList() {
               <TableRow>
                 <TableHead>支払日</TableHead>
                 <TableHead>名称</TableHead>
-                <TableHead>方法</TableHead>
+                <TableHead>支払方法</TableHead>
                 <TableHead>口座</TableHead>
                 <TableHead className="text-right">金額</TableHead>
                 <TableHead>状態</TableHead>

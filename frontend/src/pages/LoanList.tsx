@@ -80,7 +80,7 @@ export default function LoanList() {
                 <TableHead>支払日</TableHead>
                 <TableHead>開始</TableHead>
                 <TableHead>終了</TableHead>
-                <TableHead>方法</TableHead>
+                <TableHead>支払方法</TableHead>
                 <TableHead className="text-right">初回</TableHead>
                 <TableHead className="text-right">2回目以降</TableHead>
                 <TableHead>状態</TableHead>

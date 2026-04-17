@@ -31,7 +31,7 @@ import { fetchMethods } from '@/api/methods'
 const schema = z.object({
   name: z.string().min(1, '名称は必須です'),
   pay_date: z.string().min(1, '支払日は必須です'),
-  method: z.number().int().positive('方法を選択してください'),
+  method: z.number().int().positive('支払方法を選択してください'),
   amount: z.number().int().min(0, '金額は0以上で入力してください'),
   state: z.number().int().min(0).max(2),
   memo: z.string().nullable().optional(),
@@ -163,7 +163,7 @@ export default function ExpenseForm() {
                 name="method"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>方法</FormLabel>
+                    <FormLabel>支払方法</FormLabel>
                     <Select
                       value={field.value ? String(field.value) : undefined}
                       onValueChange={(v) => field.onChange(Number(v))}

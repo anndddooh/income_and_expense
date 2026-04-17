@@ -38,7 +38,7 @@ const schema = z.object({
   first_month: z.number().int().min(1).max(12),
   last_year: z.number().int().positive('終了年を入力してください'),
   last_month: z.number().int().min(1).max(12),
-  method: z.number().int().positive('方法を選択してください'),
+  method: z.number().int().positive('支払方法を選択してください'),
   amount_first: z.number().int().min(0, '金額は0以上'),
   amount_from_second: z.number().int().min(0, '金額は0以上'),
   state: z.number().int().min(0).max(2),
@@ -279,7 +279,7 @@ export default function LoanForm() {
                 name="method"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>方法</FormLabel>
+                    <FormLabel>支払方法</FormLabel>
                     <Select
                       value={field.value ? String(field.value) : undefined}
                       onValueChange={(v) => field.onChange(Number(v))}
