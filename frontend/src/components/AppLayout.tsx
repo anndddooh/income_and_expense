@@ -110,7 +110,7 @@ function useCurrentYearMonth() {
 }
 
 const CURRENT_YEAR = todayYearMonth().year
-const YEAR_OPTIONS = Array.from({ length: 11 }, (_, i) => CURRENT_YEAR - 7 + i)
+const YEAR_OPTIONS = Array.from({ length: 101 }, (_, i) => CURRENT_YEAR - 50 + i)
 const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => i + 1)
 
 export default function AppLayout() {
