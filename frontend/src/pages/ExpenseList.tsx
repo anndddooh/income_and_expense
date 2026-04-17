@@ -41,10 +41,12 @@ export default function ExpenseList() {
   const [deleting, setDeleting] = useState<Expense | null>(null)
 
   const key = ['expenses', year, month]
-  const { data: items = [], isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: key,
     queryFn: () => fetchExpenses(year, month),
   })
+  const items = data?.results ?? []
+  const balance = data?.balance ?? 0
 
   const delMut = useMutation({
     mutationFn: (id: number) => deleteExpense(id),
@@ -180,8 +182,9 @@ export default function ExpenseList() {
         </CardContent>
       </Card>
 
-      <div className="mt-4 text-sm text-muted-foreground">
-        合計: <span className="font-semibold text-foreground tabular-nums">¥{total.toLocaleString()}</span> ({items.length}件)
+      <div className="mt-4 space-y-1 text-sm text-muted-foreground">
+        <div>当月支出: <span className="font-semibold text-foreground tabular-nums">¥{total.toLocaleString()}</span>（{items.length}件）</div>
+        <div>当月残高: <span className="font-semibold text-foreground tabular-nums">¥{balance.toLocaleString()}</span></div>
       </div>
 
       <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>

@@ -3,13 +3,11 @@ import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import PageHeader from '@/components/PageHeader'
+import SummaryCard from '@/components/SummaryCard'
 import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import {
@@ -20,7 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { cn } from '@/lib/utils'
 import {
   fetchBalance,
   updateAccountBalance,
@@ -155,24 +152,3 @@ export default function Balance() {
   )
 }
 
-function SummaryCard({
-  label,
-  value,
-  valueClassName,
-}: {
-  label: string
-  value: string
-  valueClassName?: string
-}) {
-  return (
-    <Card>
-      <CardHeader className="pb-2">
-        <CardDescription>{label}</CardDescription>
-        <CardTitle className={cn('text-2xl tabular-nums', valueClassName)}>
-          {value}
-        </CardTitle>
-      </CardHeader>
-      <CardContent />
-    </Card>
-  )
-}

@@ -61,6 +61,18 @@ def _get_balance_done(year, month):
     return inc - exp
 
 
+def _get_balance(year, month):
+    """該当月末までの残高(全状態)。"""
+    _, last_date = _month_range(year, month)
+    inc = Income.objects.filter(
+        pay_date__lte=last_date,
+    ).aggregate(Sum('amount'))['amount__sum'] or 0
+    exp = Expense.objects.filter(
+        pay_date__lte=last_date,
+    ).aggregate(Sum('amount'))['amount__sum'] or 0
+    return inc - exp
+
+
 class _InexViewSetBase(viewsets.ModelViewSet):
     model = None
 
@@ -99,6 +111,16 @@ class IncomeViewSet(_InexViewSetBase):
     model = Income
     queryset = Income.objects.all()
 
+    def list(self, request, *args, **kwargs):
+        year, month = _parse_year_month(request)
+        prev = datetime.date(year, month, 1) - relativedelta(months=1)
+        response = super().list(request, *args, **kwargs)
+        response.data = {
+            'results': response.data,
+            'prev_balance': _get_balance(prev.year, prev.month),
+        }
+        return response
+
     @action(detail=False, methods=['post'], url_path='add_defaults')
     def add_defaults(self, request):
         year, month = _parse_year_month(request)
@@ -132,6 +154,15 @@ class ExpenseViewSet(_InexViewSetBase):
     serializer_class = ExpenseSerializer
     model = Expense
     queryset = Expense.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        year, month = _parse_year_month(request)
+        response = super().list(request, *args, **kwargs)
+        response.data = {
+            'results': response.data,
+            'balance': _get_balance(year, month),
+        }
+        return response
 
     @action(detail=False, methods=['post'], url_path='add_defaults')
     def add_defaults(self, request):
