@@ -61,13 +61,15 @@ export default function Dashboard() {
     queryFn: () => fetchTrends(12, year, month),
   })
 
-  const incomeTotal = (incomesQ.data ?? []).reduce((s, i) => s + i.amount, 0)
-  const expenseTotal = (expensesQ.data ?? []).reduce((s, i) => s + i.amount, 0)
+  const incomes = incomesQ.data?.results ?? []
+  const expenses = expensesQ.data?.results ?? []
+  const incomeTotal = incomes.reduce((s, i) => s + i.amount, 0)
+  const expenseTotal = expenses.reduce((s, i) => s + i.amount, 0)
   const balanceSum = balanceQ.data?.balance_sum ?? 0
   const insufficient = requireQ.data?.insufficient_sum ?? 0
 
   const recent = [
-    ...(incomesQ.data ?? []).map((r) => ({
+    ...incomes.map((r) => ({
       id: `i-${r.id}`,
       pay_date: r.pay_date,
       name: r.name,
@@ -76,7 +78,7 @@ export default function Dashboard() {
       amount: r.amount,
       state: r.state as State,
     })),
-    ...(expensesQ.data ?? []).map((r) => ({
+    ...expenses.map((r) => ({
       id: `e-${r.id}`,
       pay_date: r.pay_date,
       name: r.name,
