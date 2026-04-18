@@ -37,7 +37,7 @@ export default function Balance() {
   })
 
   const [editing, setEditing] = useState<number | null>(null)
-  const [draft, setDraft] = useState<number>(0)
+  const [draft, setDraft] = useState('')
 
   const mut = useMutation({
     mutationFn: ({ id, balance }: { id: number; balance: number }) =>
@@ -52,7 +52,7 @@ export default function Balance() {
 
   const startEdit = (row: AccountRow) => {
     setEditing(row.id)
-    setDraft(row.balance)
+    setDraft(String(row.balance))
   }
 
   return (
@@ -103,7 +103,7 @@ export default function Balance() {
                           <Input
                             type="number"
                             value={draft}
-                            onChange={(e) => setDraft(Number(e.target.value))}
+                            onChange={(e) => setDraft(e.target.value)}
                             className="ml-auto w-36"
                           />
                         ) : (
@@ -116,7 +116,7 @@ export default function Balance() {
                             <Button
                               size="sm"
                               onClick={() =>
-                                mut.mutate({ id: a.id, balance: draft })
+                                mut.mutate({ id: a.id, balance: Number(draft) })
                               }
                               disabled={mut.isPending}
                             >
