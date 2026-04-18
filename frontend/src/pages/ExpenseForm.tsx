@@ -64,7 +64,12 @@ export default function ExpenseForm() {
     resolver: zodResolver(schema),
     defaultValues: {
       name: '',
-      pay_date: `${year}-${String(month).padStart(2, '0')}-01`,
+      pay_date: (() => {
+        const now = new Date()
+        const day = now.getFullYear() === year && now.getMonth() + 1 === month
+          ? now.getDate() : 1
+        return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+      })(),
       method: 0,
       amount: 0,
       state: 0,
