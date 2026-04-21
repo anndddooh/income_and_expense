@@ -6,6 +6,7 @@ import {
   CreditCard,
   LayoutDashboard,
   Landmark,
+  LogOut,
   PiggyBank,
   ReceiptText,
   Wallet,
@@ -19,6 +20,7 @@ import {
   useParams,
 } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
+import { clearTokens } from '@/lib/auth'
 import {
   Popover,
   PopoverContent,
@@ -183,7 +185,21 @@ export default function AppLayout() {
           </SidebarGroup>
         </SidebarContent>
         <SidebarFooter>
-          <div className="px-2 py-2 text-xs text-muted-foreground">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                tooltip="ログアウト"
+                onClick={() => {
+                  clearTokens()
+                  navigate('/login', { replace: true })
+                }}
+              >
+                <LogOut className="size-4" />
+                <span>ログアウト</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+          <div className="px-2 py-1 text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
             React + DRF
           </div>
         </SidebarFooter>
