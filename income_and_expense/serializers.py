@@ -5,7 +5,7 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from income_and_expense.models import (
-    Account, Expense, Income, Loan, Method, StateChoices,
+    Account, Expense, Income, Loan, Method, StateChoices, TemplateExpense,
 )
 
 
@@ -116,3 +116,36 @@ class AccountSerializer(serializers.ModelSerializer):
             'id', 'bank', 'user', 'bank_name', 'user_name',
             'balance', 'formed_balance',
         ]
+
+
+class TemplateExpenseSerializer(serializers.ModelSerializer):
+    method_name = serializers.SerializerMethodField()
+    pay_date = serializers.SerializerMethodField()
+
+    class Meta:
+        model = TemplateExpense
+        fields = [
+            'id', 'template_name', 'name',
+            'date_type', 'pay_day', 'limit_day_of_this_month',
+            'method', 'method_name', 'state', 'pay_date',
+        ]
+
+    def get_method_name(self, obj):
+        return str(obj.method)
+
+    def get_pay_date(self, obj):
+        today = datetime.date.today()
+        if obj.date_type == 'today':
+            pay_date = today
+        else:
+            if today.day <= obj.limit_day_of_this_month:
+                pay_date = datetime.date(
+                    today.year, today.month, obj.pay_day
+                )
+            else:
+                pay_date = datetime.date(
+                    today.year, today.month, obj.pay_day
+                ) + relativedelta(months=1)
+            if obj.pay_day < obj.limit_day_of_this_month:
+                pay_date += relativedelta(months=1)
+        return pay_date.strftime('%Y-%m-%d')

@@ -27,6 +27,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { applyServerErrors } from '@/lib/form-errors'
 import { createExpense, fetchExpense, updateExpense } from '@/api/expenses'
 import { fetchMethods } from '@/api/methods'
+import { fetchTemplateExpenses } from '@/api/template-expenses'
 
 const schema = z.object({
   name: z.string().min(1, '名称は必須です'),
@@ -81,6 +82,11 @@ export default function ExpenseForm() {
     queryKey: ['methods'],
     queryFn: fetchMethods,
   })
+  const { data: templates = [] } = useQuery({
+    queryKey: ['template-expenses'],
+    queryFn: fetchTemplateExpenses,
+    enabled: !isEdit,
+  })
   const { data: existing } = useQuery({
     queryKey: ['expense', itemId],
     queryFn: () => fetchExpense(itemId!),
@@ -105,6 +111,15 @@ export default function ExpenseForm() {
       form.setValue('method', methods[0].id)
     }
   }, [methods, isEdit, form])
+
+  const applyTemplate = (templateId: string) => {
+    const t = templates.find((t) => String(t.id) === templateId)
+    if (!t) return
+    form.setValue('name', t.name)
+    form.setValue('pay_date', t.pay_date)
+    form.setValue('method', t.method)
+    form.setValue('state', t.state)
+  }
 
   const mut = useMutation({
     mutationFn: (values: FormValues) => {
@@ -137,6 +152,24 @@ export default function ExpenseForm() {
                 mut.mutate(v)
               })}
             >
+              {!isEdit && templates.length > 0 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">簡易入力</label>
+                  <Select onValueChange={applyTemplate}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="テンプレートを選択" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {templates.map((t) => (
+                        <SelectItem key={t.id} value={String(t.id)}>
+                          {t.template_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
               <FormField
                 control={form.control}
                 name="name"

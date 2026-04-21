@@ -11,11 +11,11 @@ from rest_framework.response import Response
 
 from income_and_expense.models import (
     Account, DefaultExpenseMonth, DefaultIncomeMonth, Expense, Income, Loan,
-    Method, StateChoices,
+    Method, StateChoices, TemplateExpense,
 )
 from income_and_expense.serializers import (
     AccountSerializer, ExpenseSerializer, IncomeSerializer, LoanSerializer,
-    MethodSerializer,
+    MethodSerializer, TemplateExpenseSerializer,
 )
 
 
@@ -210,6 +210,13 @@ class ExpenseViewSet(_InexViewSetBase):
             existing_names.add(loan.name)
 
         return Response({'added': add_num}, status=status.HTTP_201_CREATED)
+
+
+class TemplateExpenseListAPIView(generics.ListAPIView):
+    serializer_class = TemplateExpenseSerializer
+    queryset = TemplateExpense.objects.select_related(
+        'method__account__user', 'method__account__bank'
+    ).all()
 
 
 class MethodListAPIView(generics.ListAPIView):

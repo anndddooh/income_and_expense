@@ -15,6 +15,11 @@ urlpatterns = [
     path('', include(router.urls)),
     path('methods/', api_views.MethodListAPIView.as_view(), name='method-list'),
     path(
+        'template_expenses/',
+        api_views.TemplateExpenseListAPIView.as_view(),
+        name='template-expense-list',
+    ),
+    path(
         'methods/<int:pk>/done/',
         api_views.MethodDoneAPIView.as_view(),
         name='method-done',
