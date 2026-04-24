@@ -10,12 +10,14 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from income_and_expense.models import (
-    Account, DefaultExpenseMonth, DefaultIncomeMonth, Expense, Income, Loan,
-    Method, StateChoices, TemplateExpense,
+    Account, DefaultExpense, DefaultExpenseMonth, DefaultIncome,
+    DefaultIncomeMonth, Expense, Income, Loan, Method, StateChoices,
+    TemplateExpense,
 )
 from income_and_expense.serializers import (
-    AccountSerializer, ExpenseSerializer, IncomeSerializer, LoanSerializer,
-    MethodSerializer, TemplateExpenseSerializer,
+    AccountSerializer, DefaultExpenseSerializer, DefaultIncomeSerializer,
+    ExpenseSerializer, IncomeSerializer, LoanSerializer, MethodSerializer,
+    TemplateExpenseSerializer,
 )
 
 
@@ -218,6 +220,20 @@ class MethodListAPIView(generics.ListAPIView):
         ).order_by(
             'name', 'account__user__name', 'account__bank__name'
         )
+
+
+class DefaultIncomeViewSet(viewsets.ModelViewSet):
+    serializer_class = DefaultIncomeSerializer
+    queryset = DefaultIncome.objects.select_related(
+        'method__account__user', 'method__account__bank'
+    ).order_by('name')
+
+
+class DefaultExpenseViewSet(viewsets.ModelViewSet):
+    serializer_class = DefaultExpenseSerializer
+    queryset = DefaultExpense.objects.select_related(
+        'method__account__user', 'method__account__bank'
+    ).order_by('name')
 
 
 class LoanViewSet(viewsets.ModelViewSet):

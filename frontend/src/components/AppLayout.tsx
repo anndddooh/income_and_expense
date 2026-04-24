@@ -9,6 +9,7 @@ import {
   LogOut,
   PiggyBank,
   ReceiptText,
+  Settings,
   Wallet,
 } from 'lucide-react'
 import type { ReactNode } from 'react'
@@ -135,10 +136,13 @@ function AppLayoutContent() {
     if (isMobile) setOpenMobile(false)
   }
 
+  const seg = location.pathname.split('/').filter(Boolean)
+  const currentBase = seg[0] ? `/${seg[0]}` : '/dashboard'
+  const isMonthScoped = MAIN_NAV.some((n) => n.path === currentBase)
+
   const goTo = (y: number, m: number) => {
-    const seg = location.pathname.split('/').filter(Boolean)
-    const base = seg[0] ? `/${seg[0]}` : 'dashboard'
-    navigate(`/${base}/${y}/${m}`)
+    const base = isMonthScoped ? currentBase : '/dashboard'
+    navigate(`${base}/${y}/${m}`)
   }
 
   const shift = (delta: number) => {
@@ -202,6 +206,18 @@ function AppLayoutContent() {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
+                asChild
+                tooltip="設定"
+                isActive={location.pathname.startsWith('/settings')}
+              >
+                <Link to="/settings" onClick={closeMobileSidebar}>
+                  <Settings className="size-4" />
+                  <span>設定</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
                 tooltip="ログアウト"
                 onClick={() => {
                   clearTokens()
@@ -218,6 +234,8 @@ function AppLayoutContent() {
       <SidebarInset>
         <header className="sticky top-0 z-10 flex h-14 items-center gap-2 border-b bg-background px-4">
           <SidebarTrigger />
+          {isMonthScoped && (
+            <>
           <Separator orientation="vertical" className="h-6" />
           <div className="flex items-center gap-2">
             <Button
@@ -296,6 +314,8 @@ function AppLayoutContent() {
               </Button>
             )}
           </div>
+            </>
+          )}
         </header>
         <main className="flex-1 p-6">
           <Outlet />
