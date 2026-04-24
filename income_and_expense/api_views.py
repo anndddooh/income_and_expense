@@ -36,7 +36,7 @@ def _parse_year_month(request):
         raise ValidationError('year, month は整数で指定してください')
 
 
-def _can_update_or_delete(year, month):
+def _can_delete(year, month):
     current_time = timezone.now()
     current_first = datetime.date(current_time.year, current_time.month, 1)
     last_month_first = current_first - relativedelta(months=1)
@@ -89,20 +89,10 @@ class _InexViewSetBase(viewsets.ModelViewSet):
             'method__account__bank__name', 'state', 'pay_date', 'name'
         )
 
-    def _check_update_delete_allowed(self, instance):
-        if not _can_update_or_delete(instance.pay_date.year, instance.pay_date.month):
-            raise ValidationError("古いデータは更新・削除できません。")
-
-    def update(self, request, *args, **kwargs):
-        self._check_update_delete_allowed(self.get_object())
-        return super().update(request, *args, **kwargs)
-
-    def partial_update(self, request, *args, **kwargs):
-        self._check_update_delete_allowed(self.get_object())
-        return super().partial_update(request, *args, **kwargs)
-
     def destroy(self, request, *args, **kwargs):
-        self._check_update_delete_allowed(self.get_object())
+        instance = self.get_object()
+        if not _can_delete(instance.pay_date.year, instance.pay_date.month):
+            raise ValidationError("古いデータは削除できません。")
         return super().destroy(request, *args, **kwargs)
 
 

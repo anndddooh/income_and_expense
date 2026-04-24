@@ -48,6 +48,8 @@ class _InexSerializerBase(serializers.ModelSerializer):
         return StateChoices(obj.state).label
 
     def validate_pay_date(self, value):
+        if self.instance is not None and self.instance.pay_date == value:
+            return value
         if not is_valid_pay_date(value):
             raise serializers.ValidationError(
                 "1か月前より前の日付は指定できません。"
