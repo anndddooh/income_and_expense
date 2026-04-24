@@ -48,6 +48,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
+  useSidebar,
 } from '@/components/ui/sidebar'
 import { todayYearMonth } from '@/util/date'
 
@@ -117,9 +118,22 @@ const YEAR_OPTIONS = Array.from({ length: 101 }, (_, i) => CURRENT_YEAR - 50 + i
 const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => i + 1)
 
 export default function AppLayout() {
+  return (
+    <SidebarProvider>
+      <AppLayoutContent />
+    </SidebarProvider>
+  )
+}
+
+function AppLayoutContent() {
   const location = useLocation()
   const navigate = useNavigate()
   const { year, month } = useCurrentYearMonth()
+  const { isMobile, setOpenMobile } = useSidebar()
+
+  const closeMobileSidebar = () => {
+    if (isMobile) setOpenMobile(false)
+  }
 
   const goTo = (y: number, m: number) => {
     const seg = location.pathname.split('/').filter(Boolean)
@@ -141,7 +155,7 @@ export default function AppLayout() {
   }
 
   return (
-    <SidebarProvider>
+    <>
       <Sidebar collapsible="icon">
         <SidebarHeader>
           <div className="flex items-center gap-2 px-2 py-1 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center">
@@ -172,7 +186,7 @@ export default function AppLayout() {
                         isActive={active}
                         tooltip={item.label}
                       >
-                        <Link to={to}>
+                        <Link to={to} onClick={closeMobileSidebar}>
                           {item.icon}
                           <span>{item.label}</span>
                         </Link>
@@ -199,9 +213,6 @@ export default function AppLayout() {
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-          <div className="px-2 py-1 text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
-            React + DRF
-          </div>
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
@@ -290,6 +301,6 @@ export default function AppLayout() {
           <Outlet />
         </main>
       </SidebarInset>
-    </SidebarProvider>
+    </>
   )
 }
