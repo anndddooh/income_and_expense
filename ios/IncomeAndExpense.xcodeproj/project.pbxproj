@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		03C373F8C2AB942A538DB2CE /* DefaultExpense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39BE01F61081E8172764B926 /* DefaultExpense.swift */; };
 		106EB5DC6F1CACBC52FC80DB /* TemplateExpense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BE697D6547E5B9773535C2 /* TemplateExpense.swift */; };
+		1137FF53FDBDE3BAF37C5D44 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D294469D094624446F969A5 /* LoginView.swift */; };
 		183025475C1A011F1918449A /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6DCA171F59FC4C52D21B78 /* Expense.swift */; };
 		19964413B7E02B345B7A8B6E /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30629F5AF1657DCCEC7E8E27 /* Account.swift */; };
 		225C5671E7217C069763C6F4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705E646D39443B7CED31B18F /* RootView.swift */; };
@@ -29,6 +30,7 @@
 		9E90184199414805E5DB634F /* InexState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006AC541F2D2604DB2EFDA68 /* InexState.swift */; };
 		A62A58B28272D3C2E6F60899 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B9A7F12E6150D9D92CA26A /* APIClient.swift */; };
 		C209701F00922775DF26FBF1 /* AuthTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018523D8FD82862A59882F1D /* AuthTokens.swift */; };
+		CB5FB81E7F3485C20071A356 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8606A66BAA928EFBAC9AD405 /* LoginViewModel.swift */; };
 		CD4D7862D59D964CE471C297 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = C05EE5570AF75A472BA6C62E /* KeychainAccess */; };
 		E023634AA8558B3A5BBA5CCC /* DefaultIncome.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE562321590FDB990437CE77 /* DefaultIncome.swift */; };
 		E187C630AF0E4CED13BD6609 /* Income.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DCA5D7B3F0D88BF66D9DB1 /* Income.swift */; };
@@ -58,6 +60,7 @@
 		006AC541F2D2604DB2EFDA68 /* InexState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = InexState.swift; sourceTree = "<group>"; };
 		018523D8FD82862A59882F1D /* AuthTokens.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthTokens.swift; sourceTree = "<group>"; };
 		01B9A7F12E6150D9D92CA26A /* APIClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		0D294469D094624446F969A5 /* LoginView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		24BC58D20DE624BFEE19D325 /* AuthStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthStore.swift; sourceTree = "<group>"; };
 		30629F5AF1657DCCEC7E8E27 /* Account.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		33DAD142F2AC6280C82450B6 /* BalanceResponse.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BalanceResponse.swift; sourceTree = "<group>"; };
@@ -71,6 +74,7 @@
 		705E646D39443B7CED31B18F /* RootView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		7C6DCA171F59FC4C52D21B78 /* Expense.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Expense.swift; sourceTree = "<group>"; };
 		84BE697D6547E5B9773535C2 /* TemplateExpense.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TemplateExpense.swift; sourceTree = "<group>"; };
+		8606A66BAA928EFBAC9AD405 /* LoginViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		874E7010665FEE3EF805E58F /* IncomeListResponse.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeListResponse.swift; sourceTree = "<group>"; };
 		8D9315B52FB0CFAD00ED0D4A /* IncomeAndExpense.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IncomeAndExpense.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D9315BC2FB0CFCE00ED0D4A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -113,6 +117,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		044D9D660A9E2FAB49B1D80B /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				8606A66BAA928EFBAC9AD405 /* LoginViewModel.swift */,
+				0D294469D094624446F969A5 /* LoginView.swift */,
+			);
+			name = Login;
+			path = Login;
+			sourceTree = "<group>";
+		};
 		0D8B9570F6888685C79E7AB1 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
@@ -196,6 +210,7 @@
 				0D8B9570F6888685C79E7AB1 /* Networking */,
 				509A7E0D3A16094A44BF11A0 /* Models */,
 				617431D0DAE53479F9DBFE6D /* Stores */,
+				8ED21AB4C43AC904470F44B8 /* Features */,
 			);
 			path = IncomeAndExpense;
 			sourceTree = "<group>";
@@ -223,6 +238,15 @@
 				8D9315D52FB0CFD000ED0D4A /* IncomeAndExpenseUITestsLaunchTests.swift */,
 			);
 			path = IncomeAndExpenseUITests;
+			sourceTree = "<group>";
+		};
+		8ED21AB4C43AC904470F44B8 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				044D9D660A9E2FAB49B1D80B /* Login */,
+			);
+			name = Features;
+			path = Features;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -383,6 +407,8 @@
 				59BCC8BAAA136A92B57C40EC /* BalanceResponse.swift in Sources */,
 				F5D48A3D1236D77EAB856434 /* AuthStore.swift in Sources */,
 				3D28751BE35F08391B370C70 /* AuthInterceptor.swift in Sources */,
+				CB5FB81E7F3485C20071A356 /* LoginViewModel.swift in Sources */,
+				1137FF53FDBDE3BAF37C5D44 /* LoginView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
