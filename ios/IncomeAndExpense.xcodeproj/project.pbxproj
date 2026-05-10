@@ -56,6 +56,7 @@
 		9E90184199414805E5DB634F /* InexState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006AC541F2D2604DB2EFDA68 /* InexState.swift */; };
 		A62A58B28272D3C2E6F60899 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B9A7F12E6150D9D92CA26A /* APIClient.swift */; };
 		AB8A50C42C72287D7E884927 /* DefaultIncomeFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E7583B4995CFC7FFB494AF /* DefaultIncomeFormView.swift */; };
+		AFB2A685B90EA8E12C6A6210 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 364376F2881C2D34FDF40D0C /* PrivacyInfo.xcprivacy */; };
 		B2D575C611EA6D3DBA0AF97E /* IncomeRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82F67A52E459D1FD0CC82F3 /* IncomeRowView.swift */; };
 		B7ED771E5CD6458569CCC8E4 /* IncomeFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2B2BC8E626CF5C378C766C /* IncomeFormViewModel.swift */; };
 		B97F36AC10B14900181A23D9 /* LoanRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E87D2FC6E1A620762F69F0D /* LoanRowView.swift */; };
@@ -117,6 +118,7 @@
 		2EE98CC871D4EE6DDEDFDC7F /* DefaultExpenseFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DefaultExpenseFormView.swift; sourceTree = "<group>"; };
 		30629F5AF1657DCCEC7E8E27 /* Account.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		33DAD142F2AC6280C82450B6 /* BalanceResponse.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BalanceResponse.swift; sourceTree = "<group>"; };
+		364376F2881C2D34FDF40D0C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		39BE01F61081E8172764B926 /* DefaultExpense.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DefaultExpense.swift; sourceTree = "<group>"; };
 		3F9B6F2F4D124BA707AB9607 /* IncomeAndExpenseApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeAndExpenseApp.swift; sourceTree = "<group>"; };
 		3FAB370491A55B5F38A850BB /* LoanFormViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoanFormViewModel.swift; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 		A7E9C282A3C017C890B1CA49 /* Method.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Method.swift; sourceTree = "<group>"; };
 		A8CF03CF3DADAA8689BEC31D /* IncomeFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeFormView.swift; sourceTree = "<group>"; };
 		B0E7583B4995CFC7FFB494AF /* DefaultIncomeFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DefaultIncomeFormView.swift; sourceTree = "<group>"; };
+		B3EF69F06AE92AB5BB932AD5 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B95034D037D0D0625806AD0D /* LoanStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoanStore.swift; sourceTree = "<group>"; };
 		BDA065BAA07517AC5B9FE78B /* AppConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		BE562321590FDB990437CE77 /* DefaultIncome.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DefaultIncome.swift; sourceTree = "<group>"; };
@@ -364,6 +367,7 @@
 				617431D0DAE53479F9DBFE6D /* Stores */,
 				8ED21AB4C43AC904470F44B8 /* Features */,
 				8EAD48F090D7878962CEA55C /* UIComponents */,
+				D725752695ECFD7410C41BBF /* Resources */,
 			);
 			path = IncomeAndExpense;
 			sourceTree = "<group>";
@@ -456,6 +460,16 @@
 			);
 			name = AccountRequire;
 			path = AccountRequire;
+			sourceTree = "<group>";
+		};
+		D725752695ECFD7410C41BBF /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B3EF69F06AE92AB5BB932AD5 /* Info.plist */,
+				364376F2881C2D34FDF40D0C /* PrivacyInfo.xcprivacy */,
+			);
+			name = Resources;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		E142F48B3A0FCA28D789B161 /* MethodRequire */ = {
@@ -580,6 +594,7 @@
 			files = (
 				8D9315C02FB0CFCE00ED0D4A /* Preview Assets.xcassets in Resources */,
 				8D9315BD2FB0CFCE00ED0D4A /* Assets.xcassets in Resources */,
+				AFB2A685B90EA8E12C6A6210 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -832,12 +847,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"IncomeAndExpense/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = IncomeAndExpense/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -860,12 +871,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"IncomeAndExpense/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = IncomeAndExpense/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
