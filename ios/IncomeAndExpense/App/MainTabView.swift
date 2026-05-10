@@ -46,8 +46,7 @@ struct MainTabView: View {
                     NavigationLink("支払方法別必要額") { MethodRequireView() }
                 }
                 Section("設定") {
-                    Text("デフォルト収入")
-                    Text("デフォルト支出")
+                    NavigationLink("設定") { SettingsView() }
                 }
                 Section {
                     Button(role: .destructive) {
