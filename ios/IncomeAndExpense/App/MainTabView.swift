@@ -40,7 +40,7 @@ struct MainTabView: View {
         NavigationStack {
             List {
                 Section("家計") {
-                    Text("ローン")
+                    NavigationLink("ローン") { LoanListView() }
                     Text("残高")
                     Text("口座別必要額")
                     Text("支払方法別必要額")
