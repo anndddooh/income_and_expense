@@ -21,6 +21,7 @@
 		218F9C3C819B23971F05403F /* IncomeFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CF03CF3DADAA8689BEC31D /* IncomeFormView.swift */; };
 		225C5671E7217C069763C6F4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705E646D39443B7CED31B18F /* RootView.swift */; };
 		2FAF1F6D1D859D92D51CE9D5 /* DefaultExpenseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698954F4D3E4A5E79A385795 /* DefaultExpenseListView.swift */; };
+		3327556EAC59996A0D64BFEA /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04ADF7609C3955AB018040C /* DashboardView.swift */; };
 		337C10313DE36651706126E1 /* LoanListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFE136D49924FA570FDBA70 /* LoanListView.swift */; };
 		3628770F171732DD1AF8DEC1 /* Loan.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3EE786B117827336A7AD83 /* Loan.swift */; };
 		372723E6ABD6337D5818EBB6 /* MonthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0A33B1C67D99DB8226F2AA /* MonthStore.swift */; };
@@ -36,10 +37,12 @@
 		59BCC8BAAA136A92B57C40EC /* BalanceResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33DAD142F2AC6280C82450B6 /* BalanceResponse.swift */; };
 		5C5E4993B88FA7107D0D887B /* MonthPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64B21006A30477EB8E96B620 /* MonthPicker.swift */; };
 		66B8BF939505435BD6C06C80 /* LoanFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FAB370491A55B5F38A850BB /* LoanFormViewModel.swift */; };
+		6ADC8737B5ABAAA2222FEDBB /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E20A5F2775F95C25F826A0 /* DashboardViewModel.swift */; };
 		6C92C0FDCB835D71A39C2F2D /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA065BAA07517AC5B9FE78B /* AppConfig.swift */; };
 		7F922071CFD768B6FB358251 /* ExpenseFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECBBD75BED7DA4E2B2FA1F0 /* ExpenseFormViewModel.swift */; };
 		8009C88A8CC813CBD23D76FB /* ExpenseRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F368DFA39148EACB38E136D /* ExpenseRowView.swift */; };
 		836B8F612BAE5FFE2370B758 /* Method.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7E9C282A3C017C890B1CA49 /* Method.swift */; };
+		8AE41AE1F07D92ADD1E6C728 /* SummaryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F51C57B816DD7ED2DCD1E9E /* SummaryCard.swift */; };
 		8D9315BD2FB0CFCE00ED0D4A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8D9315BC2FB0CFCE00ED0D4A /* Assets.xcassets */; };
 		8D9315C02FB0CFCE00ED0D4A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8D9315BF2FB0CFCE00ED0D4A /* Preview Assets.xcassets */; };
 		8D9315CA2FB0CFD000ED0D4A /* IncomeAndExpenseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D9315C92FB0CFD000ED0D4A /* IncomeAndExpenseTests.swift */; };
@@ -62,6 +65,7 @@
 		CB5FB81E7F3485C20071A356 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8606A66BAA928EFBAC9AD405 /* LoginViewModel.swift */; };
 		CD4D7862D59D964CE471C297 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = C05EE5570AF75A472BA6C62E /* KeychainAccess */; };
 		CD5846A08E9AFEC8EC42B0BC /* BalanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EE8D900E704A03737100CB1 /* BalanceViewModel.swift */; };
+		D9DD63A7DB247E8855617F7B /* TrendChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 240BDED0CBE776298663BB2D /* TrendChart.swift */; };
 		DA2A636A55396F1C39D1A008 /* DefaultIncomeFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D8B78891854A9F6165CBB70 /* DefaultIncomeFormViewModel.swift */; };
 		DFBE110C3519F6AB7690265D /* MethodsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6858521749AA3E4A883C00 /* MethodsStore.swift */; };
 		E023634AA8558B3A5BBA5CCC /* DefaultIncome.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE562321590FDB990437CE77 /* DefaultIncome.swift */; };
@@ -103,8 +107,10 @@
 		0D294469D094624446F969A5 /* LoginView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		0EE8D900E704A03737100CB1 /* BalanceViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BalanceViewModel.swift; sourceTree = "<group>"; };
 		0F0A33B1C67D99DB8226F2AA /* MonthStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MonthStore.swift; sourceTree = "<group>"; };
+		1F51C57B816DD7ED2DCD1E9E /* SummaryCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SummaryCard.swift; sourceTree = "<group>"; };
 		1FFE136D49924FA570FDBA70 /* LoanListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoanListView.swift; sourceTree = "<group>"; };
 		2275978E83287B6FB865F02F /* MonthSelector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MonthSelector.swift; sourceTree = "<group>"; };
+		240BDED0CBE776298663BB2D /* TrendChart.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TrendChart.swift; sourceTree = "<group>"; };
 		24BC58D20DE624BFEE19D325 /* AuthStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthStore.swift; sourceTree = "<group>"; };
 		262C381F388410558610D0D5 /* IncomeStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeStore.swift; sourceTree = "<group>"; };
 		2C3C998D2ED6A8587D3179C3 /* AccountRequireView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AccountRequireView.swift; sourceTree = "<group>"; };
@@ -154,10 +160,12 @@
 		B95034D037D0D0625806AD0D /* LoanStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoanStore.swift; sourceTree = "<group>"; };
 		BDA065BAA07517AC5B9FE78B /* AppConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		BE562321590FDB990437CE77 /* DefaultIncome.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DefaultIncome.swift; sourceTree = "<group>"; };
+		C5E20A5F2775F95C25F826A0 /* DashboardViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
 		CC2B2BC8E626CF5C378C766C /* IncomeFormViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeFormViewModel.swift; sourceTree = "<group>"; };
 		CC44CAC6C74247C75C4EE290 /* StateBadge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StateBadge.swift; sourceTree = "<group>"; };
 		CECBBD75BED7DA4E2B2FA1F0 /* ExpenseFormViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ExpenseFormViewModel.swift; sourceTree = "<group>"; };
 		DB3EE786B117827336A7AD83 /* Loan.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Loan.swift; sourceTree = "<group>"; };
+		E04ADF7609C3955AB018040C /* DashboardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		E82F67A52E459D1FD0CC82F3 /* IncomeRowView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeRowView.swift; sourceTree = "<group>"; };
 		F30911F4FC63937EDE9A48C5 /* AccountRequireViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AccountRequireViewModel.swift; sourceTree = "<group>"; };
 		FEC80FFF3D141CB8C8CC87FE /* APIEndpoint.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
@@ -210,6 +218,17 @@
 			);
 			name = Networking;
 			path = Networking;
+			sourceTree = "<group>";
+		};
+		0D95205CD386AC5C1D68C7E9 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				C5E20A5F2775F95C25F826A0 /* DashboardViewModel.swift */,
+				240BDED0CBE776298663BB2D /* TrendChart.swift */,
+				E04ADF7609C3955AB018040C /* DashboardView.swift */,
+			);
+			name = Dashboard;
+			path = Dashboard;
 			sourceTree = "<group>";
 		};
 		32935F185A2A38AACBAEB4B3 /* Settings */ = {
@@ -380,6 +399,7 @@
 				64B21006A30477EB8E96B620 /* MonthPicker.swift */,
 				CC44CAC6C74247C75C4EE290 /* StateBadge.swift */,
 				2275978E83287B6FB865F02F /* MonthSelector.swift */,
+				1F51C57B816DD7ED2DCD1E9E /* SummaryCard.swift */,
 			);
 			name = UIComponents;
 			path = UIComponents;
@@ -396,6 +416,7 @@
 				CD92B9397DFCCE9A0A099706 /* AccountRequire */,
 				E142F48B3A0FCA28D789B161 /* MethodRequire */,
 				32935F185A2A38AACBAEB4B3 /* Settings */,
+				0D95205CD386AC5C1D68C7E9 /* Dashboard */,
 			);
 			name = Features;
 			path = Features;
@@ -643,6 +664,10 @@
 				37B5F0676EB3583E1366F2BD /* DefaultExpenseFormViewModel.swift in Sources */,
 				0E6A8BE159F61F43F1A1DDE0 /* DefaultExpenseFormView.swift in Sources */,
 				2FAF1F6D1D859D92D51CE9D5 /* DefaultExpenseListView.swift in Sources */,
+				8AE41AE1F07D92ADD1E6C728 /* SummaryCard.swift in Sources */,
+				6ADC8737B5ABAAA2222FEDBB /* DashboardViewModel.swift in Sources */,
+				D9DD63A7DB247E8855617F7B /* TrendChart.swift in Sources */,
+				3327556EAC59996A0D64BFEA /* DashboardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

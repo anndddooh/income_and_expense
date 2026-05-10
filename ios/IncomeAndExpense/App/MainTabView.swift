@@ -4,7 +4,7 @@ import SwiftUI
 struct MainTabView: View {
     var body: some View {
         TabView {
-            placeholderTab(title: "ホーム", note: "Dashboard は Step 19 で実装")
+            NavigationStack { DashboardView() }
                 .tabItem { Label("ホーム", systemImage: "house.fill") }
 
             NavigationStack { IncomeListView() }
