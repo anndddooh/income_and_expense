@@ -2,6 +2,8 @@ import SwiftUI
 
 struct IncomeListView: View {
     @State private var store = IncomeStore()
+    @State private var showingNewForm = false
+    @State private var editingIncome: Income?
     private let monthStore = MonthStore.shared
 
     var body: some View {
@@ -20,14 +22,19 @@ struct IncomeListView: View {
                         .font(.callout)
                 }
                 ForEach(store.incomes) { income in
-                    IncomeRowView(income: income)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button(role: .destructive) {
-                                Task { try? await store.delete(id: income.id) }
-                            } label: {
-                                Label("削除", systemImage: "trash")
-                            }
+                    Button {
+                        editingIncome = income
+                    } label: {
+                        IncomeRowView(income: income)
+                    }
+                    .buttonStyle(.plain)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        Button(role: .destructive) {
+                            Task { try? await store.delete(id: income.id) }
+                        } label: {
+                            Label("削除", systemImage: "trash")
                         }
+                    }
                 }
             }
 
@@ -49,6 +56,31 @@ struct IncomeListView: View {
         .toolbar {
             ToolbarItem(placement: .principal) {
                 MonthPicker(store: monthStore)
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showingNewForm = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+        .sheet(isPresented: $showingNewForm) {
+            IncomeFormView(
+                viewModel: IncomeFormViewModel(income: nil, store: store)
+            ) {
+                Task {
+                    await store.fetch(year: monthStore.year, month: monthStore.month)
+                }
+            }
+        }
+        .sheet(item: $editingIncome) { income in
+            IncomeFormView(
+                viewModel: IncomeFormViewModel(income: income, store: store)
+            ) {
+                Task {
+                    await store.fetch(year: monthStore.year, month: monthStore.month)
+                }
             }
         }
     }

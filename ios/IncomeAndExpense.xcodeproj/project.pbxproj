@@ -13,6 +13,7 @@
 		16AEE45E73E4B7204B350F7A /* StateBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC44CAC6C74247C75C4EE290 /* StateBadge.swift */; };
 		183025475C1A011F1918449A /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6DCA171F59FC4C52D21B78 /* Expense.swift */; };
 		19964413B7E02B345B7A8B6E /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30629F5AF1657DCCEC7E8E27 /* Account.swift */; };
+		218F9C3C819B23971F05403F /* IncomeFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CF03CF3DADAA8689BEC31D /* IncomeFormView.swift */; };
 		225C5671E7217C069763C6F4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705E646D39443B7CED31B18F /* RootView.swift */; };
 		3628770F171732DD1AF8DEC1 /* Loan.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3EE786B117827336A7AD83 /* Loan.swift */; };
 		372723E6ABD6337D5818EBB6 /* MonthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0A33B1C67D99DB8226F2AA /* MonthStore.swift */; };
@@ -34,9 +35,11 @@
 		9E90184199414805E5DB634F /* InexState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006AC541F2D2604DB2EFDA68 /* InexState.swift */; };
 		A62A58B28272D3C2E6F60899 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B9A7F12E6150D9D92CA26A /* APIClient.swift */; };
 		B2D575C611EA6D3DBA0AF97E /* IncomeRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82F67A52E459D1FD0CC82F3 /* IncomeRowView.swift */; };
+		B7ED771E5CD6458569CCC8E4 /* IncomeFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2B2BC8E626CF5C378C766C /* IncomeFormViewModel.swift */; };
 		C209701F00922775DF26FBF1 /* AuthTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018523D8FD82862A59882F1D /* AuthTokens.swift */; };
 		CB5FB81E7F3485C20071A356 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8606A66BAA928EFBAC9AD405 /* LoginViewModel.swift */; };
 		CD4D7862D59D964CE471C297 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = C05EE5570AF75A472BA6C62E /* KeychainAccess */; };
+		DFBE110C3519F6AB7690265D /* MethodsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6858521749AA3E4A883C00 /* MethodsStore.swift */; };
 		E023634AA8558B3A5BBA5CCC /* DefaultIncome.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE562321590FDB990437CE77 /* DefaultIncome.swift */; };
 		E187C630AF0E4CED13BD6609 /* Income.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DCA5D7B3F0D88BF66D9DB1 /* Income.swift */; };
 		E2C00990D958357CF655C4F4 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A7CE0165BF7AE30DF8FD71C /* MainTabView.swift */; };
@@ -84,6 +87,7 @@
 		64B21006A30477EB8E96B620 /* MonthPicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MonthPicker.swift; sourceTree = "<group>"; };
 		705E646D39443B7CED31B18F /* RootView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		7C6DCA171F59FC4C52D21B78 /* Expense.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Expense.swift; sourceTree = "<group>"; };
+		7E6858521749AA3E4A883C00 /* MethodsStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MethodsStore.swift; sourceTree = "<group>"; };
 		84BE697D6547E5B9773535C2 /* TemplateExpense.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TemplateExpense.swift; sourceTree = "<group>"; };
 		8606A66BAA928EFBAC9AD405 /* LoginViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		874E7010665FEE3EF805E58F /* IncomeListResponse.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeListResponse.swift; sourceTree = "<group>"; };
@@ -97,8 +101,10 @@
 		8D9315D32FB0CFD000ED0D4A /* IncomeAndExpenseUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeAndExpenseUITests.swift; sourceTree = "<group>"; };
 		8D9315D52FB0CFD000ED0D4A /* IncomeAndExpenseUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeAndExpenseUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		A7E9C282A3C017C890B1CA49 /* Method.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Method.swift; sourceTree = "<group>"; };
+		A8CF03CF3DADAA8689BEC31D /* IncomeFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeFormView.swift; sourceTree = "<group>"; };
 		BDA065BAA07517AC5B9FE78B /* AppConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		BE562321590FDB990437CE77 /* DefaultIncome.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DefaultIncome.swift; sourceTree = "<group>"; };
+		CC2B2BC8E626CF5C378C766C /* IncomeFormViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeFormViewModel.swift; sourceTree = "<group>"; };
 		CC44CAC6C74247C75C4EE290 /* StateBadge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StateBadge.swift; sourceTree = "<group>"; };
 		DB3EE786B117827336A7AD83 /* Loan.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Loan.swift; sourceTree = "<group>"; };
 		E82F67A52E459D1FD0CC82F3 /* IncomeRowView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeRowView.swift; sourceTree = "<group>"; };
@@ -192,6 +198,7 @@
 			children = (
 				24BC58D20DE624BFEE19D325 /* AuthStore.swift */,
 				0F0A33B1C67D99DB8226F2AA /* MonthStore.swift */,
+				7E6858521749AA3E4A883C00 /* MethodsStore.swift */,
 			);
 			name = Stores;
 			path = Stores;
@@ -283,6 +290,8 @@
 				262C381F388410558610D0D5 /* IncomeStore.swift */,
 				E82F67A52E459D1FD0CC82F3 /* IncomeRowView.swift */,
 				440D7E9C8A53F8E44C105F97 /* IncomeListView.swift */,
+				CC2B2BC8E626CF5C378C766C /* IncomeFormViewModel.swift */,
+				A8CF03CF3DADAA8689BEC31D /* IncomeFormView.swift */,
 			);
 			name = Incomes;
 			path = Incomes;
@@ -455,6 +464,9 @@
 				E95F1667590311879793EB3D /* IncomeStore.swift in Sources */,
 				B2D575C611EA6D3DBA0AF97E /* IncomeRowView.swift in Sources */,
 				8FF92654FF4D5FA0D8863FA2 /* IncomeListView.swift in Sources */,
+				DFBE110C3519F6AB7690265D /* MethodsStore.swift in Sources */,
+				B7ED771E5CD6458569CCC8E4 /* IncomeFormViewModel.swift in Sources */,
+				218F9C3C819B23971F05403F /* IncomeFormView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
