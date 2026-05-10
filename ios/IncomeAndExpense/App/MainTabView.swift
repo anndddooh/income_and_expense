@@ -10,7 +10,7 @@ struct MainTabView: View {
             NavigationStack { IncomeListView() }
                 .tabItem { Label("収入", systemImage: "arrow.down.circle.fill") }
 
-            placeholderTab(title: "支出", note: "ExpenseList は Step 13 で実装")
+            NavigationStack { ExpenseListView() }
                 .tabItem { Label("支出", systemImage: "arrow.up.circle.fill") }
 
             morePlaceholder()
