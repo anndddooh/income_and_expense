@@ -15,7 +15,10 @@
 		8D9315CA2FB0CFD000ED0D4A /* IncomeAndExpenseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D9315C92FB0CFD000ED0D4A /* IncomeAndExpenseTests.swift */; };
 		8D9315D42FB0CFD000ED0D4A /* IncomeAndExpenseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D9315D32FB0CFD000ED0D4A /* IncomeAndExpenseUITests.swift */; };
 		8D9315D62FB0CFD000ED0D4A /* IncomeAndExpenseUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D9315D52FB0CFD000ED0D4A /* IncomeAndExpenseUITestsLaunchTests.swift */; };
+		943A42AFC9D006F0B70326B3 /* JSONCoders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2C66D66CD785CAE3D737F5 /* JSONCoders.swift */; };
+		A62A58B28272D3C2E6F60899 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B9A7F12E6150D9D92CA26A /* APIClient.swift */; };
 		CD4D7862D59D964CE471C297 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = C05EE5570AF75A472BA6C62E /* KeychainAccess */; };
+		E327E88E478BB5B33D9D516D /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC80FFF3D141CB8C8CC87FE /* APIEndpoint.swift */; };
 		F0316FA2A4C636B3054C5952 /* IncomeAndExpenseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9B6F2F4D124BA707AB9607 /* IncomeAndExpenseApp.swift */; };
 /* End PBXBuildFile section */
 
@@ -37,7 +40,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		01B9A7F12E6150D9D92CA26A /* APIClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		3F9B6F2F4D124BA707AB9607 /* IncomeAndExpenseApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeAndExpenseApp.swift; sourceTree = "<group>"; };
+		4F2C66D66CD785CAE3D737F5 /* JSONCoders.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = JSONCoders.swift; sourceTree = "<group>"; };
 		5C2BA5F57278341B03A5E6DB /* KeychainStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
 		705E646D39443B7CED31B18F /* RootView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		8D9315B52FB0CFAD00ED0D4A /* IncomeAndExpense.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IncomeAndExpense.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -49,6 +54,7 @@
 		8D9315D32FB0CFD000ED0D4A /* IncomeAndExpenseUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeAndExpenseUITests.swift; sourceTree = "<group>"; };
 		8D9315D52FB0CFD000ED0D4A /* IncomeAndExpenseUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeAndExpenseUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		BDA065BAA07517AC5B9FE78B /* AppConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		FEC80FFF3D141CB8C8CC87FE /* APIEndpoint.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +87,9 @@
 			isa = PBXGroup;
 			children = (
 				5C2BA5F57278341B03A5E6DB /* KeychainStore.swift */,
+				FEC80FFF3D141CB8C8CC87FE /* APIEndpoint.swift */,
+				4F2C66D66CD785CAE3D737F5 /* JSONCoders.swift */,
+				01B9A7F12E6150D9D92CA26A /* APIClient.swift */,
 			);
 			name = Networking;
 			path = Networking;
@@ -293,6 +302,9 @@
 				6C92C0FDCB835D71A39C2F2D /* AppConfig.swift in Sources */,
 				225C5671E7217C069763C6F4 /* RootView.swift in Sources */,
 				4C06C50F22DAB9359C6C2D16 /* KeychainStore.swift in Sources */,
+				E327E88E478BB5B33D9D516D /* APIEndpoint.swift in Sources */,
+				943A42AFC9D006F0B70326B3 /* JSONCoders.swift in Sources */,
+				A62A58B28272D3C2E6F60899 /* APIClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
