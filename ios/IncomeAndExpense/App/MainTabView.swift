@@ -43,7 +43,7 @@ struct MainTabView: View {
                     NavigationLink("ローン") { LoanListView() }
                     NavigationLink("残高") { BalanceView() }
                     NavigationLink("口座別必要額") { AccountRequireView() }
-                    Text("支払方法別必要額")
+                    NavigationLink("支払方法別必要額") { MethodRequireView() }
                 }
                 Section("設定") {
                     Text("デフォルト収入")
