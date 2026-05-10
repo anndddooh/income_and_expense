@@ -1,0 +1,63 @@
+import SwiftUI
+
+@MainActor
+struct MainTabView: View {
+    var body: some View {
+        TabView {
+            placeholderTab(title: "ホーム", note: "Dashboard は Step 19 で実装")
+                .tabItem { Label("ホーム", systemImage: "house.fill") }
+
+            placeholderTab(title: "収入", note: "IncomeList は Step 10 で実装")
+                .tabItem { Label("収入", systemImage: "arrow.down.circle.fill") }
+
+            placeholderTab(title: "支出", note: "ExpenseList は Step 13 で実装")
+                .tabItem { Label("支出", systemImage: "arrow.up.circle.fill") }
+
+            morePlaceholder()
+                .tabItem { Label("その他", systemImage: "ellipsis.circle.fill") }
+        }
+    }
+
+    private func placeholderTab(title: String, note: String) -> some View {
+        NavigationStack {
+            VStack(spacing: 12) {
+                Text(title).font(.title)
+                Text(note)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    MonthPicker(store: MonthStore.shared)
+                }
+            }
+        }
+    }
+
+    private func morePlaceholder() -> some View {
+        NavigationStack {
+            List {
+                Section("家計") {
+                    Text("ローン")
+                    Text("残高")
+                    Text("口座別必要額")
+                    Text("支払方法別必要額")
+                }
+                Section("設定") {
+                    Text("デフォルト収入")
+                    Text("デフォルト支出")
+                }
+                Section {
+                    Button(role: .destructive) {
+                        AuthStore.shared.logout()
+                    } label: {
+                        Label("ログアウト", systemImage: "arrow.right.square")
+                    }
+                }
+            }
+            .navigationTitle("その他")
+        }
+    }
+}

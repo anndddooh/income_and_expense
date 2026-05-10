@@ -36,6 +36,7 @@
 		CD4D7862D59D964CE471C297 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = C05EE5570AF75A472BA6C62E /* KeychainAccess */; };
 		E023634AA8558B3A5BBA5CCC /* DefaultIncome.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE562321590FDB990437CE77 /* DefaultIncome.swift */; };
 		E187C630AF0E4CED13BD6609 /* Income.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DCA5D7B3F0D88BF66D9DB1 /* Income.swift */; };
+		E2C00990D958357CF655C4F4 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A7CE0165BF7AE30DF8FD71C /* MainTabView.swift */; };
 		E327E88E478BB5B33D9D516D /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC80FFF3D141CB8C8CC87FE /* APIEndpoint.swift */; };
 		F0316FA2A4C636B3054C5952 /* IncomeAndExpenseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9B6F2F4D124BA707AB9607 /* IncomeAndExpenseApp.swift */; };
 		F5D48A3D1236D77EAB856434 /* AuthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24BC58D20DE624BFEE19D325 /* AuthStore.swift */; };
@@ -80,6 +81,7 @@
 		84BE697D6547E5B9773535C2 /* TemplateExpense.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TemplateExpense.swift; sourceTree = "<group>"; };
 		8606A66BAA928EFBAC9AD405 /* LoginViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		874E7010665FEE3EF805E58F /* IncomeListResponse.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeListResponse.swift; sourceTree = "<group>"; };
+		8A7CE0165BF7AE30DF8FD71C /* MainTabView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		8D9315B52FB0CFAD00ED0D4A /* IncomeAndExpense.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IncomeAndExpense.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D9315BC2FB0CFCE00ED0D4A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8D9315BF2FB0CFCE00ED0D4A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				3F9B6F2F4D124BA707AB9607 /* IncomeAndExpenseApp.swift */,
 				BDA065BAA07517AC5B9FE78B /* AppConfig.swift */,
 				705E646D39443B7CED31B18F /* RootView.swift */,
+				8A7CE0165BF7AE30DF8FD71C /* MainTabView.swift */,
 			);
 			name = App;
 			path = App;
@@ -426,6 +429,7 @@
 				1137FF53FDBDE3BAF37C5D44 /* LoginView.swift in Sources */,
 				372723E6ABD6337D5818EBB6 /* MonthStore.swift in Sources */,
 				5C5E4993B88FA7107D0D887B /* MonthPicker.swift in Sources */,
+				E2C00990D958357CF655C4F4 /* MainTabView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
