@@ -8,12 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		225C5671E7217C069763C6F4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705E646D39443B7CED31B18F /* RootView.swift */; };
+		4C06C50F22DAB9359C6C2D16 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2BA5F57278341B03A5E6DB /* KeychainStore.swift */; };
 		6C92C0FDCB835D71A39C2F2D /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDA065BAA07517AC5B9FE78B /* AppConfig.swift */; };
 		8D9315BD2FB0CFCE00ED0D4A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8D9315BC2FB0CFCE00ED0D4A /* Assets.xcassets */; };
 		8D9315C02FB0CFCE00ED0D4A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8D9315BF2FB0CFCE00ED0D4A /* Preview Assets.xcassets */; };
 		8D9315CA2FB0CFD000ED0D4A /* IncomeAndExpenseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D9315C92FB0CFD000ED0D4A /* IncomeAndExpenseTests.swift */; };
 		8D9315D42FB0CFD000ED0D4A /* IncomeAndExpenseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D9315D32FB0CFD000ED0D4A /* IncomeAndExpenseUITests.swift */; };
 		8D9315D62FB0CFD000ED0D4A /* IncomeAndExpenseUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D9315D52FB0CFD000ED0D4A /* IncomeAndExpenseUITestsLaunchTests.swift */; };
+		CD4D7862D59D964CE471C297 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = C05EE5570AF75A472BA6C62E /* KeychainAccess */; };
 		F0316FA2A4C636B3054C5952 /* IncomeAndExpenseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9B6F2F4D124BA707AB9607 /* IncomeAndExpenseApp.swift */; };
 /* End PBXBuildFile section */
 
@@ -36,6 +38,7 @@
 
 /* Begin PBXFileReference section */
 		3F9B6F2F4D124BA707AB9607 /* IncomeAndExpenseApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeAndExpenseApp.swift; sourceTree = "<group>"; };
+		5C2BA5F57278341B03A5E6DB /* KeychainStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
 		705E646D39443B7CED31B18F /* RootView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		8D9315B52FB0CFAD00ED0D4A /* IncomeAndExpense.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IncomeAndExpense.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D9315BC2FB0CFCE00ED0D4A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -53,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD4D7862D59D964CE471C297 /* KeychainAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,6 +77,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0D8B9570F6888685C79E7AB1 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				5C2BA5F57278341B03A5E6DB /* KeychainStore.swift */,
+			);
+			name = Networking;
+			path = Networking;
+			sourceTree = "<group>";
+		};
 		39B7A1FA5D60DB00270AEE01 /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -110,6 +123,7 @@
 				8D9315BC2FB0CFCE00ED0D4A /* Assets.xcassets */,
 				8D9315BE2FB0CFCE00ED0D4A /* Preview Content */,
 				39B7A1FA5D60DB00270AEE01 /* App */,
+				0D8B9570F6888685C79E7AB1 /* Networking */,
 			);
 			path = IncomeAndExpense;
 			sourceTree = "<group>";
@@ -155,6 +169,9 @@
 			dependencies = (
 			);
 			name = IncomeAndExpense;
+			packageProductDependencies = (
+				C05EE5570AF75A472BA6C62E /* KeychainAccess */,
+			);
 			productName = IncomeAndExpense;
 			productReference = 8D9315B52FB0CFAD00ED0D4A /* IncomeAndExpense.app */;
 			productType = "com.apple.product-type.application";
@@ -227,6 +244,9 @@
 				Base,
 			);
 			mainGroup = 8D9315AC2FB0CFAD00ED0D4A;
+			packageReferences = (
+				DB8A5338E7AA45D769AF9852 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+			);
 			productRefGroup = 8D9315B62FB0CFAD00ED0D4A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -272,6 +292,7 @@
 				F0316FA2A4C636B3054C5952 /* IncomeAndExpenseApp.swift in Sources */,
 				6C92C0FDCB835D71A39C2F2D /* AppConfig.swift in Sources */,
 				225C5671E7217C069763C6F4 /* RootView.swift in Sources */,
+				4C06C50F22DAB9359C6C2D16 /* KeychainStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -595,6 +616,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DB8A5338E7AA45D769AF9852 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.2.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C05EE5570AF75A472BA6C62E /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB8A5338E7AA45D769AF9852 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8D9315AD2FB0CFAD00ED0D4A /* Project object */;
 }

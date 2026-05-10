@@ -20,7 +20,6 @@ ios/**/*.xcuserstate
 ios/**/DerivedData/
 ios/build/
 ios/.build/
-ios/**/*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 *.ipa
 *.dSYM.zip
 *.dSYM
