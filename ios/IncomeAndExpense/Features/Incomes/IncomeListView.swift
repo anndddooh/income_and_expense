@@ -4,6 +4,8 @@ struct IncomeListView: View {
     @State private var store = IncomeStore()
     @State private var showingNewForm = false
     @State private var editingIncome: Income?
+    @State private var showingDefaultsConfirm = false
+    @State private var addedCount: Int? = nil
     private let monthStore = MonthStore.shared
 
     var body: some View {
@@ -58,13 +60,47 @@ struct IncomeListView: View {
                 MonthPicker(store: monthStore)
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showingNewForm = true
+                Menu {
+                    Button {
+                        showingNewForm = true
+                    } label: {
+                        Label("新しい収入", systemImage: "plus")
+                    }
+                    Button {
+                        showingDefaultsConfirm = true
+                    } label: {
+                        Label("デフォルト収入を適用", systemImage: "square.stack.3d.down.right")
+                    }
                 } label: {
-                    Image(systemName: "plus")
+                    Image(systemName: "ellipsis.circle")
                 }
             }
         }
+        .confirmationDialog(
+            "今月のデフォルト収入を追加しますか?",
+            isPresented: $showingDefaultsConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("適用する") {
+                Task { await applyDefaults() }
+            }
+            Button("キャンセル", role: .cancel) {}
+        } message: {
+            Text("登録済みのデフォルト収入のうち、まだ今月分が無いものを新規追加します。")
+        }
+        .alert(
+            "追加完了",
+            isPresented: Binding(
+                get: { addedCount != nil },
+                set: { if !$0 { addedCount = nil } }
+            ),
+            actions: {
+                Button("OK") { addedCount = nil }
+            },
+            message: {
+                Text("\(addedCount ?? 0)件追加しました。")
+            }
+        )
         .sheet(isPresented: $showingNewForm) {
             IncomeFormView(
                 viewModel: IncomeFormViewModel(income: nil, store: store)
@@ -87,5 +123,17 @@ struct IncomeListView: View {
 
     private var monthKey: String {
         "\(monthStore.year)-\(monthStore.month)"
+    }
+
+    private func applyDefaults() async {
+        do {
+            let added = try await store.addDefaults(
+                year: monthStore.year, month: monthStore.month
+            )
+            addedCount = added
+        } catch {
+            store.errorMessage = (error as? AppError)?.errorDescription
+                ?? error.localizedDescription
+        }
     }
 }
