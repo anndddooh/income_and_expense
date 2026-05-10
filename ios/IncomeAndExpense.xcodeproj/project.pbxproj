@@ -11,6 +11,7 @@
 		03C373F8C2AB942A538DB2CE /* DefaultExpense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39BE01F61081E8172764B926 /* DefaultExpense.swift */; };
 		106EB5DC6F1CACBC52FC80DB /* TemplateExpense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BE697D6547E5B9773535C2 /* TemplateExpense.swift */; };
 		1137FF53FDBDE3BAF37C5D44 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D294469D094624446F969A5 /* LoginView.swift */; };
+		11A2F73EA15FCEEC84C7866B /* AccountRequireViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30911F4FC63937EDE9A48C5 /* AccountRequireViewModel.swift */; };
 		16AEE45E73E4B7204B350F7A /* StateBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC44CAC6C74247C75C4EE290 /* StateBadge.swift */; };
 		183025475C1A011F1918449A /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6DCA171F59FC4C52D21B78 /* Expense.swift */; };
 		19964413B7E02B345B7A8B6E /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30629F5AF1657DCCEC7E8E27 /* Account.swift */; };
@@ -20,6 +21,7 @@
 		3628770F171732DD1AF8DEC1 /* Loan.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3EE786B117827336A7AD83 /* Loan.swift */; };
 		372723E6ABD6337D5818EBB6 /* MonthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0A33B1C67D99DB8226F2AA /* MonthStore.swift */; };
 		399B3B7409CEC15726533894 /* LoanStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95034D037D0D0625806AD0D /* LoanStore.swift */; };
+		39AABB997BAD463CC9B214CD /* AccountRequireView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3C998D2ED6A8587D3179C3 /* AccountRequireView.swift */; };
 		3A4B6BCB1B6E50AE1242AEC2 /* ExpenseListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E3BE1B710A0DE59408EB49 /* ExpenseListResponse.swift */; };
 		3D28751BE35F08391B370C70 /* AuthInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 468607A902D8149799A3E8DE /* AuthInterceptor.swift */; };
 		3EC35ABB9417AA62688A68D1 /* IncomeListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 874E7010665FEE3EF805E58F /* IncomeListResponse.swift */; };
@@ -90,6 +92,7 @@
 		1FFE136D49924FA570FDBA70 /* LoanListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoanListView.swift; sourceTree = "<group>"; };
 		24BC58D20DE624BFEE19D325 /* AuthStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthStore.swift; sourceTree = "<group>"; };
 		262C381F388410558610D0D5 /* IncomeStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeStore.swift; sourceTree = "<group>"; };
+		2C3C998D2ED6A8587D3179C3 /* AccountRequireView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AccountRequireView.swift; sourceTree = "<group>"; };
 		30629F5AF1657DCCEC7E8E27 /* Account.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		33DAD142F2AC6280C82450B6 /* BalanceResponse.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BalanceResponse.swift; sourceTree = "<group>"; };
 		39BE01F61081E8172764B926 /* DefaultExpense.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DefaultExpense.swift; sourceTree = "<group>"; };
@@ -132,6 +135,7 @@
 		CECBBD75BED7DA4E2B2FA1F0 /* ExpenseFormViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ExpenseFormViewModel.swift; sourceTree = "<group>"; };
 		DB3EE786B117827336A7AD83 /* Loan.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Loan.swift; sourceTree = "<group>"; };
 		E82F67A52E459D1FD0CC82F3 /* IncomeRowView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeRowView.swift; sourceTree = "<group>"; };
+		F30911F4FC63937EDE9A48C5 /* AccountRequireViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AccountRequireViewModel.swift; sourceTree = "<group>"; };
 		FEC80FFF3D141CB8C8CC87FE /* APIEndpoint.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -329,6 +333,7 @@
 				B0B1C06ADD49787B8C9D86D4 /* Expenses */,
 				74C26C7A068EC5921C06A084 /* Loans */,
 				8430C2DC511B46ACAB0C8D4E /* Balance */,
+				CD92B9397DFCCE9A0A099706 /* AccountRequire */,
 			);
 			name = Features;
 			path = Features;
@@ -358,6 +363,16 @@
 			);
 			name = Expenses;
 			path = Expenses;
+			sourceTree = "<group>";
+		};
+		CD92B9397DFCCE9A0A099706 /* AccountRequire */ = {
+			isa = PBXGroup;
+			children = (
+				F30911F4FC63937EDE9A48C5 /* AccountRequireViewModel.swift */,
+				2C3C998D2ED6A8587D3179C3 /* AccountRequireView.swift */,
+			);
+			name = AccountRequire;
+			path = AccountRequire;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -542,6 +557,8 @@
 				337C10313DE36651706126E1 /* LoanListView.swift in Sources */,
 				CD5846A08E9AFEC8EC42B0BC /* BalanceViewModel.swift in Sources */,
 				0253C57732094600E92E62E9 /* BalanceView.swift in Sources */,
+				11A2F73EA15FCEEC84C7866B /* AccountRequireViewModel.swift in Sources */,
+				39AABB997BAD463CC9B214CD /* AccountRequireView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
