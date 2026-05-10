@@ -7,7 +7,7 @@ struct MainTabView: View {
             placeholderTab(title: "ホーム", note: "Dashboard は Step 19 で実装")
                 .tabItem { Label("ホーム", systemImage: "house.fill") }
 
-            placeholderTab(title: "収入", note: "IncomeList は Step 10 で実装")
+            NavigationStack { IncomeListView() }
                 .tabItem { Label("収入", systemImage: "arrow.down.circle.fill") }
 
             placeholderTab(title: "支出", note: "ExpenseList は Step 13 で実装")
