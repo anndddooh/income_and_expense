@@ -14,6 +14,7 @@
 		225C5671E7217C069763C6F4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705E646D39443B7CED31B18F /* RootView.swift */; };
 		3628770F171732DD1AF8DEC1 /* Loan.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3EE786B117827336A7AD83 /* Loan.swift */; };
 		3A4B6BCB1B6E50AE1242AEC2 /* ExpenseListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E3BE1B710A0DE59408EB49 /* ExpenseListResponse.swift */; };
+		3D28751BE35F08391B370C70 /* AuthInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 468607A902D8149799A3E8DE /* AuthInterceptor.swift */; };
 		3EC35ABB9417AA62688A68D1 /* IncomeListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 874E7010665FEE3EF805E58F /* IncomeListResponse.swift */; };
 		4C06C50F22DAB9359C6C2D16 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2BA5F57278341B03A5E6DB /* KeychainStore.swift */; };
 		59BCC8BAAA136A92B57C40EC /* BalanceResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33DAD142F2AC6280C82450B6 /* BalanceResponse.swift */; };
@@ -33,6 +34,7 @@
 		E187C630AF0E4CED13BD6609 /* Income.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DCA5D7B3F0D88BF66D9DB1 /* Income.swift */; };
 		E327E88E478BB5B33D9D516D /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC80FFF3D141CB8C8CC87FE /* APIEndpoint.swift */; };
 		F0316FA2A4C636B3054C5952 /* IncomeAndExpenseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9B6F2F4D124BA707AB9607 /* IncomeAndExpenseApp.swift */; };
+		F5D48A3D1236D77EAB856434 /* AuthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24BC58D20DE624BFEE19D325 /* AuthStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,10 +58,12 @@
 		006AC541F2D2604DB2EFDA68 /* InexState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = InexState.swift; sourceTree = "<group>"; };
 		018523D8FD82862A59882F1D /* AuthTokens.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthTokens.swift; sourceTree = "<group>"; };
 		01B9A7F12E6150D9D92CA26A /* APIClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		24BC58D20DE624BFEE19D325 /* AuthStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthStore.swift; sourceTree = "<group>"; };
 		30629F5AF1657DCCEC7E8E27 /* Account.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		33DAD142F2AC6280C82450B6 /* BalanceResponse.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BalanceResponse.swift; sourceTree = "<group>"; };
 		39BE01F61081E8172764B926 /* DefaultExpense.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DefaultExpense.swift; sourceTree = "<group>"; };
 		3F9B6F2F4D124BA707AB9607 /* IncomeAndExpenseApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeAndExpenseApp.swift; sourceTree = "<group>"; };
+		468607A902D8149799A3E8DE /* AuthInterceptor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthInterceptor.swift; sourceTree = "<group>"; };
 		4F2C66D66CD785CAE3D737F5 /* JSONCoders.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = JSONCoders.swift; sourceTree = "<group>"; };
 		50E3BE1B710A0DE59408EB49 /* ExpenseListResponse.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ExpenseListResponse.swift; sourceTree = "<group>"; };
 		5C2BA5F57278341B03A5E6DB /* KeychainStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
@@ -116,6 +120,7 @@
 				FEC80FFF3D141CB8C8CC87FE /* APIEndpoint.swift */,
 				4F2C66D66CD785CAE3D737F5 /* JSONCoders.swift */,
 				01B9A7F12E6150D9D92CA26A /* APIClient.swift */,
+				468607A902D8149799A3E8DE /* AuthInterceptor.swift */,
 			);
 			name = Networking;
 			path = Networking;
@@ -153,6 +158,15 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		617431D0DAE53479F9DBFE6D /* Stores */ = {
+			isa = PBXGroup;
+			children = (
+				24BC58D20DE624BFEE19D325 /* AuthStore.swift */,
+			);
+			name = Stores;
+			path = Stores;
+			sourceTree = "<group>";
+		};
 		8D9315AC2FB0CFAD00ED0D4A = {
 			isa = PBXGroup;
 			children = (
@@ -181,6 +195,7 @@
 				39B7A1FA5D60DB00270AEE01 /* App */,
 				0D8B9570F6888685C79E7AB1 /* Networking */,
 				509A7E0D3A16094A44BF11A0 /* Models */,
+				617431D0DAE53479F9DBFE6D /* Stores */,
 			);
 			path = IncomeAndExpense;
 			sourceTree = "<group>";
@@ -366,6 +381,8 @@
 				03C373F8C2AB942A538DB2CE /* DefaultExpense.swift in Sources */,
 				106EB5DC6F1CACBC52FC80DB /* TemplateExpense.swift in Sources */,
 				59BCC8BAAA136A92B57C40EC /* BalanceResponse.swift in Sources */,
+				F5D48A3D1236D77EAB856434 /* AuthStore.swift in Sources */,
+				3D28751BE35F08391B370C70 /* AuthInterceptor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
