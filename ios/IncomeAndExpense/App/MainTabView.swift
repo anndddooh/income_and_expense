@@ -41,7 +41,7 @@ struct MainTabView: View {
             List {
                 Section("家計") {
                     NavigationLink("ローン") { LoanListView() }
-                    Text("残高")
+                    NavigationLink("残高") { BalanceView() }
                     Text("口座別必要額")
                     Text("支払方法別必要額")
                 }
