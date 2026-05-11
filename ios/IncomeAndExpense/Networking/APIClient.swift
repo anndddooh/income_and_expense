@@ -12,9 +12,37 @@ enum AppError: LocalizedError {
         case .invalidURL: return "URLの構築に失敗しました"
         case .invalidResponse: return "サーバーからの応答が不正です"
         case .unauthorized: return "認証が切れました。再ログインしてください"
-        case .httpError(let status, _): return "通信エラー(HTTP \(status))"
+        case .httpError(let status, let body):
+            if let detail = Self.parseDRFError(from: body) {
+                return detail
+            }
+            return "通信エラー(HTTP \(status))"
         case .decodingFailed: return "レスポンスの解析に失敗しました"
         }
+    }
+
+    /// DRFのValidationErrorレスポンス({"field": ["msg"], ...})や
+    /// {"detail": "msg"} を読みやすい文字列に変換。
+    private static func parseDRFError(from data: Data) -> String? {
+        guard !data.isEmpty,
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            return nil
+        }
+        if let detail = json["detail"] as? String {
+            return detail
+        }
+        var messages: [String] = []
+        for key in json.keys.sorted() {
+            switch json[key] {
+            case let array as [String]:
+                messages.append(contentsOf: array)
+            case let str as String:
+                messages.append(str)
+            default:
+                continue
+            }
+        }
+        return messages.isEmpty ? nil : messages.joined(separator: "\n")
     }
 }
 
