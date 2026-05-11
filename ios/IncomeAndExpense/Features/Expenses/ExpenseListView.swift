@@ -72,6 +72,7 @@ struct ExpenseListView: View {
                     } label: {
                         Label("デフォルト支出を適用", systemImage: "square.stack.3d.down.right")
                     }
+                    .disabled(!monthStore.isCurrentOrFutureMonth)
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }

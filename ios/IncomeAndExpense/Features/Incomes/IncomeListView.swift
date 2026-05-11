@@ -71,6 +71,7 @@ struct IncomeListView: View {
                     } label: {
                         Label("デフォルト収入を適用", systemImage: "square.stack.3d.down.right")
                     }
+                    .disabled(!monthStore.isCurrentOrFutureMonth)
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }

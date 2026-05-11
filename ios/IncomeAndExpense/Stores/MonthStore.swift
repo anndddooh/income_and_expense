@@ -41,4 +41,18 @@ final class MonthStore {
         year = comps.year ?? year
         month = comps.month ?? month
     }
+
+    /// 表示中の年月が「現在月以降」かどうか。
+    /// デフォルト適用は過去月で実行できないので、メニュー項目の有効化判定等に使用。
+    var isCurrentOrFutureMonth: Bool {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Asia/Tokyo") ?? .current
+        let comps = calendar.dateComponents([.year, .month], from: Date())
+        guard let currentYear = comps.year, let currentMonth = comps.month else {
+            return true
+        }
+        if year > currentYear { return true }
+        if year < currentYear { return false }
+        return month >= currentMonth
+    }
 }
