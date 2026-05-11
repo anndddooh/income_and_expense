@@ -16,24 +16,35 @@ enum AppError: LocalizedError {
             if let detail = Self.parseDRFError(from: body) {
                 return detail
             }
+            if !body.isEmpty, let text = String(data: body, encoding: .utf8) {
+                return "通信エラー(HTTP \(status)): \(text.prefix(200))"
+            }
             return "通信エラー(HTTP \(status))"
         case .decodingFailed: return "レスポンスの解析に失敗しました"
         }
     }
 
-    /// DRFのValidationErrorレスポンス({"field": ["msg"], ...})や
-    /// {"detail": "msg"} を読みやすい文字列に変換。
+    /// DRFのValidationErrorレスポンスを読みやすい文字列に変換。
+    /// - `{"field": ["msg"], ...}`(serializer validate_xxx)
+    /// - `{"detail": "msg"}`(NotAuthenticated, NotFound等)
+    /// - `["msg"]`(viewの @action 内で raise ValidationError("msg") した場合)
     private static func parseDRFError(from data: Data) -> String? {
         guard !data.isEmpty,
-              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+              let json = try? JSONSerialization.jsonObject(with: data) else {
             return nil
         }
-        if let detail = json["detail"] as? String {
+
+        if let array = json as? [String], !array.isEmpty {
+            return array.joined(separator: "\n")
+        }
+
+        guard let dict = json as? [String: Any] else { return nil }
+        if let detail = dict["detail"] as? String {
             return detail
         }
         var messages: [String] = []
-        for key in json.keys.sorted() {
-            switch json[key] {
+        for key in dict.keys.sorted() {
+            switch dict[key] {
             case let array as [String]:
                 messages.append(contentsOf: array)
             case let str as String:
