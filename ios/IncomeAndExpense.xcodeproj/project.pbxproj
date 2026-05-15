@@ -77,6 +77,7 @@
 		EADDE0AD7F83B390827CA7CA /* ExpenseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096B0AF2CA4F1E7B6426D953 /* ExpenseListView.swift */; };
 		F0316FA2A4C636B3054C5952 /* IncomeAndExpenseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9B6F2F4D124BA707AB9607 /* IncomeAndExpenseApp.swift */; };
 		F038ADBF03931F3C42CEBE6B /* MethodRequireViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E59F4387F2C746FC0AAFB3 /* MethodRequireViewModel.swift */; };
+		F5B8FFC76698E485DFE83852 /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD328508B47D6741D7569BB7 /* Palette.swift */; };
 		F5D48A3D1236D77EAB856434 /* AuthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24BC58D20DE624BFEE19D325 /* AuthStore.swift */; };
 /* End PBXBuildFile section */
 
@@ -171,6 +172,7 @@
 		E04ADF7609C3955AB018040C /* DashboardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		E82F67A52E459D1FD0CC82F3 /* IncomeRowView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeRowView.swift; sourceTree = "<group>"; };
 		F30911F4FC63937EDE9A48C5 /* AccountRequireViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AccountRequireViewModel.swift; sourceTree = "<group>"; };
+		FD328508B47D6741D7569BB7 /* Palette.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
 		FEC80FFF3D141CB8C8CC87FE /* APIEndpoint.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -404,6 +406,7 @@
 				CC44CAC6C74247C75C4EE290 /* StateBadge.swift */,
 				2275978E83287B6FB865F02F /* MonthSelector.swift */,
 				1F51C57B816DD7ED2DCD1E9E /* SummaryCard.swift */,
+				FD328508B47D6741D7569BB7 /* Palette.swift */,
 			);
 			name = UIComponents;
 			path = UIComponents;
@@ -683,6 +686,7 @@
 				6ADC8737B5ABAAA2222FEDBB /* DashboardViewModel.swift in Sources */,
 				D9DD63A7DB247E8855617F7B /* TrendChart.swift in Sources */,
 				3327556EAC59996A0D64BFEA /* DashboardView.swift in Sources */,
+				F5B8FFC76698E485DFE83852 /* Palette.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -102,7 +102,7 @@ struct MethodRequireView: View {
                         .font(.title3)
                 }
                 .buttonStyle(.borderless)
-                .foregroundStyle(.green)
+                .foregroundStyle(Palette.income)
             }
         }
     }

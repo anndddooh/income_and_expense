@@ -62,7 +62,7 @@ struct AccountRequireView: View {
                 if row.isInsufficient {
                     Label("不足", systemImage: "exclamationmark.triangle.fill")
                         .font(.caption)
-                        .foregroundStyle(.red)
+                        .foregroundStyle(Palette.expense)
                 }
             }
             HStack {

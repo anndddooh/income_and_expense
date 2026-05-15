@@ -68,7 +68,7 @@ struct BalanceView: View {
     private func diffView(_ diff: Int) -> some View {
         Text(verbatim: amountText(diff))
             .font(.body.monospacedDigit())
-            .foregroundStyle(diff == 0 ? Color.secondary : Color.red)
+            .foregroundStyle(diff == 0 ? Color.secondary : Palette.expense)
     }
 
     private func amountText(_ value: Int?) -> String {

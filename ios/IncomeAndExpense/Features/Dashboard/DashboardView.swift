@@ -10,13 +10,13 @@ struct DashboardView: View {
         ScrollView {
             VStack(spacing: 16) {
                 LazyVGrid(columns: columns, spacing: 12) {
-                    SummaryCard(title: "収入", amount: viewModel.currentIncome, tint: .green)
-                    SummaryCard(title: "支出", amount: viewModel.currentExpense, tint: .red)
+                    SummaryCard(title: "収入", amount: viewModel.currentIncome, tint: Palette.income)
+                    SummaryCard(title: "支出", amount: viewModel.currentExpense, tint: Palette.expense)
                     SummaryCard(title: "前月繰越", amount: viewModel.prevBalance, tint: .secondary)
                     SummaryCard(
                         title: "今月収支",
                         amount: viewModel.currentBalance,
-                        tint: viewModel.currentBalance >= 0 ? .green : .red
+                        tint: Palette.amount(viewModel.currentBalance)
                     )
                 }
                 .padding(.horizontal)

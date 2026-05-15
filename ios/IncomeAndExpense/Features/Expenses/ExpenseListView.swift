@@ -14,7 +14,7 @@ struct ExpenseListView: View {
                 LabeledContent("月末残高(見込)") {
                     Text(verbatim: "¥\(store.balance.formatted(.number.grouping(.automatic)))")
                         .font(.body.monospacedDigit())
-                        .foregroundStyle(store.balance < 0 ? .red : .primary)
+                        .foregroundStyle(store.balance < 0 ? Palette.expense : .primary)
                 }
             }
 

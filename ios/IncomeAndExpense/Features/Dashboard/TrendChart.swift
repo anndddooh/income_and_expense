@@ -23,8 +23,8 @@ struct TrendChart: View {
             }
         }
         .chartForegroundStyleScale([
-            "収入": Color.green,
-            "支出": Color.red,
+            "収入": Palette.income,
+            "支出": Palette.expense,
         ])
         .chartLegend(position: .top, alignment: .trailing)
         .chartXAxis {
