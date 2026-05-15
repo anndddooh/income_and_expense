@@ -8,40 +8,53 @@ struct DashboardView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 16) {
+            VStack(spacing: 20) {
                 LazyVGrid(columns: columns, spacing: 12) {
-                    SummaryCard(title: "収入", amount: viewModel.currentIncome, tint: Palette.income)
-                    SummaryCard(title: "支出", amount: viewModel.currentExpense, tint: Palette.expense)
-                    SummaryCard(title: "前月繰越", amount: viewModel.prevBalance, tint: .secondary)
                     SummaryCard(
-                        title: "今月収支",
-                        amount: viewModel.currentBalance,
-                        tint: Palette.amount(viewModel.currentBalance)
+                        title: "収入", amount: viewModel.currentIncome,
+                        tint: Palette.income, systemImage: "arrow.down.circle.fill"
+                    )
+                    SummaryCard(
+                        title: "支出", amount: viewModel.currentExpense,
+                        tint: Palette.expense, systemImage: "arrow.up.circle.fill"
+                    )
+                    SummaryCard(
+                        title: "前月繰越", amount: viewModel.prevBalance,
+                        tint: .secondary, systemImage: "clock.arrow.circlepath"
+                    )
+                    SummaryCard(
+                        title: "今月収支", amount: viewModel.currentBalance,
+                        tint: Palette.amount(viewModel.currentBalance),
+                        systemImage: "yensign.circle.fill"
                     )
                 }
                 .padding(.horizontal)
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("収支トレンド (12ヶ月)")
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("収支トレンド")
                         .font(.headline)
-                        .padding(.horizontal)
+                    Text("直近12ヶ月")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     TrendChart(months: viewModel.trends)
                         .frame(height: 220)
-                        .padding(.horizontal)
-                        .padding(.bottom)
-                        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 12))
-                        .padding(.horizontal)
+                        .padding(.top, 4)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(16)
+                .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 14))
+                .padding(.horizontal)
 
                 if let error = viewModel.errorMessage {
                     Text(error)
                         .font(.footnote)
-                        .foregroundStyle(.red)
+                        .foregroundStyle(Palette.expense)
                         .padding(.horizontal)
                 }
             }
             .padding(.vertical)
         }
+        .background(Color(.systemGroupedBackground))
         .refreshable {
             await viewModel.fetch(year: monthStore.year, month: monthStore.month)
         }

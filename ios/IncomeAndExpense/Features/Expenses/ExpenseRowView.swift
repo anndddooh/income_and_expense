@@ -4,25 +4,27 @@ struct ExpenseRowView: View {
     let expense: Expense
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 3) {
                 Text(expense.name)
                     .font(.body)
-                HStack(spacing: 8) {
+                    .fontWeight(.medium)
+                HStack(spacing: 6) {
                     Text(expense.payDate, format: .dateTime.month().day())
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Text(verbatim: "·")
                     Text(expense.methodName)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
                 }
+                .font(.caption)
+                .foregroundStyle(.secondary)
             }
-            Spacer()
+            Spacer(minLength: 8)
             VStack(alignment: .trailing, spacing: 4) {
-                Text(verbatim: "¥\(expense.amount.formatted(.number.grouping(.automatic)))")
-                    .font(.body.monospacedDigit())
+                Text(expense.amount.yenString)
+                    .font(.callout.weight(.semibold))
+                    .monospacedDigit()
                 StateBadge(state: expense.state)
             }
         }
+        .padding(.vertical, 2)
     }
 }

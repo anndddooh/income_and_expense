@@ -12,7 +12,7 @@ struct IncomeListView: View {
         List {
             Section {
                 LabeledContent("前月繰越") {
-                    Text(verbatim: "¥\(store.prevBalance.formatted(.number.grouping(.automatic)))")
+                    Text(store.prevBalance.yenString)
                         .font(.body.monospacedDigit())
                 }
             }

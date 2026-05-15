@@ -71,7 +71,7 @@ struct DefaultIncomeListView: View {
                 Text(item.methodName)
                     .font(.caption).foregroundStyle(.secondary)
                 Spacer()
-                Text(verbatim: "¥\(item.amount.formatted(.number.grouping(.automatic)))")
+                Text(item.amount.yenString)
                     .font(.caption.monospacedDigit())
             }
             Text(monthsLabel(item.months))
