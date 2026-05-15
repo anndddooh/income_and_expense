@@ -33,10 +33,10 @@ struct BalanceView: View {
                                 .font(.body.monospacedDigit())
                         }
                     }
-                } else if !viewModel.isLoading {
-                    Text("口座がありません")
-                        .foregroundStyle(.secondary)
-                        .font(.callout)
+                } else {
+                    PlaceholderRow(kind: viewModel.isLoading
+                        ? .loading
+                        : .empty(icon: "building.columns", message: "口座がありません"))
                 }
             }
 

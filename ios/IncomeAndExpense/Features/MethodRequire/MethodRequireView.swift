@@ -19,10 +19,10 @@ struct MethodRequireView: View {
                     ForEach(methods) { method in
                         methodRow(method)
                     }
-                } else if !viewModel.isLoading {
-                    Text("データがありません")
-                        .foregroundStyle(.secondary)
-                        .font(.callout)
+                } else {
+                    PlaceholderRow(kind: viewModel.isLoading
+                        ? .loading
+                        : .empty(icon: "creditcard", message: "データがありません"))
                 }
             }
 

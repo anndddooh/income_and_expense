@@ -18,10 +18,10 @@ struct IncomeListView: View {
             }
 
             Section("収入") {
-                if store.incomes.isEmpty && !store.isLoading {
-                    Text("収入の記録がありません")
-                        .foregroundStyle(.secondary)
-                        .font(.callout)
+                if store.incomes.isEmpty {
+                    PlaceholderRow(kind: store.isLoading
+                        ? .loading
+                        : .empty(icon: "tray", message: "収入の記録がありません"))
                 }
                 ForEach(store.incomes) { income in
                     Button {

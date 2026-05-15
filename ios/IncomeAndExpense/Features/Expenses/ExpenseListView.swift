@@ -19,10 +19,10 @@ struct ExpenseListView: View {
             }
 
             Section("支出") {
-                if store.expenses.isEmpty && !store.isLoading {
-                    Text("支出の記録がありません")
-                        .foregroundStyle(.secondary)
-                        .font(.callout)
+                if store.expenses.isEmpty {
+                    PlaceholderRow(kind: store.isLoading
+                        ? .loading
+                        : .empty(icon: "tray", message: "支出の記録がありません"))
                 }
                 ForEach(store.expenses) { expense in
                     Button {

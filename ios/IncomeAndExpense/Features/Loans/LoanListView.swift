@@ -7,10 +7,10 @@ struct LoanListView: View {
 
     var body: some View {
         List {
-            if store.loans.isEmpty && !store.isLoading {
-                Text("ローンの登録がありません")
-                    .foregroundStyle(.secondary)
-                    .font(.callout)
+            if store.loans.isEmpty {
+                PlaceholderRow(kind: store.isLoading
+                    ? .loading
+                    : .empty(icon: "creditcard", message: "ローンの登録がありません"))
             }
             ForEach(store.loans) { loan in
                 Button {

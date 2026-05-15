@@ -21,10 +21,10 @@ struct AccountRequireView: View {
                     ForEach(accounts) { row in
                         accountRow(row)
                     }
-                } else if !viewModel.isLoading {
-                    Text("データがありません")
-                        .foregroundStyle(.secondary)
-                        .font(.callout)
+                } else {
+                    PlaceholderRow(kind: viewModel.isLoading
+                        ? .loading
+                        : .empty(icon: "building.columns", message: "データがありません"))
                 }
             }
 
