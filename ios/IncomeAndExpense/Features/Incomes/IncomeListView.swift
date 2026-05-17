@@ -12,16 +12,16 @@ struct IncomeListView: View {
         List {
             Section {
                 LabeledContent("前月繰越") {
-                    Text(verbatim: "¥\(store.prevBalance.formatted(.number.grouping(.automatic)))")
+                    Text(store.prevBalance.yenString)
                         .font(.body.monospacedDigit())
                 }
             }
 
             Section("収入") {
-                if store.incomes.isEmpty && !store.isLoading {
-                    Text("収入の記録がありません")
-                        .foregroundStyle(.secondary)
-                        .font(.callout)
+                if store.incomes.isEmpty {
+                    PlaceholderRow(kind: store.isLoading
+                        ? .loading
+                        : .empty(icon: "tray", message: "収入の記録がありません"))
                 }
                 ForEach(store.incomes) { income in
                     Button {
@@ -132,6 +132,7 @@ struct IncomeListView: View {
                 year: monthStore.year, month: monthStore.month
             )
             addedCount = added
+            Haptics.success()
         } catch {
             store.errorMessage = (error as? AppError)?.errorDescription
                 ?? error.localizedDescription

@@ -15,9 +15,9 @@ struct StateBadge: View {
 
     private var backgroundColor: Color {
         switch state {
-        case .undecided: return .orange
-        case .decided: return .blue
-        case .done: return .green
+        case .undecided: return Palette.pending
+        case .decided: return .accentColor
+        case .done: return Palette.income
         }
     }
 }

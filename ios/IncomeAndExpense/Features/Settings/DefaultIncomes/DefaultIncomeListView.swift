@@ -7,10 +7,10 @@ struct DefaultIncomeListView: View {
 
     var body: some View {
         List {
-            if store.items.isEmpty && !store.isLoading {
-                Text("デフォルト収入が登録されていません")
-                    .foregroundStyle(.secondary)
-                    .font(.callout)
+            if store.items.isEmpty {
+                PlaceholderRow(kind: store.isLoading
+                    ? .loading
+                    : .empty(icon: "arrow.down.circle", message: "デフォルト収入が登録されていません"))
             }
             ForEach(store.items) { item in
                 Button {
@@ -71,7 +71,7 @@ struct DefaultIncomeListView: View {
                 Text(item.methodName)
                     .font(.caption).foregroundStyle(.secondary)
                 Spacer()
-                Text(verbatim: "¥\(item.amount.formatted(.number.grouping(.automatic)))")
+                Text(item.amount.yenString)
                     .font(.caption.monospacedDigit())
             }
             Text(monthsLabel(item.months))

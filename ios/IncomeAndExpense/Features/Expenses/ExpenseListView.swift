@@ -12,17 +12,17 @@ struct ExpenseListView: View {
         List {
             Section {
                 LabeledContent("月末残高(見込)") {
-                    Text(verbatim: "¥\(store.balance.formatted(.number.grouping(.automatic)))")
+                    Text(store.balance.yenString)
                         .font(.body.monospacedDigit())
-                        .foregroundStyle(store.balance < 0 ? .red : .primary)
+                        .foregroundStyle(store.balance < 0 ? Palette.expense : .primary)
                 }
             }
 
             Section("支出") {
-                if store.expenses.isEmpty && !store.isLoading {
-                    Text("支出の記録がありません")
-                        .foregroundStyle(.secondary)
-                        .font(.callout)
+                if store.expenses.isEmpty {
+                    PlaceholderRow(kind: store.isLoading
+                        ? .loading
+                        : .empty(icon: "tray", message: "支出の記録がありません"))
                 }
                 ForEach(store.expenses) { expense in
                     Button {
@@ -133,6 +133,7 @@ struct ExpenseListView: View {
                 year: monthStore.year, month: monthStore.month
             )
             addedCount = added
+            Haptics.success()
         } catch {
             store.errorMessage = (error as? AppError)?.errorDescription
                 ?? error.localizedDescription

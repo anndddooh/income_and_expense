@@ -20,11 +20,12 @@ struct AccountRequireView: View {
                 if let accounts = viewModel.response?.accounts, !accounts.isEmpty {
                     ForEach(accounts) { row in
                         accountRow(row)
+                            .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     }
-                } else if !viewModel.isLoading {
-                    Text("データがありません")
-                        .foregroundStyle(.secondary)
-                        .font(.callout)
+                } else {
+                    PlaceholderRow(kind: viewModel.isLoading
+                        ? .loading
+                        : .empty(icon: "building.columns", message: "データがありません"))
                 }
             }
 
@@ -62,7 +63,7 @@ struct AccountRequireView: View {
                 if row.isInsufficient {
                     Label("不足", systemImage: "exclamationmark.triangle.fill")
                         .font(.caption)
-                        .foregroundStyle(.red)
+                        .foregroundStyle(Palette.expense)
                 }
             }
             HStack {
@@ -83,7 +84,7 @@ struct AccountRequireView: View {
                     Spacer()
                     Text("不足: \(row.formedInsufficient)")
                         .font(.caption.monospacedDigit())
-                        .foregroundStyle(.red)
+                        .foregroundStyle(Palette.expense)
                 }
             }
         }

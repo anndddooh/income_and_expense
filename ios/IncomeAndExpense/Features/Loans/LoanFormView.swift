@@ -95,6 +95,7 @@ struct LoanFormView: View {
                     Button("保存") {
                         Task {
                             if await viewModel.save() {
+                                Haptics.success()
                                 onSaved()
                                 dismiss()
                             }

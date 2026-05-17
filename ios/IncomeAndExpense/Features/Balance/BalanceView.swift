@@ -33,10 +33,10 @@ struct BalanceView: View {
                                 .font(.body.monospacedDigit())
                         }
                     }
-                } else if !viewModel.isLoading {
-                    Text("口座がありません")
-                        .foregroundStyle(.secondary)
-                        .font(.callout)
+                } else {
+                    PlaceholderRow(kind: viewModel.isLoading
+                        ? .loading
+                        : .empty(icon: "building.columns", message: "口座がありません"))
                 }
             }
 
@@ -68,7 +68,7 @@ struct BalanceView: View {
     private func diffView(_ diff: Int) -> some View {
         Text(verbatim: amountText(diff))
             .font(.body.monospacedDigit())
-            .foregroundStyle(diff == 0 ? Color.secondary : Color.red)
+            .foregroundStyle(diff == 0 ? Color.secondary : Palette.expense)
     }
 
     private func amountText(_ value: Int?) -> String {
