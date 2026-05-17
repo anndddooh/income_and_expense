@@ -61,6 +61,9 @@ struct MethodRequireView: View {
                             year: monthStore.year,
                             month: monthStore.month
                         )
+                        if viewModel.lastUpdated != nil {
+                            Haptics.success()
+                        }
                     }
                 }
                 doneTarget = nil

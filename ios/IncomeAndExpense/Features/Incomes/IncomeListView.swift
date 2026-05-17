@@ -132,6 +132,7 @@ struct IncomeListView: View {
                 year: monthStore.year, month: monthStore.month
             )
             addedCount = added
+            Haptics.success()
         } catch {
             store.errorMessage = (error as? AppError)?.errorDescription
                 ?? error.localizedDescription

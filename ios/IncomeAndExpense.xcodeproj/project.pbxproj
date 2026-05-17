@@ -21,6 +21,7 @@
 		19964413B7E02B345B7A8B6E /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30629F5AF1657DCCEC7E8E27 /* Account.swift */; };
 		218F9C3C819B23971F05403F /* IncomeFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CF03CF3DADAA8689BEC31D /* IncomeFormView.swift */; };
 		225C5671E7217C069763C6F4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705E646D39443B7CED31B18F /* RootView.swift */; };
+		22D0A959B0C67FBE114647F9 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D920AA2874E92DEE2178552 /* Haptics.swift */; };
 		2FAF1F6D1D859D92D51CE9D5 /* DefaultExpenseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698954F4D3E4A5E79A385795 /* DefaultExpenseListView.swift */; };
 		3327556EAC59996A0D64BFEA /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04ADF7609C3955AB018040C /* DashboardView.swift */; };
 		337C10313DE36651706126E1 /* LoanListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFE136D49924FA570FDBA70 /* LoanListView.swift */; };
@@ -128,6 +129,7 @@
 		440D7E9C8A53F8E44C105F97 /* IncomeListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IncomeListView.swift; sourceTree = "<group>"; };
 		4549739E82FCAE3B0B40C0E7 /* CurrencyFormat.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CurrencyFormat.swift; sourceTree = "<group>"; };
 		468607A902D8149799A3E8DE /* AuthInterceptor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthInterceptor.swift; sourceTree = "<group>"; };
+		4D920AA2874E92DEE2178552 /* Haptics.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		4F2C66D66CD785CAE3D737F5 /* JSONCoders.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = JSONCoders.swift; sourceTree = "<group>"; };
 		50E3BE1B710A0DE59408EB49 /* ExpenseListResponse.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ExpenseListResponse.swift; sourceTree = "<group>"; };
 		5C2BA5F57278341B03A5E6DB /* KeychainStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
@@ -413,6 +415,7 @@
 				FD328508B47D6741D7569BB7 /* Palette.swift */,
 				F9590CD32AE9081EF2266891 /* PlaceholderRow.swift */,
 				4549739E82FCAE3B0B40C0E7 /* CurrencyFormat.swift */,
+				4D920AA2874E92DEE2178552 /* Haptics.swift */,
 			);
 			name = UIComponents;
 			path = UIComponents;
@@ -695,6 +698,7 @@
 				F5B8FFC76698E485DFE83852 /* Palette.swift in Sources */,
 				121A5078F08B28551253D729 /* PlaceholderRow.swift in Sources */,
 				A5F6B03FBB9489B660480DC7 /* CurrencyFormat.swift in Sources */,
+				22D0A959B0C67FBE114647F9 /* Haptics.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
