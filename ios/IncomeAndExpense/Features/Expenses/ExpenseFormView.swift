@@ -4,12 +4,33 @@ struct ExpenseFormView: View {
     @Environment(\.dismiss) private var dismiss
     @State var viewModel: ExpenseFormViewModel
     private let methodsStore = MethodsStore.shared
+    private let templatesStore = TemplateExpensesStore.shared
+    @State private var selectedTemplateID: Int?
     let onSaved: () -> Void
 
     var body: some View {
         @Bindable var viewModel = viewModel
         NavigationStack {
             Form {
+                if !viewModel.isEdit, !templatesStore.templates.isEmpty {
+                    Section("簡易入力") {
+                        Picker("テンプレート", selection: $selectedTemplateID) {
+                            Text("選択してください").tag(Int?.none)
+                            ForEach(templatesStore.templates) { template in
+                                Text(template.templateName).tag(Int?.some(template.id))
+                            }
+                        }
+                        .onChange(of: selectedTemplateID) { _, newValue in
+                            guard let id = newValue,
+                                  let template = templatesStore.templates
+                                    .first(where: { $0.id == id })
+                            else { return }
+                            viewModel.applyTemplate(template)
+                            Haptics.tap()
+                        }
+                    }
+                }
+
                 Section {
                     TextField("名前", text: $viewModel.name)
                     DatePicker(
@@ -66,6 +87,7 @@ struct ExpenseFormView: View {
             }
             .task {
                 await methodsStore.loadIfNeeded()
+                await templatesStore.loadIfNeeded()
             }
         }
     }

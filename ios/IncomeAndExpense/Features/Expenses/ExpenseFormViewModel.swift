@@ -30,6 +30,14 @@ final class ExpenseFormViewModel {
 
     var isEdit: Bool { original != nil }
 
+    /// テンプレートの内容をフォームに反映する。金額・メモはテンプレートに無いため触らない。
+    func applyTemplate(_ template: TemplateExpense) {
+        name = template.name
+        payDate = template.payDate
+        methodID = template.method
+        state = template.state
+    }
+
     func save() async -> Bool {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedName.isEmpty else {
