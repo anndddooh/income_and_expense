@@ -10,8 +10,9 @@ struct TemplateExpense: Codable, Identifiable, Hashable {
     let templateName: String
     let name: String
     let dateType: TemplateDateType
-    let payDay: Int
-    let limitDayOfThisMonth: Int
+    /// `date_type` が `today` のテンプレートでは null になるためオプショナル。
+    let payDay: Int?
+    let limitDayOfThisMonth: Int?
     let method: Int
     let methodName: String
     let state: InexState
