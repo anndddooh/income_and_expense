@@ -20,6 +20,7 @@ struct AccountRequireView: View {
                 if let accounts = viewModel.response?.accounts, !accounts.isEmpty {
                     ForEach(accounts) { row in
                         accountRow(row)
+                            .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     }
                 } else {
                     PlaceholderRow(kind: viewModel.isLoading
@@ -83,7 +84,7 @@ struct AccountRequireView: View {
                     Spacer()
                     Text("不足: \(row.formedInsufficient)")
                         .font(.caption.monospacedDigit())
-                        .foregroundStyle(.red)
+                        .foregroundStyle(Palette.expense)
                 }
             }
         }
